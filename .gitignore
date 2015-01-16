@@ -1,0 +1,14 @@
+
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.xml
+*.toc
+
+Thesis.pdf
+Thesis-blx.bib
+
