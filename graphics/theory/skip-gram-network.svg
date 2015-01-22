@@ -14,7 +14,7 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.48.5 r10040"
-   sodipodi:docname="skip-gram.svg">
+   sodipodi:docname="skip-gram-network.svg">
   <defs
      id="defs4" />
   <sodipodi:namedview
@@ -24,8 +24,8 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.8284272"
-     inkscape:cx="374.3416"
+     inkscape:zoom="2"
+     inkscape:cx="274.3416"
      inkscape:cy="157.59547"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -310,14 +310,14 @@
       <text
          xml:space="preserve"
          style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Latin Modern Sans;-inkscape-font-specification:Latin Modern Sans"
-         x="196.57568"
+         x="194.57568"
          y="927.49951"
          id="text4136"
          sodipodi:linespacing="125%"><tspan
            sodipodi:role="line"
            id="tspan4138"
-           x="196.57568"
-           y="927.49951">d</tspan></text>
+           x="194.57568"
+           y="927.49951">D</tspan></text>
     </g>
     <path
        style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:0.11764706"
@@ -719,25 +719,29 @@
        sodipodi:linespacing="125%"
        id="text4113"
        y="954.07434"
-       x="472.12552"
+       x="483.22601"
        style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Latin Modern Sans;-inkscape-font-specification:Latin Modern Sans"
        xml:space="preserve"><tspan
          y="954.07434"
-         x="472.12552"
+         x="483.22601"
          id="tspan4115"
          sodipodi:role="line"
-         style="font-size:15px">w(t+ℓ)</tspan></text>
+         style="font-size:15px">w<tspan
+   style="font-size:65.00091553%;baseline-shift:sub"
+   id="tspan3088">t+ℓ</tspan></tspan></text>
     <text
        xml:space="preserve"
        style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Latin Modern Sans;-inkscape-font-specification:Latin Modern Sans"
-       x="23.025999"
+       x="28.625999"
        y="954.07434"
        id="text4117"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan4119"
-         x="23.025999"
+         x="28.625999"
          y="954.07434"
-         style="font-size:15px">w(t)</tspan></text>
+         style="font-size:15px">w<tspan
+   style="font-size:9.75013733px;baseline-shift:sub"
+   id="tspan3086">t</tspan></tspan></text>
   </g>
 </svg>

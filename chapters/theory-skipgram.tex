@@ -2,39 +2,105 @@
 
 \section{Skip-gram}
 
-The Skip-gram model tries to learn the meaning of words by its context. Specifically it tries to predict the surrounding words a given a single input word. This is different from CBOW \todo{shold this be discusessed}, because only one word is used as input and multiply words are used as output.
+The Skip-gram model tries to learn the meaning of words by its context. Specifically it tries to predict the surrounding words a given a single input word.
 
+The Skip-gram model does this by by encoding the input word using 1-of-V encoding where $V$ is the vocabulary size. This means that each word is represented as an indicator vector, where the indicator represent a single word from a given vocabulary. The vocabulary is typically defined using the $V$ most common word in the text corpus.
 \begin{figure}[H]
-	\centering
-	\includegraphics[width=0.8\textwidth]{theory/skip-gram}
-	\caption{Visualization of a single pass though the Skip-gram network. Note that there are no non-linear units, thus this is a log-linear method.}
+\begin{equation*}
+\begin{aligned}
+\text{twinkle}: \left[1, 0, 0, 0, \cdots \right] \\
+\text{twinkle}: \left[1, 0, 0, 0, \cdots \right] \\
+\text{little}: \left[0, 1, 0, 0, \cdots \right] \\
+\text{star}: \left[0, 0, 1, 0, \cdots \right]
+\end{aligned}
+\end{equation*}
+\caption{Example of 1-of-V encoding on the sentense ``twinkle twinkle little star''}
 \end{figure}
 
-The model is optimized by maximum-likelihood over all the words ($w_t, t \in [1, T]$) \todo{boundary issue} as input and to some of the surrounding words ($w_{t + \ell}$):
+Each of these word representations are then transformed intro a lower dimensional space (latent representation). In this space words with same meaning should be close to each other. The position of each word should also contain a higher semantic meaning \todo{is this a sideeffect or a model requirement}, such that for example $f(King) - f(Man) + f(Female) \approx f(Queen)$. Here $f$ is the transformation function from the input space to the latent representation.
+
+From this latent representation the surrounding are then predicted. See Figure \ref{fig:theory:skip-gram:graph} for a graphical overview.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.7]{theory/skip-gram-graph}
+	\caption{Visualization of the Skip-gram model. Given a single input word it tries to predict the surrounding words. From this it learns the latent representation.}
+	\label{fig:theory:skip-gram:graph}
+\end{figure}
+
+\newpage
+\subsection{Maximum-likelihood}
+
+The Skip-gram model is optimized by maximum-likelihood. Given a corpus with $D$ documents where each document have $T_d$ words, the likelihood function is calculated using the conditional probability of observing the surrounding words ($w_{d, t + \ell}$) given the input words ($w_{d, t}\ , t \in [1, T_d]$).
 \begin{equation}
-\mathcal{L} = \prod_{t = 1}^T \prod_{\ell} p(w_{t + \ell} | w_t)
+\mathcal{L} = \prod_{d = 1}^D \prod_{t = 1}^{T_d} \prod_{\ell} p(w_{d, t + \ell} | w_{d, t})
 \end{equation}
 
-Since words closer to $w_t$ should be more related to that word, the near surrounding words are weighed higher. This is done by letting $\ell \in [-R, R] \setminus \{ 0 \}$ where $R \sim U[1, C]$ \cite{word2vec-comparing}.
+The details about which document there currently is used, are typically omitted from the expressions. Thus the above becomes the same as simply:
+\begin{equation}
+\mathcal{L} = \prod_{t = 1}^{T} \prod_{\ell} p(w_{t + \ell} | w_{t})
+\end{equation}
 
-For easier calculation of $\mathcal{L}$, the average log likelihood is used instead:
+Since words there are close to $w_t$ are expected to be  more related to that word, the near surrounding words are weighed higher. This not done by explicit weights, but instead by letting $\ell \in [-R, R] \setminus \{ 0 \}$ where $R \sim U[1, C]$ \cite{word2vec-comparing}.
+
+For easier calculation of the likelihood function, the average log likelihood is used instead:
 \begin{equation}
 \frac{1}{T} \log( \mathcal{L} ) = \frac{1}{T} \sum_{t = 1}^T \sum_{\ell} \log( p(w_{t + \ell} | w_t) )
 \end{equation}
 
-The words $w$ are represented using 1-of-V encoding\todo{explain}, where $V$ is the vocabulary size. For a given word $w$ this encoding will be denoted as $\mathbf{x}_w$ \todo{Confusing? $x$ indicates input}. The hidden layer (latent representation) is then calculated as:
+The conditional probability $p(w_{t + \ell} | w_t)$ is calculated using a log-linear model. This is best explained by considering a neural network, with a single hidden layer and no non-linear units. 
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.7]{theory/skip-gram-network}
+	\caption{Visualization of a single pass though the Skip-gram network. Note that $D$ is now size of the hidden layer.}
+\end{figure}
+
+As previously discussed the input and output words are represented using 1-of-V encoding, this vector will be denoted as $\mathbf{x}_w$ for both the input and output words. The activation in the hidden layer then becomes:
 \begin{equation}
-\mathbf{v}_w = \mathbf{x}_w \mathbf{W}^{(1)}
-\end{equation} \todo{Introduce weights $W^{(1)}$ and $W^{(2)}$.}
+\mathbf{z}_w = \mathbf{W}_I \mathbf{x}_w
+\end{equation}
+The output before the softmax is applied is then calculated as:
+\begin{equation}
+\boldsymbol\phi_w = \mathbf{W}_O^T \mathbf{z}_w
+\end{equation}
+
+Here $\mathbf{W}_I$ is the matrix containing the weights on the left side of the log-linear network, thus it has a size of $D \times V$. $\mathbf{W}_O$ is the matrix containing the weights on the right side and have also size $D \times V$.
+
+$\boldsymbol\phi_w$ is a vector containing information about all possible surrounding words, but since this used in a maximum likelihood setting, only the value associated with the output word $w_{t + \ell}$ is of interrest. To get this specific value the encoding vector $\mathbf{x}_{t + \ell}$ can be used. In general the value associated with the word $i$ can be obtained using:
+\begin{equation}
+\left(\boldsymbol\phi_w\right)_i = \mathbf{x}_{i}^T \boldsymbol\phi_w
+\end{equation}
+This detail is not particular important, but explains the some of the notation used in \cite{word2vec-details}.
 
 The probability $p(w_{t + \ell} | w_t)$ can now be calculated as:
 \begin{equation}
-p(w_{t + \ell} | w_t) = p(w_O | w_I) = \mathbf{x}_{w_O}^T \frac{
-	\mathbf{exp}(\mathbf{v}_{w_I}  \mathbf{W}^{(2)} )
+\begin{aligned}
+p(w_{t + \ell} | w_t) = p(w_O | w_I) &= \frac{
+	\mathrm{exp}(\mathbf{x}^T_{w_O} \boldsymbol\phi_{w_I} )
 }{
-	\sum_{k=1}^V \mathbf{exp}_k(\mathbf{v}_{w_I}  \mathbf{W}^{(2)} )
+	\sum_{w=1}^V \mathrm{exp}(\mathbf{x}^T_{w} \boldsymbol\phi_{w_I})
+} = \frac{
+	\mathrm{exp}(\mathbf{x}^T_{w_O} \mathbf{W}_O^T\ \mathbf{z}_{w_I} )
+}{
+	\sum_{w=1}^V \mathrm{exp}(\mathbf{x}^T_{w} \mathbf{W}_O^T\ \mathbf{z}_{w_I})
+}
+\\
+&= \frac{
+	\mathrm{exp}( \left( \mathbf{W}_O \mathbf{x}_{w_O} \right)^T \mathbf{z}_{w_I} )
+}{
+	\sum_{w=1}^V \mathrm{exp}( \left( \mathbf{W}_O \mathbf{x}_{w} \right)^T \mathbf{z}_{w_I})
+}
+\end{aligned}
+\end{equation}
+
+If one sets $\mathbf{v}_{w_O} = \mathbf{W}_O \mathbf{x}_{w_O}$ and $\mathbf{v}_{w_I} = \mathbf{z}_{w_I}$, the expression becomes the same as in \cite[eq. 2]{word2vec-details}: \todo{can this really be true. If so, it is a very confusion notation.}
+\begin{equation}
+p(w_O | w_I) = \frac{
+	\mathrm{exp}( \mathbf{v}_{w_O}^T \mathbf{v}_{w_I} )
+}{
+	\sum_{w=1}^V \mathrm{exp}( \mathbf{v}_{w}^T \mathbf{v}_{w_I} )
 }
 \end{equation}
-\todo{This does not match the paper \cite[eq. 2]{word2vec-details}}
 
-This calculation is problematic since it involves a sum over all words in the vocabulary. In the Skip-gram model the vocabulary can be of size $10^5$ to $10^7$ \cite{word2vec-details} \todo{check this}.
+This calculation is problematic since it involves a sum over all words in the vocabulary. In the Skip-gram model the vocabulary can be of size $10^5$ to $10^7$ \cite{word2vec-details}. This is why \cite{word2vec-comparing, word2vec-details, word2vec-explained} uses an approximation in form of either \textit{hierarchical softmax} or \textit{negative-sampling}. These approximations will not be discussed here, but are worth considering as they will reduce the computational complexity from $\mathcal{O}(V)$ to $\mathcal{O}(\log_2(V))$ \cite{word2vec-comparing}.
