@@ -46,6 +46,7 @@
 
 \checkandfixthelayout                 % Check if errors in paper format!
 \sideparmargin{outer}                 % Put sidemargins in outer position
+\reversemarginpar			 % Put marginpar in outer position
 
 % Links
 \usepackage[hyphens]{url}             % Allow hyphens in URL's
@@ -64,7 +65,10 @@
 
 % Paragraph style (no indent and space between pragraphs)
 \setlength{\parindent}{0pt}
+\setlength{\marginparwidth}{60pt} 
 \nonzeroparskip
+
+\newcommand{\marginnote}[1]{\marginpar{\footnotesize{#1}}}
 
 % Definea hrule there doesn't depend on the chars, used in the mychaperstyle  
 \newcommand{\HRule}[1][\medskipamount]{\par
