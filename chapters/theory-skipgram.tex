@@ -4,7 +4,7 @@
 
 The Skip-gram model tries to learn the meaning of words by its context. Specifically it tries to predict the surrounding words a given a single input word.
 
-The Skip-gram model does this by by encoding the input word using 1-of-V encoding where $V$ is the vocabulary size. This means that each word is represented as an indicator vector, where the indicator represent a single word from a given vocabulary. The vocabulary is typically defined using the $V$ most common word in the text corpus.
+The Skip-gram model does this by by encoding the input word using 1-of-V encoding where $V$ is the vocabulary size. This means that each word is represented as an indicator vector, where the indicator represent a single word from a given vocabulary. The vocabulary is typically defined using the $V$ most common word in the text corpus. \marginnote{\vspace{-1.5cm}\textbf{corpus}: \\ collection of documents}
 \begin{figure}[H]
 \begin{equation*}
 \begin{aligned}
@@ -45,7 +45,7 @@ Since words there are close to $w_t$ are expected to be  more related to that wo
 
 For easier calculation of the likelihood function, the average log likelihood is used instead:
 \begin{equation}
-\frac{1}{T} \log( \mathcal{L} ) = \frac{1}{T} \sum_{t = 1}^T \sum_{\ell} \log( p(w_{t + \ell} | w_t) )
+\frac{1}{T} \ln( \mathcal{L} ) = \frac{1}{T} \sum_{t = 1}^T \sum_{\ell} \ln( p(w_{t + \ell} | w_t) )
 \end{equation}
 
 The conditional probability $p(w_{t + \ell} | w_t)$ is calculated using a log-linear model. This is best explained by considering a neural network, with a single hidden layer and no non-linear units. 
@@ -55,6 +55,7 @@ The conditional probability $p(w_{t + \ell} | w_t)$ is calculated using a log-li
 	\includegraphics[scale=0.7]{theory/skip-gram-network}
 	\caption{Visualization of a single pass though the Skip-gram network. Note that $D$ is now size of the hidden layer.}
 \end{figure}
+\todo{Comment on the order having no effect}
 
 As previously discussed the input and output words are represented using 1-of-V encoding, this vector will be denoted as $\mathbf{x}_w$ for both the input and output words. The activation in the hidden layer then becomes:
 \begin{equation}
@@ -67,8 +68,7 @@ The output before the softmax is applied is then calculated as:
 
 Here $\mathbf{W}_I$ is the matrix containing the weights on the left side of the log-linear network, thus it has a size of $D \times V$. $\mathbf{W}_O$ is the matrix containing the weights on the right side and have also size $D \times V$.
 
-$\boldsymbol\phi_w$ is a vector containing information about all possible surrounding words, but since this used in a maximum likelihood setting, only the value associated with the output word $w_{t + \ell}$ is of interrest. To get this specific value the encoding vector $\mathbf{x}_{t + \ell}$ can be used. In general the value associated with the word $i$ can be obtained using:
-\begin{equation}
+$\boldsymbol\phi_w$ is a vector containing information about all possible surrounding words, but since this used in a maximum likelihood setting, only the value associated with the output word $w_{t + \ell}$ is of interrest. To get this specific value the encoding vector $\mathbf{x}_{t + \ell}$ can be used. In general the value associated with the word $i$ can be obtained using: \begin{equation}
 \left(\boldsymbol\phi_w\right)_i = \mathbf{x}_{i}^T \boldsymbol\phi_w
 \end{equation}
 This detail is not particular important, but explains the some of the notation used in \cite{word2vec-details}.
@@ -94,7 +94,7 @@ p(w_{t + \ell} | w_t) = p(w_O | w_I) &= \frac{
 \end{aligned}
 \end{equation}
 
-If one sets $\mathbf{v}_{w_O} = \mathbf{W}_O \mathbf{x}_{w_O}$ and $\mathbf{v}_{w_I} = \mathbf{z}_{w_I}$, the expression becomes the same as in \cite[eq. 2]{word2vec-details}: \todo{can this really be true. If so, it is a very confusion notation.}
+If one sets $\mathbf{v}_{w_O} = \mathbf{W}_O \mathbf{x}_{w_O}$, $\mathbf{v}_{w} = \mathbf{W}_O \mathbf{x}_{w}$  and $\mathbf{v}_{w_I} =  \mathbf{W}_I \mathbf{x}_{w_I} = \mathbf{z}_{w_I}$, the expression becomes the same as in \cite[eq. 2]{word2vec-details}: \todo{can this really be true. If so, it is a very confusion notation.}
 \begin{equation}
 p(w_O | w_I) = \frac{
 	\mathrm{exp}( \mathbf{v}_{w_O}^T \mathbf{v}_{w_I} )
@@ -103,4 +103,55 @@ p(w_O | w_I) = \frac{
 }
 \end{equation}
 
-This calculation is problematic since it involves a sum over all words in the vocabulary. In the Skip-gram model the vocabulary can be of size $10^5$ to $10^7$ \cite{word2vec-details}. This is why \cite{word2vec-comparing, word2vec-details, word2vec-explained} uses an approximation in form of either \textit{hierarchical softmax} or \textit{negative-sampling}. These approximations will not be discussed here, but are worth considering as they will reduce the computational complexity from $\mathcal{O}(V)$ to $\mathcal{O}(\log_2(V))$ \cite{word2vec-comparing}.
+This calculation is problematic since it involves a sum over all words in the vocabulary. In the Skip-gram model the vocabulary can be of size $10^5$ to $10^7$ \cite{word2vec-details}. This is why \cite{word2vec-comparing, word2vec-details, word2vec-explained} uses an approximation in form of either \textit{hierarchical softmax} or \textit{negative-sampling}. These approximations will not be discussed here, but are worth considering as they will reduce the computational complexity from $\mathcal{O}(V)$ to $\mathcal{O}(\ln_2(V))$ \cite{word2vec-comparing}.
+
+\subsection{Optimization}
+
+Since there is no closed-form solution to this maximum-likelihood problem, gradient descent is used to iteratively optimize the parameters $\mathbf{W}_O$ and $\mathbf{W}_I$. This is done by deriving the derivatives for the average log likelihood function. 
+\begin{equation}
+\frac{\partial}{\partial \mathbf{W}} \frac{1}{T} \ln( \mathcal{L} ) = \frac{1}{T} \sum_{t = 1}^T \sum_{\ell} \frac{\partial}{\partial \mathbf{W}} \ln( p(w_{t + \ell} | w_t) )
+\end{equation}
+Here $\mathbf{W}$ symbolizes both the parameters in $\mathbf{W}_O$ and in $\mathbf{W}_I$. 
+\begin{equation*}
+\centerline{$
+\begin{aligned}
+\frac{\partial}{\partial \mathbf{W}} \ln( p(w_O | w_I) ) &= \frac{\partial}{\partial \mathbf{W}} 	 \left( \frac{
+	\mathrm{exp}( \left( \mathbf{W}_O \mathbf{x}_{w_O} \right)^T \mathbf{W}_I \mathbf{x}_{w_I} )
+}{
+	\sum_{w=1}^V \mathrm{exp}( \left( \mathbf{W}_O \mathbf{x}_{w} \right)^T \mathbf{W}_I \mathbf{x}_{w_I} )
+} \right) \\
+&= \frac{\partial}{\partial \mathbf{W}} \left( \left( \mathbf{W}_O \mathbf{x}_{w_O} \right)^T \mathbf{W}_I \mathbf{x}_{w_I} - \ln \left(\sum_{w=1}^V \mathrm{exp}( \left( \mathbf{W}_O \mathbf{x}_{w} \right)^T \mathbf{W}_I \mathbf{x}_{w_I}) \right) \right) \\
+&= \frac{\partial}{\partial \mathbf{W}} \left( \mathbf{W}_O \mathbf{x}_{w_O} \right)^T \mathbf{W}_I \mathbf{x}_{w_I} - \frac{
+	\frac{\partial}{\partial \mathbf{W}} \sum_{w=1}^V \mathrm{exp}( \left( \mathbf{W}_O \mathbf{x}_{w} \right)^T \mathbf{W}_I \mathbf{x}_{w_I})
+} {
+	\sum_{w=1}^V \mathrm{exp}( \left( \mathbf{W}_O \mathbf{x}_{w} \right)^T \mathbf{W}_I \mathbf{x}_{w_I})
+} \\
+&= \frac{\partial}{\partial \mathbf{W}} \left( \mathbf{W}_O \mathbf{x}_{w_O} \right)^T \mathbf{W}_I \mathbf{x}_{w_I} - \frac{
+	\sum_{w=1}^V \left(\frac{\partial}{\partial \mathbf{W}} \left(\mathbf{W}_O \mathbf{x}_{w} \right)^T \mathbf{W}_I \mathbf{x}_{w_I} \right) \mathrm{exp}( \left( \mathbf{W}_O \mathbf{x}_{w} \right)^T \mathbf{W}_I \mathbf{x}_{w_I})
+} {
+	\sum_{w=1}^V \mathrm{exp}( \left( \mathbf{W}_O \mathbf{x}_{w} \right)^T \mathbf{W}_I \mathbf{x}_{w_I})
+}
+\end{aligned}$}
+\end{equation*}
+
+At this point it becomes necessary to distinguish between the elements in $\mathbf{W}_O$ and $\mathbf{W}_I$.
+
+\begin{equationbox}[H]
+\begin{equation*}
+\begin{aligned}
+\frac{\partial}{\partial \mathbf{W}_I} \ln( p(w_O | w_I) ) = \mathbf{W}_O \mathbf{x}_{w_O} \mathbf{x}_{w_I}^T - \frac{
+	\sum_{w=1}^V \mathbf{W}_O \mathbf{x}_{w_O} \mathbf{x}_{w_I}^T \mathrm{exp}( \left( \mathbf{W}_O \mathbf{x}_{w} \right)^T \mathbf{W}_I \mathbf{x}_{w_I})
+} {
+	\sum_{w=1}^V \mathrm{exp}( \left( \mathbf{W}_O \mathbf{x}_{w} \right)^T \mathbf{W}_I \mathbf{x}_{w_I})
+} \\
+\frac{\partial}{\partial \mathbf{W}_O} \ln( p(w_O | w_I) ) = \mathbf{W}_I \mathbf{x}_{w_I} \mathbf{x}_{w_O}^T - \frac{
+	\sum_{w=1}^V \mathbf{W}_I \mathbf{x}_{w_I} \mathbf{x}_{w_O}^T \mathrm{exp}( \left( \mathbf{W}_O \mathbf{x}_{w} \right)^T \mathbf{W}_I \mathbf{x}_{w_I})
+} {
+	\sum_{w=1}^V \mathrm{exp}( \left( \mathbf{W}_O \mathbf{x}_{w} \right)^T \mathbf{W}_I \mathbf{x}_{w_I})
+}
+\end{aligned}
+\end{equation*}
+\caption{Derivatives for the Skip-Gram model}
+\end{equationbox}
+\marginnote{\vspace{-3cm}Remember \cite{matrix-cookbook}:\\  ${\frac{\partial \mathbf{a}^T X \mathbf{b}}{\partial X} = \mathbf{a} \mathbf{b}^T}$, ${\frac{\partial \mathbf{a}^T X^T \mathbf{b}}{\partial X} = \mathbf{b} \mathbf{a}^T}$}
+
