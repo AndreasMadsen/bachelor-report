@@ -126,6 +126,13 @@
   \ifodd\value{page}\hbox{}\newpage\fi
 }
 
+% Create a caption box for equations
+% http://tex.stackexchange.com/questions/97029/referencing-equation-counter-value-in-custom-float-caption
+\usepackage{aliascnt}
+\newaliascnt{equationbox}{equation}
+\newfloat{equationbox}{h}{Equation}
+\floatname{equationbox}{Equation}
+
 % Hypersetup
 \hypersetup{
     pdfauthor={\thesisauthor{}},
