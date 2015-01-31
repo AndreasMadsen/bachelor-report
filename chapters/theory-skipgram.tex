@@ -140,12 +140,12 @@ At this point it becomes necessary to distinguish between the elements in $\math
 \begin{equation*}
 \begin{aligned}
 \frac{\partial}{\partial \mathbf{W}_I} \ln( p(w_O | w_I) ) = \mathbf{W}_O \mathbf{x}_{w_O} \mathbf{x}_{w_I}^T - \frac{
-	\sum_{w=1}^V \mathbf{W}_O \mathbf{x}_{w_O} \mathbf{x}_{w_I}^T \mathrm{exp}( \left( \mathbf{W}_O \mathbf{x}_{w} \right)^T \mathbf{W}_I \mathbf{x}_{w_I})
+	\sum_{w=1}^V \mathbf{W}_O \mathbf{x}_{w} \mathbf{x}_{w_I}^T \mathrm{exp}( \left( \mathbf{W}_O \mathbf{x}_{w} \right)^T \mathbf{W}_I \mathbf{x}_{w_I})
 } {
 	\sum_{w=1}^V \mathrm{exp}( \left( \mathbf{W}_O \mathbf{x}_{w} \right)^T \mathbf{W}_I \mathbf{x}_{w_I})
 } \\
 \frac{\partial}{\partial \mathbf{W}_O} \ln( p(w_O | w_I) ) = \mathbf{W}_I \mathbf{x}_{w_I} \mathbf{x}_{w_O}^T - \frac{
-	\sum_{w=1}^V \mathbf{W}_I \mathbf{x}_{w_I} \mathbf{x}_{w_O}^T \mathrm{exp}( \left( \mathbf{W}_O \mathbf{x}_{w} \right)^T \mathbf{W}_I \mathbf{x}_{w_I})
+	\sum_{w=1}^V \mathbf{W}_I \mathbf{x}_{w_I} \mathbf{x}_{w}^T \mathrm{exp}( \left( \mathbf{W}_O \mathbf{x}_{w} \right)^T \mathbf{W}_I \mathbf{x}_{w_I})
 } {
 	\sum_{w=1}^V \mathrm{exp}( \left( \mathbf{W}_O \mathbf{x}_{w} \right)^T \mathbf{W}_I \mathbf{x}_{w_I})
 }
