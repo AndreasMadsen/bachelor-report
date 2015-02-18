@@ -14,7 +14,7 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.48.5 r10040"
-   sodipodi:docname="skip-gram-grap.svg">
+   sodipodi:docname="skip-gram-graph.svg">
   <defs
      id="defs4">
     <marker
@@ -161,12 +161,12 @@
        y="868.07434"
        id="text3160"
        sodipodi:linespacing="125%"><tspan
-         style="font-size:15px"
+         style="font-size:15px;-inkscape-font-specification:Latin Modern Roman;font-family:Latin Modern Roman"
          sodipodi:role="line"
          id="tspan3162"
          x="80.125519"
          y="868.07434">w<tspan
-   style="font-size:65.00091553%;baseline-shift:sub"
+   style="font-size:65.00091553000000033%;baseline-shift:sub;-inkscape-font-specification:Latin Modern Roman;font-family:Latin Modern Roman"
    id="tspan3164">t</tspan></tspan></text>
     <g
        id="g3182"
@@ -231,8 +231,8 @@
          x="398.12552"
          id="tspan3194"
          sodipodi:role="line"
-         style="font-size:15px">w<tspan
-   style="font-size:65.00091553%;baseline-shift:sub"
+         style="font-size:15px;-inkscape-font-specification:Latin Modern Roman;font-family:Latin Modern Roman">w<tspan
+   style="font-size:65.00091553000000033%;baseline-shift:sub;-inkscape-font-specification:Latin Modern Roman;font-family:Latin Modern Roman"
    id="tspan3216">t−2</tspan></tspan></text>
     <text
        xml:space="preserve"
@@ -241,12 +241,12 @@
        y="828.07434"
        id="text3198"
        sodipodi:linespacing="125%"><tspan
-         style="font-size:15px"
+         style="font-size:15px;-inkscape-font-specification:Latin Modern Roman;font-family:Latin Modern Roman"
          sodipodi:role="line"
          id="tspan3200"
          x="398.12552"
          y="828.07434">w<tspan
-   style="font-size:65.00091553%;baseline-shift:sub"
+   style="font-size:65.00091553000000033%;baseline-shift:sub;-inkscape-font-specification:Latin Modern Roman;font-family:Latin Modern Roman"
    id="tspan3202">t−1</tspan></tspan></text>
     <text
        sodipodi:linespacing="125%"
@@ -259,9 +259,9 @@
          x="398.12552"
          id="tspan3206"
          sodipodi:role="line"
-         style="font-size:15px">w<tspan
+         style="font-size:15px;-inkscape-font-specification:Latin Modern Roman;font-family:Latin Modern Roman">w<tspan
    id="tspan3208"
-   style="font-size:65.00091553%;baseline-shift:sub">t+1</tspan></tspan></text>
+   style="font-size:65.00091553000000033%;baseline-shift:sub;-inkscape-font-specification:Latin Modern Roman;font-family:Latin Modern Roman">t+1</tspan></tspan></text>
     <text
        xml:space="preserve"
        style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Latin Modern Sans;-inkscape-font-specification:Latin Modern Sans"
@@ -269,12 +269,12 @@
        y="988.07434"
        id="text3210"
        sodipodi:linespacing="125%"><tspan
-         style="font-size:15px"
+         style="font-size:15px;-inkscape-font-specification:Latin Modern Roman;font-family:Latin Modern Roman"
          sodipodi:role="line"
          id="tspan3212"
          x="398.12552"
          y="988.07434">w<tspan
-   style="font-size:65.00091553%;baseline-shift:sub"
+   style="font-size:65.00091553000000033%;baseline-shift:sub;-inkscape-font-specification:Latin Modern Roman;font-family:Latin Modern Roman"
    id="tspan3214">t+2</tspan></tspan></text>
     <text
        xml:space="preserve"
@@ -342,7 +342,7 @@
          id="tspan5614"
          x="98.388344"
          y="697.85901"
-         style="font-size:15px">input</tspan></text>
+         style="font-size:15px;-inkscape-font-specification:Latin Modern Roman;font-family:Latin Modern Roman">input</tspan></text>
     <text
        sodipodi:linespacing="125%"
        id="text5616"
@@ -350,7 +350,7 @@
        x="174.38834"
        style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Latin Modern Sans;-inkscape-font-specification:Latin Modern Sans"
        xml:space="preserve"><tspan
-         style="font-size:15px"
+         style="font-size:15px;-inkscape-font-specification:Latin Modern Roman;font-family:Latin Modern Roman"
          y="697.85901"
          x="174.38834"
          id="tspan5618"
@@ -362,7 +362,7 @@
        x="354.38834"
        style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Latin Modern Sans;-inkscape-font-specification:Latin Modern Sans"
        xml:space="preserve"><tspan
-         style="font-size:15px"
+         style="font-size:15px;-inkscape-font-specification:Latin Modern Roman;font-family:Latin Modern Roman"
          y="697.85901"
          x="354.38834"
          id="tspan5622"
