@@ -124,7 +124,7 @@ Using this \eqref{eq:theory:ffnn:bprop-firstlayer} becomes:
 \label{eq:theory:ffnn:bprop-w01}
 \end{equation}
 
-The equation ``how should $\delta_{h_1}$ be calculated ?'' then arises. This is done by using the chain rule again. This time the chain rule gives a sum because there are multiply paths $a_{h_1}$. \todo{I don't fully understand this}
+The equation ``how should $\delta_{h_1}$ be calculated ?'' then arises. This is done by using the chain rule again. This time the chain rule gives a sum because there are multiply paths to $a_{h_1}$. \todo{I don't fully understand this}
 \begin{equation}
 \delta_{h_1} = \frac{\partial \mathcal{L}}{\partial a_{h_1}} = \sum_{h_2=1}^{H_2} \frac{\partial \mathcal{L}}{\partial a_{h_2}} \frac{\partial a_{h_2}}{\partial a_{h_1}}
 \end{equation}
@@ -156,7 +156,7 @@ Calculating $\delta_{h_2}$ is almost identical:
 Calculating $\delta_{h_3}$ will be a bit different, because it is the last $\delta_{h_\ell}$ there needs calculation (for a neural network with two hidden layer). It thus makes sense first to generalize \eqref{eq:theory:ffnn:bprop-secondlayer} and \eqref{eq:theory:ffnn:bprop-thirdlayer} such that it can work for any number of hidden layers:
 \begin{equation}
 \begin{aligned}
-\delta_{h_\ell} = \theta'(a_{h_\ell}) \sum_{h_\ell=1}^{H_\ell} \delta_{h_\ell} w_{h_{\ell-1}, h_\ell}, && \forall \ell \in [1, L]
+\delta_{h_\ell} = \theta'(a_{h_\ell}) \sum_{h_{\ell+1}=1}^{H_{\ell+1}} \delta_{h_{\ell+1}} w_{h_\ell, h_{\ell+1}}, && \forall \ell \in [1, L]
 \end{aligned}
 \label{eq:theory:ffnn:bprop-genalized}
 \end{equation}
