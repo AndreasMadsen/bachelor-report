@@ -6,86 +6,111 @@ The Skip-gram model can be interpreted as a Feedforward Network. This class of n
 
 The Recurrent Neural Networks (RNN) overcome this shortcoming by having an internal state. In principal this allows the network to take a sequence of vectors and consider the entire history. The sequence can be of any size, but each vector must be of the same size. In the case of sentences a fixed sized vectors is not an issue when considering a fixed vocabulary.
 
-In practice it turns out that the RNN forgets the past and only have a short memory. Another model called Long-Short-Term-Memory (LSTM) extends the RNN and have been shown to have better performance \cite{missing source}. The ideas are however still the same, thus to understand the LSTM model a basic understanding of the RNN model is necessary.
+In practice it turns out that the RNN forgets the past and only have a short memory. Another model called Long-Short-Term-Memory (LSTM) extends the RNN and have been shown to have better performance \cite{alexgraves}. The ideas are however still the same, thus to understand the LSTM model a basic understanding of the RNN model is valuable.
 
 \subsection{Forward pass}
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[scale=0.7]{theory/rnn-singlelayer-folded}
-	\caption{Visualization of a single interation in a Recurent Neural Network.}
-	\label{fig:theory:rnn:rnn-singlelayer-folded}
+	\includegraphics[scale=0.7]{theory/rnn-network}
+	\caption{Visualization of a single iteration in a Recurent Neural Network.}
+	\label{fig:theory:rnn:rnn-network}
 \end{figure}
 
-Consider Figure \ref{fig:theory:rnn:rnn-singlelayer-folded} but without the extra internal connections, such that it is just a feedforward network. The elements in the input vector is then denoted $x_{i}, i \in [1, V]$, the corresponding input for the hidden layer is $a_{h}, h \in [1, H]$ with an activation $b_{h}, h \in [1, H]$. Finally there is the network output $a_{k}, k \in [1, K]$.
+Consider Figure \ref{fig:theory:rnn:rnn-network} but without the extra internal connections, such that it is just a feedforward network. The elements in the input vector is then denoted $x_{i}, i \in [1, I]$, the corresponding input for the hidden layer is $a_{h_\ell}, h_\ell \in [1, H_\ell]$ with an activation $b_{h_\ell}, _\ell \in [1, H_\ell]$. Finally there is the network output $a_{k}, k \in [1, K]$. This is just like the notation used in the Feedforward Neural Network section.
 
 However since a sequence of $\mathbf{x}$ vectors will be used later, a $t \in [1, T]$ is added to the notation. Note that just because a $t$ is used, the RNN model generalizes to non-time dependent datasets as well. In the case of semantic analysis the sequence $\{\mathbf{x}^t\}_{t=1}^T$ will refer to a sequence of words represented using 1-of-V encoding. The total sequence then contains a complete sentences or paragraph. 
 
 Now recall that in a feedforward network the input for the hidden layer is:
 \begin{equation}
-a_h^t = \sum_{i=1}^I w_{i h} x_i^t
+a_{h_\ell}^t = \sum_{h_{\ell-1}=1}^{H_{\ell-1}} w_{h_{\ell-1}, h_\ell} b_{h_{\ell-1}}^t
 \end{equation}
 
-In the case of a RNN the input for the hidden layer ($a_h^t$) is expanded such that i depends on the hidden activation for the previous time iteration ($b_h^{t-1}$):
+In the case of a RNN the input for the hidden layer ($a_{h_\ell}^t$) is expanded such that i depends on the hidden activation for the previous time iteration ($b_{h_\ell}^{t-1}$):
 \begin{equation}
-a_h^t = \sum_{i=1}^I w_{i h} x_i^t + \sum_{h'=1}^H w_{h' h} b_{h'}^{t-1}
+a_{h_\ell}^t = \sum_{h_{\ell-1}=1}^{H_{\ell-1}} w_{h_{\ell-1}, h_\ell} b_{h_{\ell-1}}^t + \sum_{h'_\ell=1}^{H_\ell} w_{h'_\ell h_\ell} b_{h'_\ell}^{t-1}
 \end{equation}
 
-Thus the complete set of equations are:
-\begin{equationbox}[H]
-\begin{equation*}
-\begin{aligned}
-\text{output: } a_k^t &= \sum_{h=1}^H w_{h k} b_h^t \\
-\text{hidden activation: } b_h^t &= \theta(a_h^t) \\
-\text{hidden input: } a_h^t &= \sum_{i=1}^I w_{i h} x_i^t + \sum_{h'=1}^H w_{h' h} b_{h'}^{t-1}
-\end{aligned}
-\end{equation*}
-\caption{Forward equations for a single layer RNN. $\theta$ is the activation function for the hidden layer and $b_{h'}^{0}$ is usually set to $0$.}
-\end{equationbox}
+Just as with the FFNN $\theta$ is the activation function:
+\begin{equation}
+b_{h_\ell}^t = \theta(a_{h_\ell}^t)
+\end{equation}
+
+In order to fully calculate the forward pass $b_{h'_\ell}^0$ needs to be initialized to some value. Usually it is set to $0$, however there are other choices.
 
 \subsection{Backward pass}
 
-While it is doable to just write out the full likelihood function and differentiate with respect to the parameters $w_{i h}$, $w_{h' h}$ and $w_{h k}$, a method similar to backpropagation can be used. The method is called backpropagation through time BPTT and is almost identical to backpropagation in the feedforward network, except that it also goes backward though time ($t$) or in this case the sequence of words.
+Just like \textit{error backpropagation} is used to calculate the loss function derivatives with respect to the weights in a FFNN, similar method exists for the RNN. The method is called \textit{backpropagation through time} (BPTT). Is almost identical to backpropagation in the feedforward network, except that it doesn't just go backward though the layers but also goes backward though time ($t$), or in this case the sequence of words.
 
-Consider the log-likelihood function for a multiclass problem, where the probabilities $y_k$ are calculated using a softmax:
+Consider again the log-likelihood function for a multiclass problem, where the probabilities $y_k^t$ are calculated using a softmax. However this time the probability must be considered for all time steps.
+\begin{align}
+\mathcal{L} &= - \sum_{t=1}^T \sum_{k=1}^K t_k^t \ln(y_k^t) \\
+y_k^t &= \frac{\mathrm{exp}(a_k^t)} {\sum_{k'=1}^K \mathrm{exp}(a_{k'}^t)}
+\end{align}
+
+Just as with the FFNN the derivatives with respect to the first weights, are considered as a starting point. However because of the time dependency the chain rule results in a sum over the time steps:
+\begin{equation}
+\frac{\partial \mathcal{L}}{\partial w_{h_0, h_1}} = \sum_{t=1}^T \frac{\partial \mathcal{L}}{\partial a_{h_1}^t} \frac{\partial a_{h_1}^t}{w_{h_0, h_1}}
+\label{eq:theory:rnn:startingpoint}
+\end{equation}
+
+Now the $\delta$ definition is introduced:
+\begin{equation}
+\delta_{h_\ell}^t \defeq \frac{\partial \mathcal{L}}{\partial a_{h_\ell}^t}
+\end{equation}
+
+Applying this definition and using $ \frac{\partial a_{h_1}^t}{w_{h_0, h_1}} = x_{h_0}^t$,  \eqref{eq:theory:rnn:startingpoint} becomes:
+\begin{equation}
+\frac{\partial \mathcal{L}}{\partial w_{h_0, h_1}} = \sum_{t=1}^T \delta_{h_1}^t x_{h_0}^t = \sum_{t=1}^T \delta_{h_1}^t b_{h_0}^t 
+\end{equation}
+
+The next step is now to derive the equation for $\delta_{h_1}^t$, this is a bit tricky because both $a_{h_2}^t$ and $a_{h_1}^{t+1}$ is directly in between, thus the chain rule gives two sums:
+\begin{equation}
+\delta_{h_1}^t = \frac{\partial \mathcal{L}}{\partial a_{h_1}^t}
+= \sum_{h_2 = 1}^{H_2} \frac{\partial \mathcal{L}}{\partial a_{h_2}^t} \frac{\partial a_{h_2}^t}{\partial a_{h_1}^t}
++ \sum_{h'_1 = 1}^{H_1} \frac{\partial \mathcal{L}}{\partial a_{h'_1}^{t+1}} \frac{\partial a_{h'_1}^{t+1}}{\partial a_{h_1}^t}
+\end{equation}
+
+Again the chain rule is used, this time to get $\frac{\partial b_{h_1}^t}{\partial a_{h_1}^t}$:
 \begin{equation}
 \begin{aligned}
-\mathcal{L} &= - \sum_{k=1}^K z_k \ln(y_k) \\
-y_k &= \frac{\mathrm{exp}(a_k)} {\sum_{k'=1}^K \mathrm{exp}(a_k')}
+\delta_{h_1}^t = \frac{\partial \mathcal{L}}{\partial a_{h_1}^t}
+&= \sum_{h_2 = 1}^{H_2} \frac{\partial \mathcal{L}}{\partial a_{h_2}^t} \frac{\partial a_{h_2}^t}{\partial b_{h_1}^t} \frac{\partial b_{h_1}^t}{\partial a_{h_1}^t}
++ \sum_{h'_1 = 1}^{H_1} \frac{\partial \mathcal{L}}{\partial a_{h'_1}^{t+1}} \frac{\partial a_{h'_1}^{t+1}}{\partial b_{h_1}^t} \frac{\partial b_{h_1}^t}{\partial a_{h_1}^t} \\
+&= \frac{\partial b_{h_1}^t}{\partial a_{h_1}^t} \left(\sum_{h_2 = 1}^{H_2} \frac{\partial \mathcal{L}}{\partial a_{h_2}^t} \frac{\partial a_{h_2}^t}{\partial b_{h_1}^t}
++ \sum_{h'_1 = 1}^{H_1} \frac{\partial \mathcal{L}}{\partial a_{h'_1}^{t+1}} \frac{\partial a_{h'_1}^{t+1}}{\partial b_{h_1}^t} \right) \\
+&= \theta'(a_{h_1}^t) \left( \sum_{h_2=1}^{H_2} \delta_{h_2}^t w_{h_1, h_2}
++ \sum_{h'_1=1}^{H_1} \delta_{h_1}^{t+1} w_{h'_1, h_1} \right)
 \end{aligned}
 \end{equation}
 
-Backpropagation makes repeated use of the chain rule to finally find the gradient with respect to the weight. First the derivative of $\mathcal{L}$ with respect to $y_k$ is found:
-\begin{equation}
-\frac{\partial \mathcal{L}}{\partial y_k^t} = - \sum_{k'=1}^K \frac{\partial}{\partial y_k^t} z_{k'} \ln(y_{k'}) = - \frac{z_k}{y_k}
-\end{equation}
+From this its seen that the next step is to derive $\delta_{h_2}^t$, this was also the case with the FFNN. However $\delta_{h_1}^{t}$ is not completely well defined, because for $t = T$ there is a $\delta_{h_1}^{T+1}$ term. This is set to zero ``since no error is received from beyond the end of the sequence'' \cite{alexgraves}.
 
-Note how the sum disappears, because there is only one case where the $y_{k'}$ within the sum, matches the $y_k$ which $\mathcal{L}$ is differentiated with respect to.
-\todo{Maybe show: $\frac{\partial y_{k'}^t}{\partial a_k^t}$. Document $\delta_{k k'}$}
+In the FFNN case it was seen that calculation of $\delta_{h_2}$ was no different from calculation of $\delta_{h_1}^{t}$ and generalizing it was the natural choice. The same is the case for the RNN. Generalizing then gives:
 \begin{equation}
 \begin{aligned}
-\frac{\partial \mathcal{L}}{\partial a_k^t} &= \sum_{k'=1}^K \frac{\partial \mathcal{L}}{\partial y_{k'}^t} \frac{\partial y_{k'}^t}{\partial a_k^t} = \sum_{k'=1}^K \left(- \frac{z_{k'}}{y_{k'}}\right) \left( y_k \delta_{k k'} - y_k y_{k'} \right) \\
-&= y_k \left( - \sum_{k'=1}^K \frac{z_{k'}}{y_{k'}}\delta_{k k'} + \sum_{k'=1}^K y_{k'} \right) = y_k \left( - \frac{z_k}{y_k} + 1 \right) \\
-&= - z_k + y_k
+\delta_{h_\ell}^t = \theta'(a_{h_\ell}^t) \left( \sum_{h_{\ell+1}=1}^{H_{\ell+1}} \delta_{h_{\ell +1}}^t w_{h_\ell, h_{\ell + 1}}
++ \sum_{h'_\ell=1}^{H_\ell} \delta_{h_\ell}^{t+1} w_{h'_\ell, h_\ell} \right), && \forall \ell \in [1, L]
 \end{aligned}
 \end{equation}
 
-Now define:
+From this generalization it is seen that $\delta_{L+1}^t$ is again a special case:
 \begin{equation}
-\delta_j^t \defeq \frac{\partial \mathcal{L}}{\partial a_j^t}
+\delta_{L+1}^t = \delta_{k}^t = \frac{\partial \mathcal{L}}{\partial a_{h_k}^t} = \sum_{k'=1}^K \frac{\partial \mathcal{L}}{\partial y_{k'}^t} \frac{\partial y_{k'}^t}{\partial a_k^t}
 \end{equation}
 
-\todo{Check this chain rule step is correct}
+This is similar to the FFNN case with the exception that there is a time step, thus the same equation is obtained:
 \begin{equation}
-\begin{aligned}
-\delta_h^t &= \frac{\partial \mathcal{L}}{\partial a_h^t} = \frac{\partial \mathcal{L}}{\partial b_h^t} \frac{\partial b_h^t}{\partial a_h^t} = \frac{\partial b_h^t}{\partial a_h^t} \left( \sum_{k=1}^K \frac{\partial \mathcal{L}}{\partial a_k^t} \frac{\partial a_k^t}{\partial b_h^t} + \sum_{h'=1}^H \frac{\partial \mathcal{L}}{\partial a_{h'}^{t+1}} \frac{\partial a_{h'}^{t+1}}{\partial b_h^t} \right) \\
-&= \theta(a_h^t) \left( \sum_{k=1}^K \delta_k^t w_{h k} + \sum_{h'=1}^H \delta_{h'}^{t+1} w_{h h'}\right)
-\end{aligned}
+\delta_{k}^t = y_k^t - t_k^t
 \end{equation}
 
-This can be calculated by iterating from $t = T$ to $t = 1$. For the first iteration ($t = T$) it will be necessary to define $\delta_{h}^{T+1} = 0, \forall h \in [1, H]$.
-
-\todo{Not sure why there is no $j$ sum}
+This set of equation allows for calculation of all $\delta_{h_\ell}^t$, however the derivatives with respect to the other weight still need to be considered.
 \begin{equation}
-\frac{\partial \mathcal{L}}{\partial w_{ij}} = \sum_{t=1}^T \frac{\partial \mathcal{L}}{\partial a_j^t} \frac{\partial a_j^t}{\partial w_{ij}} = \sum_{t=1}^T \delta_j^t b_i^t
+\frac{\partial \mathcal{L}}{\partial w_{h'_1, h_1}} = \sum_{t=1}^T \frac{\partial \mathcal{L}}{\partial a_{h_1}^t} \frac{\partial a_{h_1}^t}{\partial w_{h'_1, h_1}} = \sum_{t=1}^T \delta_{h_1}^t b_{h'_1}^{t-1}
 \end{equation}
+
+Generalizing this both for the weights between layer $w_{h_{\ell - 1}, h_\ell}$ and between time steps $w_{h'_{\ell}, h_\ell}$, one gets:
+\begin{align}
+\frac{\partial \mathcal{L}}{\partial w_{h'_\ell, h_\ell}} &= \sum_{t=1}^T \frac{\partial \mathcal{L}}{\partial a_{h_\ell}^t} \frac{\partial a_{h_\ell}^t}{\partial w_{h'_\ell, h_\ell}} = \sum_{t=1}^T \delta_{h_\ell}^t b_{h'_\ell}^{t-1}, && \forall \ell \in [1, L] \\
+\frac{\partial \mathcal{L}}{\partial w_{h_{\ell - 1}, h_\ell}} &= \sum_{t=1}^T \frac{\partial \mathcal{L}}{\partial a_{h_\ell}^t} \frac{\partial a_{h_\ell}^t}{\partial w_{h_{\ell-1}, h_\ell}} = \sum_{t=1}^T \delta_{h_\ell}^t b_{h_{\ell-1}}^t, && \forall \ell \in [1, L + 1] 
+\end{align}
