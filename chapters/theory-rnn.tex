@@ -4,7 +4,7 @@
 
 The Skip-gram model can be interpreted as a Feedforward Network. This class of neural networks have the shortcoming that the require a fixed input size and can only look a fixed amount of steps back and forward in history. This can be a problem when analyzing sentences, because amount of words in a sentence isn't fixed and there isn't a well defined window size for the surrounding words.
 
-Recurrent Neural Networks (RNN) overcome these shortcomings by having an internal state. In principal this allows the network to take a sequence of vectors and consider the entire history. The sequence can be of any size, but each vector must be of the same size. In the case of sentences fixed sized vectors is not an issue when considering a fixed vocabulary.
+The Recurrent Neural Networks (RNN) overcome this shortcoming by having an internal state. In principal this allows the network to take a sequence of vectors and consider the entire history. The sequence can be of any size, but each vector must be of the same size. In the case of sentences a fixed sized vectors is not an issue when considering a fixed vocabulary.
 
 In practice it turns out that the RNN forgets the past and only have a short memory. Another model called Long-Short-Term-Memory (LSTM) extends the RNN and have been shown to have better performance \cite{missing source}. The ideas are however still the same, thus to understand the LSTM model a basic understanding of the RNN model is necessary.
 
