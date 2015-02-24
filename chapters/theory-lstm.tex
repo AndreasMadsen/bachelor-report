@@ -2,60 +2,121 @@
 
 \section{Long-Short Term Memory}
 
-In the case of the Recurrent Neural Network the internal state $b_h^t$ must be updated in each iteration. This mean the effect of some input $x_i^{t_0}$ on $b_h^{t_0}$, will decay as $t \gg t_0$. This issues is addressed in the Long-Short Term Memory Model (LSTM) by taking inspiration from a computer memory cell.
+In the case of the Recurrent Neural Network the internal state $b_h^t$ must be updated in each iteration. This mean the effect of some input $x_i^{t_0}$ on $b_h^{t}$, will decay as $t \gg t_0$. This issue is addressed in the Long-Short Term Memory Model (LSTM) by taking inspiration from a computer memory cell.
 
-A computer memory cell can either be written to, read from or reset. On the most basic level memory cell are binary, not just in terms of what can be stored by also in terms of the 3 operations. Either the memory cell is completely reset or not reset, either completely read from or not read from and similarly for witting. This from a mathematical perspective all these operations becomes threshold functions, which are not differentiable or continues. This makes it impractical to use in a neural network context, as these are optimized using gradient decent. The solution is not to use threshold function but a combination of continues and differentiable activation functions, such as sigmoid or the hyperbolic tangent function.
+A computer memory cell can either be written to, read from or reset. On the most basic level memory cell are binary, not just in terms of what can be stored by also in terms of the 3 operations. Either the memory cell is completely reset or not reset, either completely read from or not read from and similarly for writing.
+
+From a mathematical perspective all these operations becomes threshold functions, which are not continuous and therefore not differentiable. This makes them impractical to use in a neural network setting, as neural networks are optimized using gradient decent. The solution is not to use threshold function but a combination of differentiable non-linear activation functions, such as the sigmoid or hyperbolic tangent function.
+
+\subsection{The transistor}
+
+The memory cell of the memory block, that is where the value is stored is from a mathematical modeling perspective simple as it is just a variable. The complexity in the differentiable memory block lies in how that memory is controlled. There are 3 operations read, write and reset. Each of these operations are controlled by a mechanism there reassembles a transistor.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.7]{theory/lstm-transistor}
+	\caption{Visualization of the differentiable transistor.}
+	\label{fig:theory:lstm:lstm-transistor}
+\end{figure}
+
+A transistor have an input (\textit{collector}) which is send to the output (\textit{emitter}). In a circuit transistor the output is only equal to the input if the gate (\textit{base}) voltage exceeds a certain threshold, otherwise the output have zero voltage. In the differentiable transistor the idea is the same, except that the gate have a continues value, typically in the interval $[0, 1]$. The output value is then calculated by multiplying the gate value with the input value.
+\begin{equation}
+a_{output} = b_{gate} a_{input}
+\end{equation}
+
+The gate value is typically created from a weighted sum of other values, such as the input vector. To control this sum a non-linear function $f$ is used, typically this is the sigmoid function such that the gate value is in the expected interval $[0, 1]$.
+\begin{equation}
+b_{gate} = f(a_{gate}), \quad a_{gate} = \sum_{i=1}^I w_i x_i
+\end{equation}
 
 \subsection{The memory block}
+
+The LSTM model is the same as the RNN model except that all non-linear units are replaced by a differentiable memory block. The differentiable memory block have an \textit{input} corresponding to $a_{h_\ell}^t$ and an \textit{output} corresponding to $b_{h_\ell}^t$ in the RNN model. To control the three memory operations in the memory block, there are three gates. The \textit{Input Gate} ($b_{\rho_\ell}^t$), \textit{Forget Gate} ($b_{\phi_\ell}$) and \textit{Output Gate} ($b_{\omega_\ell}^t$).
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.7]{theory/lstm-block}
-	\caption{Visualization of the continues and differentiable memory block.}
+	\caption{Visualization of the differentiable memory block.}
 	\label{fig:theory:lstm:lstm-block}
 \end{figure}
 
-Consider Figure \ref{fig:theory:lstm:lstm-block}. The arrows at the bottom makes the \textit{input} and corresponds to $a_h^t$. The top arrows contains the \textit{output} and corresponds the $b_h^t$. The \textit{input gate} controls how much the input affects the memory \textit{cell}. Similarly the \textit{forget gate} controls how much the of cell values should be kept. For example if the \textit{input gate} is $0$ and the \text{forget gate} is $1$, then the cell value won't change. Or if they are both $0.5$ then an average of the input and the current cell value with be stored. Note that the \textit{input gate} and \textit{forget gate} don't need to sum to one, thus the cell can hold any value. However a transformation ($h$) is applied to the new cell value so the total \textit{output} can be constrained, though in some cases $h$ is the identity function. The transformed cell value is finally controlled by the \textit{output gate}. If the \textit{output gate} is $0$ then the finial \textit{output} will also be $0$, if the \textit{output gate} is $1$ then the transformed cell value is the final \textit{output}.
+Consider Figure \ref{fig:theory:lstm:lstm-block}. The cell state $s_{c_\ell}^t$ is updated as a combination (sum) of the transistor output from the previous state value $s_{c_\ell}^{t-1}$ and the transistor output of the memory input $g(a_{h_\ell}^t)$:
+\begin{equation}
+s_{c_\ell}^t = b_{\phi_\ell}^t s_{c_\ell}^{t-1} + b_{\rho_\ell}^t g(a_{h_\ell}^t)
+\end{equation}
 
+Here $b_{\phi_\ell}^t$ and $b_{\rho_\ell}^t$ are the values of respectively the forget gate and input gate. Thus if $b_{\phi_\ell}^t = 0$, the cell state is completely forgotten and if $b_{\phi_\ell}^t = 1$ it is fully remembered, however the memory input can still affect its final value. Similarly the input part of the cell state update is controlled by $b_{\rho_\ell}^t$. 
+
+The gate values are calculated using a weighed sum of the input vector $x_i^t$ and previous hidden output $b_{h_\ell}^{t-1}$, just link the $a_{h_\ell}$ value in RNN. This sum is then transform using a non-linear function $f$, such that the gate value ranges in $[0, 1]$.
+\begin{equation}
+\begin{aligned}
+a_{\rho_\ell}^t &= \sum_{i=1}^I w_{i, \rho_\ell} x_i^t + \sum_{h'=1}^H w_{h'_\ell, \rho_\ell} b_{h'_\ell}^{t-1} \\
+b_{\rho_\ell}^t &= f(a_{\rho_\ell}^t)
+\end{aligned}
+\end{equation}
+
+Note that while the non-linear function $f$ is the same for all gates, the weights are different.
+
+The memory output is then created from the cell state and the output gate:
+\begin{equation}
+b_{h_\ell}^t = b_{\omega_\ell}^t h(s_{c_\ell}^t)
+\end{equation}
+
+\newpage
 \subsection{Forward pass}
 
-\begin{equationbox}[H]
-Input Gates: -- Why is the internal cell state $s_c^{t-1}$ used in other cells.
+\begin{figure}[h]
+	\centering
+	\centerline{\includegraphics[width=\textwidth]{theory/lstm-network}}
+	\caption{Visualization of a LSTM neural network with a single hidden layer.}
+	\label{fig:theory:lstm:lstm-network}
+\end{figure}
+
+Figure \ref{fig:theory:lstm:lstm-network} shows a very simple LSTM network. It have the recurrent properly from RNN in that the output from the memory blocks are used as input in the next iteration. The example only shows two inputs, but in general there are no restrictions. For simplicity only a single layer is shown, however a multilayer LSTM network can be constructed, in the same way a multilayer RNN is constructed. That is by making the output of the memory blocks in the first layer go intro a new hidden layer, also consisting of memory blocks. 
+
+\begin{equationbox}[h]
+Cell Input:
 \begin{equation*}
 \begin{aligned}
-a_\iota^t &= \sum_{i=1}^I w_{i \iota} + \sum_{h=1}^H w_{h \iota} b_h^{t-1} + \sum_{c=1}^C w_{c \iota} s_c^{t-1} \\
-b_\iota^t &= f(a_\iota^t)
+a_{h_\ell}^t &= \sum_{h_{\ell-1}=1}^{H_{\ell-1}} w_{h_{\ell-1}, h_\ell} b_{h_{\ell-1}}^t + \sum_{h'=1}^H w_{h'_\ell, h_\ell} b_{h'_\ell}^{t-1} && \text{where: } b_{h_0} = x_i
 \end{aligned}
 \end{equation*}
-Forget Gates:
+Input Gate:
 \begin{equation*}
 \begin{aligned}
-a_\phi^t &= \sum_{i=1}^I w_{i\phi} + \sum_{h=1}^H w_{h \phi} b_h^{t-1} + \sum_{c=1}^C w_{c \phi} s_c^{t-1} \\
-b_\phi^t &= f(a_\phi^t)
+a_{\rho_\ell}^t &= \sum_{h_{\ell-1}=1}^{H_{\ell-1}} w_{h_{\ell-1}, \rho_\ell} b_{h_{\ell-1}}^t + \sum_{h'=1}^H w_{h'_\ell, \rho_\ell} b_{h'_\ell}^{t-1} && \text{where: } b_{h_0} = x_i \\
+b_{\rho_\ell}^t &= f(a_{\rho_\ell}^t)
 \end{aligned}
 \end{equation*}
-Cells: -- How should the subscript be understood
+Forget Gate:
 \begin{equation*}
 \begin{aligned}
-a_c^t &= \sum_{i=1}^I w_{i c} x_i^t + \sum_{h=1}^H w_{h c} b_h^{t-1} \\
-s_c^t &= b_\phi^t s_c^{t-1} + b_{\iota}^t g(a_c^t)
+a_{\phi_\ell}^t &= \sum_{h_{\ell-1}=1}^{H_{\ell-1}} w_{h_{\ell-1}, \phi_\ell} b_{h_{\ell-1}}^t + \sum_{h'=1}^H w_{h'_\ell, \phi_\ell} b_{h'_\ell}^{t-1} && \text{where: } b_{h_0} = x_i\\
+b_{\phi_\ell}^t &= f(a_{\phi_\ell}^t)
 \end{aligned}
 \end{equation*}
-Output Gates: -- Why $s_c^t$ and not $s_c^{t-1}$
+Cell State:
 \begin{equation*}
 \begin{aligned}
-a_\omega^t &= \sum_{i=1}^I w_{i\omega} + \sum_{h=1}^H w_{h \omega} b_h^{t-1} + \sum_{c=1}^C w_{c \omega} s_c^t \\
-b_\omega^t &= f(a_\omega^t)
+s_{c_\ell}^t &= b_{\phi_\ell}^t s_{c_\ell}^{t-1} + b_{\rho_\ell}^t g(a_{h_\ell}^t) && \text{where: } c_\ell = \phi_\ell = c_\ell = \rho_\ell
 \end{aligned}
 \end{equation*}
-Cell Output: -- Should $b_c^t$ not be $b_h^t$
+Output Gate:
 \begin{equation*}
 \begin{aligned}
-b_c^t = b_\omega^t h(s_c^t)
+a_{\omega_\ell}^t &= \sum_{h_{\ell-1}=1}^{H_{\ell-1}} w_{h_{\ell-1}, \omega_\ell} b_{h_{\ell-1}}^t + \sum_{h'=1}^H w_{h'_\ell, \omega_\ell} b_{h'_\ell}^{t-1} && \text{where: } b_{h_0} = x_i \\
+b_{\omega_\ell}^t &= f(a_{\omega_\ell}^t)
 \end{aligned}
 \end{equation*}
-\caption{Forward equations for a single layer LSTM network.}
+Cell Output:
+\begin{equation*}
+\begin{aligned}
+b_{h_\ell}^t &= b_{\omega_\ell}^t h(s_{c_\ell}^t) && \text{where: } h_\ell = \omega_\ell = c_\ell
+\end{aligned}
+\end{equation*}
+\caption{Forward equations for a multilayer LSTM network.}
 \end{equationbox}
 
+\newpage
 \subsection{Backward pass}
 
