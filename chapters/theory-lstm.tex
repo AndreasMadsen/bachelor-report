@@ -2,7 +2,7 @@
 
 \section{Long-Short Term Memory}
 
-In the case of the Recurrent Neural Network the internal state $b_h^t$ must be updated in each iteration. This mean the effect of some input $x_i^{t_0}$ on $b_h^{t}$, will decay as $t \gg t_0$. This issue is addressed in the Long-Short Term Memory Model (LSTM) by taking inspiration from a computer memory cell.
+In the Recurrent Neural Network the internal state $b_h^t$ must be updated in each iteration. This mean the effect of some input $x_i^{t_0}$ on $b_h^{t}$, will decay as $t \gg t_0$. This issue is addressed in the Long-Short Term Memory Model (LSTM) by taking inspiration from a computer memory cell.
 
 A computer memory cell can either be written to, read from or reset. On the most basic level memory cell are binary, not just in terms of what can be stored by also in terms of the 3 operations. Either the memory cell is completely reset or not reset, either completely read from or not read from and similarly for writing.
 
@@ -10,7 +10,7 @@ From a mathematical perspective all these operations becomes threshold functions
 
 \subsection{The transistor}
 
-The memory cell of the memory block, that is where the value is stored is from a mathematical modeling perspective simple as it is just a variable. The complexity in the differentiable memory block lies in how that memory is controlled. There are 3 operations read, write and reset. Each of these operations are controlled by a mechanism there reassembles a transistor.
+The memory part (cell) of the \textit{memory block} is from a mathematical modeling perspective just a variable. The complexity in the differentiable memory block lies in how that memory is controlled. There are 3 operations read, write and reset. Each of these operations are controlled by a mechanism there reassembles a transistor.
 
 \begin{figure}[h]
 	\centering
@@ -19,7 +19,7 @@ The memory cell of the memory block, that is where the value is stored is from a
 	\label{fig:theory:lstm:lstm-transistor}
 \end{figure}
 
-A transistor have an input (\textit{collector}) which is send to the output (\textit{emitter}). In a circuit transistor the output is only equal to the input if the gate (\textit{base}) voltage exceeds a certain threshold, otherwise the output have zero voltage. In the differentiable transistor the idea is the same, except that the gate have a continues value, typically in the interval $[0, 1]$. The output value is then calculated by multiplying the gate value with the input value.
+A transistor have an input (\textit{collector}) which is send to the output (\textit{emitter}). In a circuit transistor the output is only equal to the input if the gate (\textit{base}) voltage exceeds a certain threshold, otherwise the output have zero voltage. In the differentiable transistor the idea is the same, except that the gate have a continues value typically in the interval $[0, 1]$. The output value is then calculated by multiplying the gate value with the input value.
 \begin{equation}
 a_{output} = b_{gate} a_{input}
 \end{equation}
@@ -40,27 +40,30 @@ The LSTM model is the same as the RNN model except that all non-linear units are
 	\label{fig:theory:lstm:lstm-block}
 \end{figure}
 
-Consider Figure \ref{fig:theory:lstm:lstm-block}. The cell state $s_{c_\ell}^t$ is updated as a combination (sum) of the transistor output from the previous state value $s_{c_\ell}^{t-1}$ and the transistor output of the memory input $g(a_{h_\ell}^t)$:
+Consider Figure \ref{fig:theory:lstm:lstm-block}. The cell state $s_{c_\ell}^t$ is updated as a combination (sum) of the transistor output from the previous \textit{cell} value $s_{c_\ell}^{t-1}$ and the transistor output of the \textit{memory block} input $g(a_{h_\ell}^t)$:
 \begin{equation}
 s_{c_\ell}^t = b_{\phi_\ell}^t s_{c_\ell}^{t-1} + b_{\rho_\ell}^t g(a_{h_\ell}^t)
 \end{equation}
 
-Here $b_{\phi_\ell}^t$ and $b_{\rho_\ell}^t$ are the values of respectively the forget gate and input gate. Thus if $b_{\phi_\ell}^t = 0$, the cell state is completely forgotten and if $b_{\phi_\ell}^t = 1$ it is fully remembered, however the memory input can still affect its final value. Similarly the input part of the cell state update is controlled by $b_{\rho_\ell}^t$. 
+Here $b_{\phi_\ell}^t$ and $b_{\rho_\ell}^t$ are the values of respectively the \textit{forget gate} and \textit{input gate}. Thus if $b_{\phi_\ell}^t = 0$, the cell state is completely forgotten and if $b_{\phi_\ell}^t = 1$ it is fully remembered, however the \textit{memory block} input can still affect its final value. The input part of the cell state update is controlled by the \textit{input gate} $b_{\rho_\ell}^t$. 
 
-The gate values are calculated using a weighed sum of the input vector $x_i^t$ and previous hidden output $b_{h_\ell}^{t-1}$, just link the $a_{h_\ell}$ value in RNN. This sum is then transform using a non-linear function $f$, such that the gate value ranges in $[0, 1]$.
+The gate values are all calculated using a weighed sum of the input vector $x_i^t$ and previous hidden output $b_{h_\ell}^{t-1}$, just like the $a_{h_\ell}$ value in RNN. This sum is then transformed using a non-linear function $f$, such that the gate value is within $[0, 1]$.
 \begin{equation}
 \begin{aligned}
 a_{\rho_\ell}^t &= \sum_{i=1}^I w_{i, \rho_\ell} x_i^t + \sum_{h'=1}^H w_{h'_\ell, \rho_\ell} b_{h'_\ell}^{t-1} \\
 b_{\rho_\ell}^t &= f(a_{\rho_\ell}^t)
 \end{aligned}
+\label{eq:theory:lstm:gate-value-example}
 \end{equation}
 
-Note that while the non-linear function $f$ is the same for all gates, the weights are different.
+Equation \eqref{eq:theory:lstm:gate-value-example} is just for the input gate ($\rho$). The equations for the forget gate ($\phi$) and output gate ($\omega$) are similar, just replace the gate symbol. Note also that while the non-linear function $f$ is the same for all gates, the weights are different.
 
-The memory output is then created from the cell state and the output gate:
+The memory output is created from the cell state and the output gate:
 \begin{equation}
 b_{h_\ell}^t = b_{\omega_\ell}^t h(s_{c_\ell}^t)
 \end{equation}
+
+$h$ is yet another non-linear function, typically the sigmoid $\sigma(\cdot)$ or hyperbolic tangent $\tanh(\cdot)$ function is used, though it is also normal to simple use the identity function $\theta(a) = a$ too.
 
 \newpage
 \subsection{Forward pass}
@@ -72,7 +75,7 @@ b_{h_\ell}^t = b_{\omega_\ell}^t h(s_{c_\ell}^t)
 	\label{fig:theory:lstm:lstm-network}
 \end{figure}
 
-Figure \ref{fig:theory:lstm:lstm-network} shows a very simple LSTM network. It have the recurrent properly from RNN in that the output from the memory blocks are used as input in the next iteration. The example only shows two inputs, but in general there are no restrictions. For simplicity only a single layer is shown, however a multilayer LSTM network can be constructed, in the same way a multilayer RNN is constructed. That is by making the output of the memory blocks in the first layer go intro a new hidden layer, also consisting of memory blocks. 
+Figure \ref{fig:theory:lstm:lstm-network} shows a very simple LSTM network. It have the recurrent property from the RNN in that the output from the memory blocks are used as input in the next iteration. Figure \ref{fig:theory:lstm:lstm-network} only shows two inputs, but in general there are no restrictions. For simplicity only a single layer is shown, however a multilayer LSTM network can easily be constructed, in the same way a multilayer RNN is constructed. That is by making the output of the memory blocks in the current hidden layer go intro the next hidden layer. 
 
 \begin{equationbox}[h]
 Cell Input:

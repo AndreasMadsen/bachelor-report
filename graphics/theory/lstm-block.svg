@@ -167,8 +167,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.4142136"
-     inkscape:cx="343.42273"
-     inkscape:cy="154.26974"
+     inkscape:cx="286.85419"
+     inkscape:cy="182.55401"
      inkscape:document-units="px"
      inkscape:current-layer="g8042"
      showgrid="false"
@@ -846,6 +846,28 @@
    style="font-size:65.00091553%;baseline-shift:sub"><tspan
      style="font-size:8px"
      id="tspan8889">ℓ</tspan></tspan></tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-size:15px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Latin Modern Roman;-inkscape-font-specification:Latin Modern Roman"
+         x="284.21173"
+         y="1009.9571"
+         id="text3118"
+         sodipodi:linespacing="125%"><tspan
+           sodipodi:role="line"
+           id="tspan3120"
+           x="284.21173"
+           y="1009.9571">Input</tspan></text>
+      <text
+         sodipodi:linespacing="125%"
+         id="text3122"
+         y="649.95709"
+         x="284.21173"
+         style="font-size:15px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Latin Modern Roman;-inkscape-font-specification:Latin Modern Roman"
+         xml:space="preserve"><tspan
+           y="649.95709"
+           x="284.21173"
+           id="tspan3124"
+           sodipodi:role="line">Output</tspan></text>
     </g>
   </g>
 </svg>
