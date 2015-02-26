@@ -19,7 +19,7 @@ The Skip-gram model does this by by encoding the input word using 1-of-V encodin
 
 Each of these word representations are then transformed intro a lower dimensional space (latent representation). In this space words with same meaning should be close to each other. The position of each word should also contain a higher semantic meaning, such that for example $f(King) - f(Man) + f(Female) \approx f(Queen)$ \cite{word2vec-comparing}. Here $f$ is the transformation function from the input space to the latent representation.
 
-The model is trained such that the surrounding words can be predicted from this latent representation. See Figure \ref{fig:theory:skip-gram:graph} for a graphical overview. An important detail about this model, is that the order of the words within the considered window have no effect on the training. Thus all surrounding are treated as having the same meaning.
+The model is trained such that the surrounding words can be predicted from this latent representation. See Figure \ref{fig:theory:skip-gram:graph} for a graphical overview. An important detail about this model, is that the order of the words within the considered text window have no effect on the training. Thus all surrounding are assumed to having approximatly the same meaning.
 
 \begin{figure}[h]
 	\centering
@@ -29,19 +29,20 @@ The model is trained such that the surrounding words can be predicted from this 
 \end{figure}
 
 \subsection{The likelihood function}
-The Skip-gram model is optimized by maximum-likelihood. Given a corpus with $\mathcal{D}$ documents where each document have $T_d$ words, the likelihood function is calculated using the conditional probability of observing the surrounding words ($w_{d, t + \ell}$) given the input words ($w_{d, t}\ , t \in [1, T_d]$).
+The Skip-gram model is optimized by maximum-likelihood. Given a corpus with $\mathcal{D}$ documents where each document have $T_d$ words, the likelihood function is calculated using the conditional probability of observing the surrounding words ($w_{d, t + \ell}$) given the input words ($w_{d, t}\. , t \in [1, T_d]$).
 \begin{equation}
 \prod_{d = 1}^{\mathcal{D}} \prod_{t = 1}^{T_d} \prod_{\ell} p(w_{d, t + \ell} | w_{d, t})
+\label{eq:theory:skipgram:full-likelihood}
 \end{equation}
 
-The details about which document there currently is used, are typically omitted from the expressions. Thus the above equation becomes:
+The details about which document there currently is used, are typically omitted from the expressions. Thus equation \eqref{eq:theory:skipgram:full-likelihood} becomes:
 \begin{equation}
 \prod_{t = 1}^{T} \prod_{\ell} p(w_{t + \ell} | w_{t})
 \end{equation}
 
-Since words there are close to $w_t$ are expected to be  more related to that word, the near surrounding words are weighed higher. This not done by explicit weights, but instead by letting $\ell \in [-R, R] \setminus \{ 0 \}$ where $R \sim U[1, C]$ \cite{word2vec-comparing}.
+Since words closer to $w_t$ are expected to be more related to that word, the near surrounding words are weighed higher. This is not modelled by explicit weights, but instead by letting $\ell \in [-R, R] \setminus \{ 0 \}$ where $R \sim U[1, C]$ \cite{word2vec-comparing}.
 
-For easier optimization of the likelihood function, the average log likelihood is used instead:
+For easier optimization of the likelihood function, the average log likelihood is used instead \todo{Consider a minus sign here for consistency}:
 \begin{equation}
 \mathcal{L} = \frac{1}{T} \sum_{t = 1}^T \sum_{\ell} \ln( p(w_{t + \ell} | w_t) )
 \end{equation}
@@ -55,9 +56,11 @@ The conditional probability $p(w_{t + \ell} | w_t)$ is calculated using a log-li
 	\caption{Visualization of a single pass though the Skip-gram network.}
 \end{figure}
 
-To get an idea about how a neural network representation relates to the equations in \cite{word2vec-details}, a vector notation of the scalar notation used in introduction to Neural Network section is used.
+To get an idea about how a neural network representation relates to the equations in \cite{word2vec-details}, the scalar notation from the introduction to Neural Network section is replaced with a similar vector notation.
 
-As previously discussed the input and output words are represented using 1-of-V encoding, this vector will be denoted as $\mathbf{x}_w$ for both the input and output words. The activation in the hidden layer then becomes:
+As previously discussed the input and output words are represented using 1-of-V encoding, this vector will be denoted as $\mathbf{x}_w$ for both the input and output words $w$. Note that because words are used as input, there is a finite amount of possible inputs. The activation is thus not denoted by the input index $n$ but rather the input value $w$. For referring to the word at position $t$ in the corpus $w_t$ is used.
+
+The activation in the hidden layer is:
 \begin{equation}
 \mathbf{b}_{1,w} = \mathbf{a}_{1,w} = \mathbf{W}_{1} \mathbf{x}_w
 \end{equation}
@@ -75,7 +78,7 @@ a_{w,k} = \left(\mathbf{a}_{2,w}\right)_k = \mathbf{x}_{k}^T \mathbf{a}_{2,w}
 \end{equation}
 This detail is not particular important, but explains the some of the notation used in \cite{word2vec-details}.
 
-The probability $p(w_{t + \ell} | w_t)$ is now be calculated using a softmax:
+The probability $p(w_{t + \ell} | w_t)$ can now be calculated using a softmax:
 \begin{equation}
 \begin{aligned}
 p(w_{t + \ell} | w_t)
@@ -108,7 +111,7 @@ This calculation is problematic since it involves a sum over all words in the vo
 
 \subsection{Backward pass}
 
-\todo[inline]{Rewrite this to use the new notation and backpropergation.}
+\todo[inline]{Rewrite this to use the new notation and backpropergation. Should it stay in vector notation. It might be confusing since no other part of this report uses the vector notation.}
 
 Since there is no closed-form solution to this maximum-likelihood problem, gradient descent is used to iteratively optimize the parameters $\mathbf{W}_O$ and $\mathbf{W}_I$. This is done by deriving the derivatives for the average log likelihood function. 
 \begin{equation}
