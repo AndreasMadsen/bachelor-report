@@ -4,14 +4,14 @@
 
 A neural network have no closed form solution for optimizing the parameters $w_{i,j}$. Thus the weights must be optimized using an iterative algorithm. Gradient decent is the most common algorithm for optimizing neural networks, though many variations exists.
 
-The basic principal is that given a loss function $\mathcal{L}$ the parameters $w_{i,j}$ can be optimized by going in the opposite direction of the gradient $\frac{\partial \mathcal{L}}{\partial w_{i,j}}$. Thus iteration is given by:
+The basic principal is that given a loss function $\mathcal{L}$ the parameters $w_{i,j}$ can be optimized by going in the opposite direction of the gradient $\frac{\partial \mathcal{L}}{\partial w_{i,j}}$. Thus each iteration $n$ is given by:
 \begin{equation}
 \begin{aligned}
 w_{i,j}^n = w_{i,j}^{n-1} + \Delta w_{i,j}^n, && \Delta w_{i,j}^n = - \eta_n \frac{\partial \mathcal{L}}{\partial w_{i,j}}
 \end{aligned}
 \end{equation}
 
-$\eta_n$ is the \textit{stepsize} and should be so small that it doesn't skip over the wanted optimum, but also not so small that weights doesn't converge within reasonable time. Typically the initial weights $w^0_{i,j}$ is given by a random distribution. The choice of stepsize and initialization are not obvious and different sources uses very different approaches. For example Alex Graves \cite{alexgraves} suggests using a uniform distribution in the range $[-0.1, 0.1]$ and a constant stepsize $\eta_n = 10^{-5}$.
+$\eta_n$ is the \textit{stepsize} and should be so small that it doesn't skip over the wanted minima, but also not so small that weights doesn't converge within reasonable time. Typically the initial weights $w^0_{i,j}$ is given by a random distribution. The choice of stepsize and initialization are not obvious and different sources uses very different approaches. For example Alex Graves \cite{alexgraves} suggests using a uniform distribution in the range $[-0.1, 0.1]$ and a constant stepsize $\eta_n = 10^{-5}$.
 
 \subsection{Avoiding local minima}
 
@@ -38,13 +38,13 @@ For calculating the gradient some dataset is used, the naïve approach is to use
  \label{algorithm:gradientdecent:online}
 \end{algorithm}
 
-One reason for \textit{online learning} being better is that it handels redundancies in the data better. It also helps in not getting stuck in a local minima, because it is unlikely that what is a local minima for one datapoint is also the same for another datapoint, when looking at the datapoints individually \cite{bishop}.
+One reason for \textit{online learning} being better is that it handels redundancies\todo{Why was this} in the data better. It also helps in not getting stuck in a local minima, because it is unlikely that what is a local minima for one datapoint is also a local minima for another datapoint \cite{bishop}.
 
 \subsection{Generalization}
 
-Optimization of the loss function $\mathcal{L}$ using gradient decent, is given to be non-increasing for each iteration \cite{bishop}. For this reason it is quite easy to find a minima for the training data, however this does not directly reflect the performance of the model given new data. In Figure \ref{fig:theory:gradientdecent:overfit} the loss function for the training data (green) is forever decreasing. The loss function for data not used in the training (blue) is only decreasing for the 20 iterations, after this the performance of the model is getting worse. This is quite common and is called overfitting, an simple way to prevent this is to use \textit{early stopping}.
+Optimization of the loss function $\mathcal{L}$ using gradient decent, is given to be non-increasing for each iteration \cite{bishop}. For this reason it is quite easy to find a minima for the training data, however this does not directly reflect the performance of the model given new data. In Figure \ref{fig:theory:gradientdecent:overfit} the loss function for the training data (green) is forever decreasing. The loss function for data not used in the training (blue) is only decreasing for the first 15 iterations, after this the performance of the model is getting worse. This is quite common and is called overfitting, an simple way to prevent this is to use \textit{early stopping}.
 
-\textit{Early stopping} uses a third dataset, this dataset is can not be used for calculating the gradients (training data) or for evaluating the model performance (test data). It is however used to evaluate the loss function for each iteration and stop the optimization algorithm when the lossfunction haven't decreased for some amount of iterations. \cite{the-elements-of-statistical-learning, bishop, alexgraves}
+\textit{Early stopping} uses a third dataset, this dataset can not be used for calculating the gradients (training data) or for evaluating the model performance (test data). It is used for evaluating the loss function for each iteration and stop the optimization algorithm when the loss function haven't decreased for some iterations. \cite{the-elements-of-statistical-learning, bishop, alexgraves}
 
 \begin{figure}[h]
 	\centering
@@ -53,4 +53,4 @@ Optimization of the loss function $\mathcal{L}$ using gradient decent, is given 
 	\label{fig:theory:gradientdecent:overfit}
 \end{figure}
 
-There are other methods to prevent overfitting such as regularization \cite{the-elements-of-statistical-learning, bishop}. However only \textit{early stopping} was used in any of the papers there inspired this work.
+There are other methods to prevent overfitting such as regularization \cite{the-elements-of-statistical-learning, bishop}. However only \textit{early stopping} was used in the papers there inspired this work.
