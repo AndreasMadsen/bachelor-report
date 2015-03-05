@@ -77,44 +77,53 @@ $h$ is yet another non-linear function, typically the sigmoid $\sigma(\cdot)$ or
 
 Figure \ref{fig:theory:lstm:lstm-network} shows a very simple LSTM network. It have the recurrent property from the RNN in that the output from the memory blocks are used as input in the next iteration. Figure \ref{fig:theory:lstm:lstm-network} only shows two inputs, but in general there are no restrictions. For simplicity only a single layer is shown, however a multilayer LSTM network can easily be constructed, in the same way a multilayer RNN is constructed. That is by making the output of the memory blocks in the current hidden layer go intro the next hidden layer. 
 
-\begin{equationbox}[h]
-Cell Input:
+By using the memory block equations and generalizing too $L$ hidden layers, the full set of equations becomes:
+
+\begin{equationbox}[H]
+Memory Block Input:
 \begin{equation*}
 \begin{aligned}
-a_{h_\ell}^t &= \sum_{h_{\ell-1}=1}^{H_{\ell-1}} w_{h_{\ell-1}, h_\ell} b_{h_{\ell-1}}^t + \sum_{h'=1}^H w_{h'_\ell, h_\ell} b_{h'_\ell}^{t-1} && \text{where: } b_{h_0} = x_i
+a_{h_\ell}^t &= \sum_{h_{\ell-1}=1}^{H_{\ell-1}} w_{h_{\ell-1}, h_\ell} b_{h_{\ell-1}}^t + \sum_{h'=1}^H w_{h'_\ell, h_\ell} b_{h'_\ell}^{t-1} && \forall \ell \in [1, L] \text{ where: } b_{h_0}^t = x_i^t
 \end{aligned}
 \end{equation*}
 Input Gate:
 \begin{equation*}
 \begin{aligned}
-a_{\rho_\ell}^t &= \sum_{h_{\ell-1}=1}^{H_{\ell-1}} w_{h_{\ell-1}, \rho_\ell} b_{h_{\ell-1}}^t + \sum_{h'=1}^H w_{h'_\ell, \rho_\ell} b_{h'_\ell}^{t-1} && \text{where: } b_{h_0} = x_i \\
-b_{\rho_\ell}^t &= f(a_{\rho_\ell}^t)
+a_{\rho_\ell}^t &= \sum_{h_{\ell-1}=1}^{H_{\ell-1}} w_{h_{\ell-1}, \rho_\ell} b_{h_{\ell-1}}^t + \sum_{h'=1}^H w_{h'_\ell, \rho_\ell} b_{h'_\ell}^{t-1} && \forall \ell \in [1, L] \text{ where: } b_{h_0}^t = x_i^t \\
+b_{\rho_\ell}^t &= f(a_{\rho_\ell}^t) && \forall \ell \in [1, L] 
 \end{aligned}
 \end{equation*}
 Forget Gate:
 \begin{equation*}
 \begin{aligned}
-a_{\phi_\ell}^t &= \sum_{h_{\ell-1}=1}^{H_{\ell-1}} w_{h_{\ell-1}, \phi_\ell} b_{h_{\ell-1}}^t + \sum_{h'=1}^H w_{h'_\ell, \phi_\ell} b_{h'_\ell}^{t-1} && \text{where: } b_{h_0} = x_i\\
-b_{\phi_\ell}^t &= f(a_{\phi_\ell}^t)
+a_{\phi_\ell}^t &= \sum_{h_{\ell-1}=1}^{H_{\ell-1}} w_{h_{\ell-1}, \phi_\ell} b_{h_{\ell-1}}^t + \sum_{h'=1}^H w_{h'_\ell, \phi_\ell} b_{h'_\ell}^{t-1} && \forall \ell \in [1, L] \text{ where: } b_{h_0}^t = x_i^t\\
+b_{\phi_\ell}^t &= f(a_{\phi_\ell}^t) && \forall \ell \in [1, L] 
 \end{aligned}
 \end{equation*}
 Cell State:
 \begin{equation*}
 \begin{aligned}
-s_{c_\ell}^t &= b_{\phi_\ell}^t s_{c_\ell}^{t-1} + b_{\rho_\ell}^t g(a_{h_\ell}^t) && \text{where: } c_\ell = \phi_\ell = c_\ell = \rho_\ell
+s_{c_\ell}^t &= b_{\phi_\ell}^t s_{c_\ell}^{t-1} + b_{\rho_\ell}^t g(a_{h_\ell}^t) && \forall \ell \in [1, L] \text{ where: } c_\ell = \phi_\ell = c_\ell = \rho_\ell
 \end{aligned}
 \end{equation*}
 Output Gate:
 \begin{equation*}
 \begin{aligned}
-a_{\omega_\ell}^t &= \sum_{h_{\ell-1}=1}^{H_{\ell-1}} w_{h_{\ell-1}, \omega_\ell} b_{h_{\ell-1}}^t + \sum_{h'=1}^H w_{h'_\ell, \omega_\ell} b_{h'_\ell}^{t-1} && \text{where: } b_{h_0} = x_i \\
-b_{\omega_\ell}^t &= f(a_{\omega_\ell}^t)
+a_{\omega_\ell}^t &= \sum_{h_{\ell-1}=1}^{H_{\ell-1}} w_{h_{\ell-1}, \omega_\ell} b_{h_{\ell-1}}^t + \sum_{h'=1}^H w_{h'_\ell, \omega_\ell} b_{h'_\ell}^{t-1} && \forall \ell \in [1, L] \text{ where: } b_{h_0}^t = x_i^t \\
+b_{\omega_\ell}^t &= f(a_{\omega_\ell}^t) && \forall \ell \in [1, L] 
 \end{aligned}
 \end{equation*}
-Cell Output:
+Memory Block Output:
 \begin{equation*}
 \begin{aligned}
-b_{h_\ell}^t &= b_{\omega_\ell}^t h(s_{c_\ell}^t) && \text{where: } h_\ell = \omega_\ell = c_\ell
+b_{h_\ell}^t &= b_{\omega_\ell}^t h(s_{c_\ell}^t) && \forall \ell \in [1, L] \text{ where: } h_\ell = \omega_\ell = c_\ell
+\end{aligned}
+\end{equation*}
+Network Output:
+\begin{equation*}
+\begin{aligned}
+a_k^t = a_{h_{L+1}}^t &= \sum_{h_L=1}^{H_L} w_{h_L, h_{L+1}} b_{h_L}^t \\
+y_k^t &= \frac{\exp(a_k)}{\sum_{k'=1}^K \exp(a_{k'})}
 \end{aligned}
 \end{equation*}
 \caption{Forward equations for a multilayer LSTM network.}
@@ -123,3 +132,111 @@ b_{h_\ell}^t &= b_{\omega_\ell}^t h(s_{c_\ell}^t) && \text{where: } h_\ell = \om
 \newpage
 \subsection{Backward pass}
 
+The backward pass strategy is similar to that used in RNN, except that in the LSTM one have to deal with much more $\delta$ bookkeeping.
+
+The loss function is the same as always:
+\begin{equation}
+\mathcal{L} = - \sum_{t=1}^T \sum_{k=1}^K t_k^t \ln(y_k^t)
+\end{equation}
+The starting point is also the same. That is the derivative of the loss function with respect to the first weights. However to keep it short the generalization for all layers will be considered immediately.
+\begin{equation}
+\frac{\partial \mathcal{L}}{\partial w_{h_{\ell-1}, h_\ell}}
+= \sum_{t=1}^T \frac{\partial \mathcal{L}}{\partial a_{h_\ell}^t} \frac{\partial a_{h_\ell}^t}{\partial w_{h_{\ell-1}, h_\ell}}
+= \sum_{t=1}^T \delta_{h_\ell}^t b_{h_{\ell-1}}^t
+\quad \text{where: } \delta_{h_\ell}^t \defeq \frac{\partial \mathcal{L}}{\partial a_{h_\ell}^t}
+\end{equation}
+
+From now on there will be some differences. The first is that $a_{h_\ell}^t$ now affects $s_{c_\ell}^t$, thus the equations for $\delta_{h_\ell}^t$ are different:
+\begin{equation}
+\delta_{h_\ell}^t
+= \frac{\partial \mathcal{L}}{\partial a_{h_\ell}^t}
+= \frac{\partial \mathcal{L}}{\partial s_{c_\ell}^t} \frac{\partial s_{c_\ell}^t}{\partial a_{h_\ell}^t}
+= \epsilon_{s_\ell}^t b_{\rho_\ell}{g'(a_{h_\ell}^t)}
+\quad \text{where: } \epsilon_{s_\ell}^t \defeq \frac{\partial \mathcal{L}}{\partial s_{c_\ell}^t}
+\end{equation}
+
+Note that a new bookkeeping variable, namely $\epsilon_{s_\ell}^t$ have been introduced. To derive the equations for this value the chain rule is again used. This time it's seen that $\epsilon_{s_\ell}^t$ affects the memory block output $b_{h_\ell}^t$ and itself in the next time iteration $s_{c_\ell}^{t+1}$:
+\begin{equation*}
+\epsilon_{s_\ell}^t
+= \frac{\partial \mathcal{L}}{\partial s_{c_\ell}^t}
+= \frac{\partial \mathcal{L}}{\partial b_{h_\ell}^t}\frac{\partial b_{h_\ell}^t}{\partial s_{c_\ell}^t} + \frac{\partial \mathcal{L}}{\partial s_{c_\ell}^{t+1}} \frac{\partial s_{c_\ell}^{t+1}}{\partial s_{c_\ell}^t}
+= \epsilon_{b_\ell}^t b_{\omega_\ell}^t h'(s_{c_\ell}^t) + \epsilon_{s_\ell}^{t+1} b_{\phi_\ell}^{t+1}
+\quad \text{where: } \epsilon_{b_\ell}^t \defeq \frac{\partial \mathcal{L}}{\partial b_{h_\ell}^t}
+\end{equation*}
+
+Again a new bookkeeping variable is introduced. Calculating $\epsilon_{b_\ell}^t$ is quite complicated because $b_{h_\ell}^t$ affects many other parts of the network.
+
+There are two cases, in both cases it affects the current layer on all gates and the memory block input ($a_{h_\ell}^{t+1}, a_{\rho_\ell}^{t+1}, a_{\phi_\ell}^{t+1}, a_{\omega_\ell}^{t+1}$). If the next layer is a hidden layer then it also affects all of its gates and the memory block input ($a_{h_{\ell+1}}^t, a_{\rho_{\ell+1}}^t, a_{\phi_{\ell+1}}^t, a_{\omega_{\ell+1}}^t$). Otherwise if the next layer is not a hidden layer then it affects the network output ($a_k$).
+
+Lets first consider the case where the next layer is a hidden layer ($\ell \in [1, L+1]$), using the chain rule one gets:
+\begin{equation}
+\begin{aligned}
+\epsilon_{b_\ell}^t &=
+	\sum_{h'_\ell=1}^{H_\ell} \delta_{h'_\ell}^{t+1} w_{h_\ell, h'_\ell}
+	+ \sum_{\rho_\ell=1}^{H_\ell} \delta_{\rho_\ell}^{t+1} w_{h_\ell, \rho_\ell}
+	+ \sum_{\phi_\ell=1}^{H_\ell} \delta_{\phi_\ell}^{t+1} w_{h_\ell, \phi_\ell} \\
+&+
+	 \sum_{\omega_\ell=1}^{H_\ell} \delta_{\omega_\ell}^{t+1} w_{h_\ell, \omega_\ell}
+	+ \sum_{h'_{\ell+1}=1}^{H_{\ell+1}} \delta_{h'_{\ell+1}}^t w_{h_\ell, h'_{\ell+1}}
+	+ \sum_{\rho_{\ell+1}=1}^{H_{\ell+1}} \delta_{\rho_{\ell+1}}^t w_{h_\ell, \rho_{\ell+1}} \\
+&+
+	\sum_{\phi_{\ell+1}=1}^{H_{\ell+1}} \delta_{\phi_{\ell+1}}^t w_{h_\ell, \phi_{\ell+1}}
+	+ \sum_{\omega_{\ell+1}=1}^{H_{\ell+1}} \delta_{\omega_{\ell+1}}^t w_{h_\ell, \omega_{\ell+1}}
+	\quad \forall \ell \in [1, L - 1]
+\end{aligned}
+\end{equation}
+
+In the other case where the next layer is the output later ($\ell = L$) one gets:
+\begin{equation}
+\begin{aligned}
+\epsilon_{b_L}^t &=
+	\sum_{h'_L=1}^{H_L} \delta_{h'_L}^{t+1} w_{h_L, h'_L}
+	+ \sum_{\rho_L=1}^{H_L} \delta_{\rho_L}^{t+1} w_{h_L, \rho_L}
+	+ \sum_{\phi_L=1}^{H_L} \delta_{\phi_L}^{t+1} w_{h_L, \phi_L} \\
+&+
+	\sum_{\omega_L=1}^{H_L} \delta_{\omega_L}^{t+1} w_{h_L, \omega_L}
+	+ \sum_{k=1}^{K} \delta_{k}^t w_{h_L, k}
+\end{aligned}
+\end{equation}
+
+This introduces 4 new bookkeeping values:
+\begin{equation}
+\delta_{\rho_\ell}^t \defeq \frac{\partial \mathcal{L}}{\partial a_{\rho_\ell}}
+,\quad \delta_{\phi_\ell}^t \defeq \frac{\partial \mathcal{L}}{\partial a_{\phi_\ell}}
+,\quad \delta_{\omega_\ell}^t \defeq \frac{\partial \mathcal{L}}{\partial a_{\omega_\ell}}
+,\quad \delta_k^t \defeq \frac{\partial \mathcal{L}}{\partial a_k} 
+\end{equation}
+
+Each of these bookkeeping values are a bit different, but the chain rule is still used to derive them. First is $\delta_{\rho_\ell}^t$, though $b_{\rho_\ell}^t$ this affects $s_{c_\ell}^t$.
+\begin{equation}
+\delta_{\rho_\ell}^t
+= \frac{\partial \mathcal{L}}{\partial a_{\rho_\ell}^t}
+= \frac{\partial \mathcal{L}}{\partial b_{\rho_\ell}^t} \frac{\partial b_{\rho_\ell}^t}{\partial a_{\rho_\ell}^t}
+= \frac{\partial \mathcal{L}}{\partial s_{c_\ell}^t} \frac{\partial s_{c_\ell}^t}{\partial b_{\rho_\ell}^t} \frac{\partial b_{\rho_\ell}^t}{\partial a_{\rho_\ell}^t}
+= \epsilon_{s_\ell}^t g(a_{h_\ell}^t) f'(a_{\rho_\ell}^t)
+\end{equation}
+
+Next is $\delta_{\phi_\ell}^t$, the situation is somewhat the same, $a_{\phi_\ell}^t$ affects $s_{c_\ell}^t$ though $b_{\phi_\ell}^t$:
+\begin{equation}
+\delta_{\phi_\ell}^t
+= \frac{\partial \mathcal{L}}{\partial a_{\phi_\ell}^t}
+= \frac{\partial \mathcal{L}}{\partial b_{\phi_\ell}^t} \frac{\partial b_{\phi_\ell}^t}{\partial a_{\phi_\ell}^t}
+= \frac{\partial \mathcal{L}}{\partial s_{c_\ell}^t} \frac{\partial s_{c_\ell}^t}{\partial b_{\phi_\ell}^t} \frac{\partial b_{\phi_\ell}^t}{\partial a_{\phi_\ell}^t}
+= \epsilon_{s_\ell}^t s_{c_\ell}^{t-1} f'(a_{\phi_\ell}^t)
+\end{equation}
+
+Then $\delta_{\omega_\ell}^t$, here $a_{\omega_\ell}^t$ affects $b_{h_\ell}^t$ though $b_{\omega_\ell}^t$:
+\begin{equation}
+\delta_{\omega_\ell}^t
+= \frac{\partial \mathcal{L}}{\partial a_{\omega_\ell}^t}
+= \frac{\partial \mathcal{L}}{\partial b_{\omega_\ell}^t} \frac{\partial b_{\omega_\ell}^t}{\partial a_{\omega_\ell}^t}
+= \frac{\partial \mathcal{L}}{\partial b_{h_\ell}^t} \frac{\partial b_{h_\ell}^t}{\partial b_{\omega_\ell}^t} \frac{\partial b_{\omega_\ell}^t}{\partial a_{\omega_\ell}^t}
+= \epsilon_{b_\ell}^t h(s_{c_\ell}^t) f'(a_{\omega_\ell}^t)
+\end{equation}
+
+Finally there is $\delta_k^t$, here $a_k^t$ affects $y_k^t$. This is no different from the RNN or FFNN case, thus one gets:
+\begin{equation}
+\delta_k^t = \frac{\partial \mathcal{L}}{\partial y_k^t} \frac{\partial y_k^t}{\partial a_k^t} = y_k^t - t_k^t
+\end{equation}
+
+The $\delta$ and $\epsilon$ values can be calculated by going back though the network and by initializing with $\delta_{\rho_\ell}^{T+1} = \delta_{\phi_\ell}^{T+1} = \delta_{\omega_\ell}^{T+1} = \delta_{h_\ell}^{T+1} = \epsilon_{s_\ell}^{T+1} = 0$. 
