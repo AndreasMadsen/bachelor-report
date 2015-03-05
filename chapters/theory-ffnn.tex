@@ -108,7 +108,7 @@ The neural network from earlier in Figure \ref{fig:theory:ffnn:network} will be 
 \label{eq:theory:ffnn:bprop-problem}
 \end{equation} 
 
-First consider the problem in \eqref{eq:theory:ffnn:bprop-problem} for the layer $\ell = 1$. The loss function will depend on some hidden input in the first hidden layer $a_{h_1}$\todo{Why $a$, why not a sum. The loss function depends on multiply $a$}, thus the chain rule can be used:
+First consider the problem in \eqref{eq:theory:ffnn:bprop-problem} for the layer $\ell = 1$. The loss function will depend on some hidden input in the first hidden layer $a_{h_1}$, thus the chain rule can be used:
 \begin{equation}
 \frac{\partial \mathcal{L}}{\partial w_{h_0, h_1}} = \frac{\partial \mathcal{L}}{\partial a_{h_1}} \frac{\partial a_{h_1}}{\partial w_{h_0, h_1}} =  \frac{\partial \mathcal{L}}{\partial a_{h_1}} x_{h_0}
 \label{eq:theory:ffnn:bprop-firstlayer}
@@ -125,7 +125,7 @@ Using this, \eqref{eq:theory:ffnn:bprop-firstlayer} becomes:
 \label{eq:theory:ffnn:bprop-w01}
 \end{equation}
 
-The question ``how should $\delta_{h_1}$ be calculated ?'' then arises. This is done by using the chain rule again. This time the chain rule gives a sum because there are multiply paths to $a_{h_1}$. \todo{I don't fully understand this}
+The question ``how should $\delta_{h_1}$ be calculated ?'' then arises. This is done by using the chain rule again. This time the chain rule gives a sum because there are multiply paths to $a_{h_1}$.
 \begin{equation}
 \delta_{h_1} = \frac{\partial \mathcal{L}}{\partial a_{h_1}} = \sum_{h_2=1}^{H_2} \frac{\partial \mathcal{L}}{\partial a_{h_2}} \frac{\partial a_{h_2}}{\partial a_{h_1}}
 \end{equation}
