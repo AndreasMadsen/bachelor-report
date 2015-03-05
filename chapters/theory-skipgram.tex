@@ -62,19 +62,19 @@ As previously discussed the input and output words are represented using 1-of-V 
 
 The activation in the hidden layer is:
 \begin{equation}
-\mathbf{b}_{1,w} = \mathbf{a}_{1,w} = \mathbf{W}_{1} \mathbf{x}_w
+\mathbf{b}_{1,w_t} = \mathbf{a}_{1,w_t} = \mathbf{W}_{1} \mathbf{x}_{w_t}
 \end{equation}
 
 Here the subscript $1$ denotes that this is for the layer 1 (the input is layer 0). The output before the softmax is applied is then calculated as:
 \begin{equation}
-\mathbf{a}_{2,w} = \mathbf{W}_2^T \mathbf{b}_{1,w}
+\mathbf{a}_{2,w_t} = \mathbf{W}_2^T \mathbf{b}_{1,w_t}
 \end{equation}
 
 Here $\mathbf{W}_1$ is the matrix containing the weights on the left side of the log-linear network, thus it has a size of $D \times V$. $\mathbf{W}_2$ is the matrix containing the weights on the right side and have also size $D \times V$.
 
-$\mathbf{a}_{2,w}$ is a vector containing information about all possible surrounding words, but since this used in a softmax and likelihood setting, only the value associated with the output word $w_{t + \ell}$ is of interrest. To get this specific value the encoding vector $\mathbf{x}_{t + \ell}$ can be used. In general the value associated with the word $k$ can be obtained using:
+$\mathbf{a}_{2,w_t}$ is a vector containing information about all possible surrounding words, but since this used in a softmax and likelihood setting, only the value associated with the output word $w_{t + \ell}$ is of interrest. To get this specific value the encoding vector $\mathbf{x}_{t + \ell}$ can be used. In general the value associated with the word $w$ can be obtained using:
 \begin{equation}
-a_{w,k} = \left(\mathbf{a}_{2,w}\right)_k = \mathbf{x}_{k}^T \mathbf{a}_{2,w}
+a_{w_t,w} = \left(\mathbf{a}_{2,w_t}\right)_w = \mathbf{x}_{w}^T \mathbf{a}_{2,w_t}
 \end{equation}
 This detail is not particular important, but explains the some of the notation used in \cite{word2vec-details}.
 
@@ -82,10 +82,17 @@ The probability $p(w_{t + \ell} | w_t)$ can now be calculated using a softmax:
 \begin{equation}
 \begin{aligned}
 p(w_{t + \ell} | w_t)
-&= \frac{\exp(a_{w_t,k})}{\sum_{k'=1}^K \exp(a_{w_t,k'})}
-= \frac{\exp(a_{w_t, w_{t + \ell}})}{\sum_{w=1}^V \exp(a_{w_t, w})} \\
-&= \frac{\exp( \mathbf{x}_{w_{t+\ell}}^T \mathbf{a}_{2,w_t} )}{\sum_{w=1}^V \exp(\mathbf{x}_{w}^T \mathbf{a}_{2,w_t})}
+&= \frac{
+	\exp(a_{w_t, w_{t + \ell}})
+}{
+	\sum_{w=1}^V \exp(a_{w_t, w})
+}
 = \frac{
+	\exp( \mathbf{x}_{w_{t+\ell}}^T \mathbf{a}_{2,w_t} )
+}{
+	\sum_{w=1}^V \exp(\mathbf{x}_{w}^T \mathbf{a}_{2,w_t})
+} \\
+&= \frac{
 	\exp( \mathbf{x}_{w_{t+\ell}}^T \mathbf{W}_2^T \mathbf{W}_1 \mathbf{x}_{w_{t+\ell}})
 }{
 	\sum_{w=1}^V \exp(\mathbf{x}_{w}^T \mathbf{W}_2^T \mathbf{W}_1 \mathbf{x}_{w_{t+\ell}})
