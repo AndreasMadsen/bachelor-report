@@ -240,3 +240,26 @@ Finally there is $\delta_k^t$, here $a_k^t$ affects $y_k^t$. This is no differen
 \end{equation}
 
 The $\delta$ and $\epsilon$ values can be calculated by going back though the network and by initializing with $\delta_{\rho_\ell}^{T+1} = \delta_{\phi_\ell}^{T+1} = \delta_{\omega_\ell}^{T+1} = \delta_{h_\ell}^{T+1} = \epsilon_{s_\ell}^{T+1} = 0$. 
+
+Until now only $\frac{\partial \mathcal{L}}{\partial w_{h_{\ell-1}, h_\ell}}$ have been considered. But now that $\delta$ and $\epsilon$ values are fully expressed, the remaining derivatives are quite simple.
+\begin{align}
+\frac{\partial \mathcal{L}}{\partial w_{h'_\ell, h_\ell}}
+= \frac{\partial \mathcal{L}}{\partial a_{h_\ell}^t} \frac{\partial a_{h_\ell}^t}{\partial w_{h'_\ell, h_\ell}}
+= \delta_{h_\ell}^t b_{h'_\ell}^{t-1}
+\end{align}
+
+The gate weights are almost identical:
+\begin{align}
+\frac{\partial \mathcal{L}}{\partial w_{h_{\ell-1}, \rho_\ell}}
+= \delta_{\rho_\ell}^t b_{h_{\ell-1}}^t, \quad
+\frac{\partial \mathcal{L}}{\partial w_{h_\ell, \rho_\ell}}
+= \delta_{\rho_\ell}^t b_{h_\ell}^{t-1} \\
+\frac{\partial \mathcal{L}}{\partial w_{h_{\ell-1}, \phi_\ell}}
+= \delta_{\phi_\ell}^t b_{h_{\ell-1}}^t, \quad
+\frac{\partial \mathcal{L}}{\partial w_{h_\ell, \phi_\ell}}
+= \delta_{\phi_\ell}^t b_{h_\ell}^{t-1} \\
+\frac{\partial \mathcal{L}}{\partial w_{h_{\ell-1}, \omega_\ell}}
+= \delta_{\omega_\ell}^t b_{h_{\ell-1}}^t, \quad
+\frac{\partial \mathcal{L}}{\partial w_{h_\ell, \omega_\ell}}
+= \delta_{\omega_\ell}^t b_{h_\ell}^{t-1}
+\end{align}
