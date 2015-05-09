@@ -136,6 +136,12 @@
 
 % Bold caption labels
 \usepackage[labelfont=bf]{caption}
+\makeatletter
+\renewcommand\@memmain@floats{%
+  \counterwithin{equation}{section}
+  \counterwithin{figure}{section}
+  \counterwithin{table}{section}}
+\makeatother
 
 % Hypersetup
 \hypersetup{
