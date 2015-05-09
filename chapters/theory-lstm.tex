@@ -1,7 +1,7 @@
 %!TEX root = ../Thesis.tex
 
 \section{Long-Short Term Memory}
-
+\label{sec:Long-Short-Term-Memory}
 In the Recurrent Neural Network the internal state $b_h^t$ must be updated in each iteration. This mean the effect of some input $x_i^{t_0}$ on $b_h^{t}$, will decay as $t \gg t_0$. This issue is addressed in the Long-Short Term Memory Model (LSTM) by taking inspiration from a computer memory cell.
 
 A computer memory cell can either be written to, read from or reset. On the most basic level memory cell are binary, not just in terms of what can be stored by also in terms of the 3 operations. Either the memory cell is completely reset or not reset, either completely read from or not read from and similarly for writing.
@@ -131,6 +131,7 @@ y_k^t &= \frac{\exp(a_k)}{\sum_{k'=1}^K \exp(a_{k'})}
 
 \newpage
 \subsection{Backward pass}
+\label{sec:theory:lstm:backward-pass}
 
 The backward pass strategy is similar to that used in RNN, except that in the LSTM one have to deal with much more $\delta$ bookkeeping.
 
