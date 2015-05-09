@@ -5,14 +5,14 @@ Algorithmic text analysis is a well known subject.
 A classic example is to take scientific papers and attempt to automatically figure which scientific fields they involve.
 Typically a paper dosen't just involve a single field, thus a paper on fluid dynamics might be described as 50 \% physics, 10 \% chemistry, 15 \% mathematics, 15 \% computer science with the remaining 10 \% distributed among other scientific fields.
 However the paper is still published in a specific journal, perhaps related to a specific field, which doesn't fully justify its broadness.
-Information about the journal is thus usually ignored and in other cases similar information doesn't exists at all.
+Information about the journal is thus usually ignored and in other cases similar information doesn't exists at all. Thus this kind of problem is typically unsupervised.
 
 Problems like the one above, are today fairly well solved\cite{missing source} using statistical methods.
 The methods works by counting how many time each word appear in the document, or didn't appear, in each document.
 This method for transforming text intro numbers is called bag-of-words (acronym is BOW).
 Its main issue is that it doesn't address the context in which the word appeared.
-For example the sentences ``when the sun shines, we walk'' and ``when we walk, the sun shines''\todo{better example} contain the same words but in different order, thus the bag-of-word representations is the same but the meaning is different.
-Even with this disadvantage the method turns out to works well for simple text analysis.
+For example the sentences ``when the sun shines, we walk'' and ``when we walk, the sun shines'' contain the same words but in different order, thus the bag-of-word representations is the same but the meaning is different.
+But even with this disadvantage the method turns out to works well for simple text analysis.
 
 The work presented here tries to solve a much more difficult problems, where the amount of topics (scientific fields in the above example) is much greater and a more clear seperation between topics is required.
 The specific problem addressed here, is about finding news articles there is about the same story.
@@ -21,4 +21,6 @@ To solve this problem more advanced methods than the bag-of-word method are requ
 It is some of these methods there are explored in this work.
 
 The methods should extend to other data sources, such as patient diagnostics reports or drafts for legal acts.
-Once the individual stories have been isolated, various of more detailed question can be asked and analyzed. Such as which counties there show interrest in a particular story, what kind of political perspective exists, does the amount of attention change over time.
+Once the individual stories have been isolated, more detailed question can be asked and analyzed. Such as which counties there show interrest in a particular story, what kind of political perspective exists, does the amount of attention change over time.
+
+In this thesis the main focus will be to find a way to represent news articles or any type of document such that clustering algorithms can yield good results. The actual clustering algorithm or answering detailed questions will not the the focus here.
