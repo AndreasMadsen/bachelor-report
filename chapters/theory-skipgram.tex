@@ -19,7 +19,7 @@ The Skip-gram model does this by by encoding the input word using 1-of-V encodin
 
 Each of these word representations are then transformed intro a lower dimensional space (latent representation). In this space words with same meaning should be close to each other. The position of each word should also contain a higher semantic meaning, such that for example $f(King) - f(Man) + f(Female) \approx f(Queen)$ \cite{word2vec-comparing}. Here $f$ is the transformation function from the input space to the latent representation.
 
-The model is trained such that the surrounding words can be predicted from this latent representation. See Figure \ref{fig:theory:skip-gram:graph} for a graphical overview. An important detail about this model, is that the order of the words within the considered text window have no effect on the training. Thus all surrounding are assumed to having approximatly the same meaning.
+The model is trained such that the surrounding words can be predicted from this latent representation. See Figure \ref{fig:theory:skip-gram:graph} for a graphical overview. An important detail about this model, is that the order of the words within the considered text window have no effect on the training. Thus all surrounding are assumed to having approximately the same meaning.
 
 \begin{figure}[h]
 	\centering
@@ -42,10 +42,12 @@ The details about which document there currently is used, are typically omitted 
 
 Since words closer to $w_t$ are expected to be more related to that word, the near surrounding words are weighed higher. This is not modelled by explicit weights, but instead by letting $\ell \in [-R, R] \setminus \{ 0 \}$ where $R \sim U[1, C]$ \cite{word2vec-comparing}.
 
-For easier optimization of the likelihood function, the average log likelihood is used instead \todo{Consider a minus sign here for consistency}:
+As usual the negative log is used to get the loss function:
 \begin{equation}
-\mathcal{L} = \frac{1}{T} \sum_{t = 1}^T \sum_{\ell} \ln( p(w_{t + \ell} | w_t) )
+\mathcal{L} = - \sum_{t = 1}^T \sum_{\ell} \ln( p(w_{t + \ell} | w_t) )
 \end{equation}
+
+In \cite{word2vec-details} a likelihood function is used (sign is flipped), and it is averaged over time ($\sfrac{1}{T}$ is multiplied).
 
 \subsection{Forward pass}
 The conditional probability $p(w_{t + \ell} | w_t)$ is calculated using a log-linear model. This is best explained by considering a neural network, with a single hidden layer and no non-linear units ($\theta(a) = a$).
@@ -54,117 +56,54 @@ The conditional probability $p(w_{t + \ell} | w_t)$ is calculated using a log-li
 	\centering
 	\includegraphics[scale=0.7]{theory/skip-gram-network}
 	\caption{Visualization of a single pass though the Skip-gram network.}
+	\label{fig:theory:skipgram:network}
 \end{figure}
 
-To get an idea about how a neural network representation relates to the equations in \cite{word2vec-details}, the scalar notation from the introduction to Neural Network section is replaced with a similar vector notation.
+As seen in Figure \ref{fig:theory:skipgram:network} the Skip-gram model is really just a very simple feed forward neural network. The forward equations for this kind of network have already been covered in section \ref{sec:theory:ffnn}, thus deriving the forward equation for the Skip-gram model is just a simple exercise of using that theory. 
 
-As previously discussed the input and output words are represented using 1-of-V encoding, this vector will be denoted as $\mathbf{x}_w$ for both the input and output words $w$. Note that because words are used as input, there is a finite amount of possible inputs. The activation is thus not denoted by the input index $n$ but rather the input value $w$. For referring to the word at position $t$ in the corpus $w_t$ is used.
-
-The activation in the hidden layer is:
-\begin{equation}
-\mathbf{b}_{1,w_t} = \mathbf{a}_{1,w_t} = \mathbf{W}_{1} \mathbf{x}_{w_t}
-\end{equation}
-
-Here the subscript $1$ denotes that this is for the layer 1 (the input is layer 0). The output before the softmax is applied is then calculated as:
-\begin{equation}
-\mathbf{a}_{2,w_t} = \mathbf{W}_2^T \mathbf{b}_{1,w_t}
-\end{equation}
-
-Here $\mathbf{W}_1$ is the matrix containing the weights on the left side of the log-linear network, thus it has a size of $D \times V$. $\mathbf{W}_2$ is the matrix containing the weights on the right side and have also size $D \times V$.
-
-$\mathbf{a}_{2,w_t}$ is a vector containing information about all possible surrounding words, but since this used in a softmax and likelihood setting, only the value associated with the output word $w_{t + \ell}$ is of interrest. To get this specific value the encoding vector $\mathbf{x}_{t + \ell}$ can be used. In general the value associated with the word $w$ can be obtained using:
-\begin{equation}
-a_{w_t,w} = \left(\mathbf{a}_{2,w_t}\right)_w = \mathbf{x}_{w}^T \mathbf{a}_{2,w_t}
-\end{equation}
-This detail is not particular important, but explains the some of the notation used in \cite{word2vec-details}.
-
-The probability $p(w_{t + \ell} | w_t)$ can now be calculated using a softmax:
+By setting $h_0 = K = V$, $h_1 = D$ and defining $x^t$ as the indicator vector for the word $w_t$, the forward pass becomes:
 \begin{equation}
 \begin{aligned}
-p(w_{t + \ell} | w_t)
-&= \frac{
-	\exp(a_{w_t, w_{t + \ell}})
-}{
-	\sum_{w=1}^V \exp(a_{w_t, w})
-}
-= \frac{
-	\exp( \mathbf{x}_{w_{t+\ell}}^T \mathbf{a}_{2,w_t} )
-}{
-	\sum_{w=1}^V \exp(\mathbf{x}_{w}^T \mathbf{a}_{2,w_t})
-} \\
-&= \frac{
-	\exp( \mathbf{x}_{w_{t+\ell}}^T \mathbf{W}_2^T \mathbf{W}_1 \mathbf{x}_{w_{t+\ell}})
-}{
-	\sum_{w=1}^V \exp(\mathbf{x}_{w}^T \mathbf{W}_2^T \mathbf{W}_1 \mathbf{x}_{w_{t+\ell}})
-} \\
-&= \frac{
-	\exp( \left(\mathbf{W}_2 \mathbf{x}_{w_{t+\ell}} \right)^T \mathbf{W}_1 \mathbf{x}_{w_{t+\ell}})
-}{
-	\sum_{w=1}^V \exp( \left(\mathbf{W}_2 \mathbf{x}_{w}\right)^T \mathbf{W}_1 \mathbf{x}_{w_{t+\ell}})
-}
+b_{h_1}^t = a_{h_1}^t &= \sum_{i = 1}^V w_{i, h_1} x_i^t, && \forall h_1 \in [1, D] \\
+a_{k}^t = a_{h_2}^t &= \sum_{h_1 = 1}^{D} w_{h_1, h_2} b_{h_1}^t, && \forall h_2 \in [1, V] \\
+y_k^t &= \frac{\exp(a_k^t)}{\sum_{k'=1}^V \exp(a_{k'}^t)}, && \forall k \in [1, V]
 \end{aligned}
+\label{eq:theory:skipgram:forwardpass}
 \end{equation}
 
-From the above expression it's seen that $a_{w_t, w_{t + \ell}}$ is really an inner product between two linear vector transformations. This is similar to how \cite{word2vec-details} represents the model. Specifically it one sets: $w_O = w_{t + \ell}$, $w_I = w_t$, $\mathbf{v}_{w_O} = \mathbf{W}_2 \mathbf{x}_{w_{t+\ell}}$, $\mathbf{v}_{w} = \mathbf{W}_2 \mathbf{x}_{w}$ and $\mathbf{v}_{w_I} = \mathbf{W}_1 \mathbf{x}_{w_{t + \ell}}$, then \cite[eq. 2]{word2vec-details} is obtained:
-\begin{equation}
-p(w_O | w_I) = \frac{
-	\mathrm{exp}( \mathbf{v}_{w_O}^T \mathbf{v}_{w_I} )
-}{
-	\sum_{w=1}^V \mathrm{exp}( \mathbf{v}_{w}^T \mathbf{v}_{w_I} )
-}
-\end{equation}
+It is possible to reformulate the \eqref{eq:theory:skipgram:forwardpass} equations, such that they appear as in \cite{word2vec-details}. However it is a bit convoluted as it requires using a vector notation and using the fact that $\mathbf{x}_{w_t}$ is an indicator vector. Thus that won't be covered here, see Appendix \ref{sec:appendix:skipgram} for how it can be done.
 
-This calculation is problematic since it involves a sum over all words in the vocabulary. In the Skip-gram model the vocabulary can be of size $10^5$ to $10^7$ \cite{word2vec-details}. This is why \cite{word2vec-comparing, word2vec-details, word2vec-explained} uses an approximation in form of either \textit{hierarchical softmax} or \textit{negative-sampling}. These approximations will not be discussed here, but are worth considering as they will reduce the computational complexity from $\mathcal{O}(V)$ to $\mathcal{O}(\ln_2(V))$ \cite{word2vec-comparing}.
+This calculation is problematic since $y_k$ contains a sum over all words in the vocabulary. In the Skip-gram model the vocabulary can be of size $10^5$ to $10^7$ \cite{word2vec-details}. This is why \cite{word2vec-comparing, word2vec-details, word2vec-explained} uses an approximation in form of either \textit{hierarchical softmax} or \textit{negative-sampling}. These approximations will not be discussed here, but are worth considering as they will reduce the computational complexity from $\mathcal{O}(V)$ to $\mathcal{O}(\ln_2(V))$ \cite{word2vec-comparing}.
 
 \subsection{Backward pass}
 
-\todo[inline]{Rewrite this to use the new notation and backpropergation. Should it stay in vector notation. It might be confusing since no other part of this report uses the vector notation.}
-
-Since there is no closed-form solution to this maximum-likelihood problem, gradient descent is used to iteratively optimize the parameters $\mathbf{W}_O$ and $\mathbf{W}_I$. This is done by deriving the derivatives for the average log likelihood function. 
+Deriving the backward pass have similarly been covered in section \ref{sec:theory:ffnn}. First step is to express $\ln( p(w_{t + \ell} | w_t) )$ using a target vector, this vector will be denoted $t^{t+\ell}$ for the word $w_{t + \ell}$:
 \begin{equation}
-\frac{\partial}{\partial \mathbf{W}} \frac{1}{T} \ln( \mathcal{L} ) = \frac{1}{T} \sum_{t = 1}^T \sum_{\ell} \frac{\partial}{\partial \mathbf{W}} \ln( p(w_{t + \ell} | w_t) )
+\mathcal{L} =  - \sum_{t = 1}^T \sum_{\ell} \ln( p(w_{t + \ell} | w_t) =  - \sum_{t = 1}^T \sum_{\ell} \sum_{k=1}^V t_k^{t+\ell} \ln(y_k^t)
 \end{equation}
-Here $\mathbf{W}$ symbolizes both the parameters in $\mathbf{W}_O$ and in $\mathbf{W}_I$. 
-\begin{equation*}
-\centerline{$
-\begin{aligned}
-\frac{\partial}{\partial \mathbf{W}} \ln( p(w_O | w_I) ) &= \frac{\partial}{\partial \mathbf{W}} 	 \left( \frac{
-	\mathrm{exp}( \left( \mathbf{W}_O \mathbf{x}_{w_O} \right)^T \mathbf{W}_I \mathbf{x}_{w_I} )
-}{
-	\sum_{w=1}^V \mathrm{exp}( \left( \mathbf{W}_O \mathbf{x}_{w} \right)^T \mathbf{W}_I \mathbf{x}_{w_I} )
-} \right) \\
-&= \frac{\partial}{\partial \mathbf{W}} \left( \left( \mathbf{W}_O \mathbf{x}_{w_O} \right)^T \mathbf{W}_I \mathbf{x}_{w_I} - \ln \left(\sum_{w=1}^V \mathrm{exp}( \left( \mathbf{W}_O \mathbf{x}_{w} \right)^T \mathbf{W}_I \mathbf{x}_{w_I}) \right) \right) \\
-&= \frac{\partial}{\partial \mathbf{W}} \left( \mathbf{W}_O \mathbf{x}_{w_O} \right)^T \mathbf{W}_I \mathbf{x}_{w_I} - \frac{
-	\frac{\partial}{\partial \mathbf{W}} \sum_{w=1}^V \mathrm{exp}( \left( \mathbf{W}_O \mathbf{x}_{w} \right)^T \mathbf{W}_I \mathbf{x}_{w_I})
-} {
-	\sum_{w=1}^V \mathrm{exp}( \left( \mathbf{W}_O \mathbf{x}_{w} \right)^T \mathbf{W}_I \mathbf{x}_{w_I})
-} \\
-&= \frac{\partial}{\partial \mathbf{W}} \left( \mathbf{W}_O \mathbf{x}_{w_O} \right)^T \mathbf{W}_I \mathbf{x}_{w_I} - \frac{
-	\sum_{w=1}^V \left(\frac{\partial}{\partial \mathbf{W}} \left(\mathbf{W}_O \mathbf{x}_{w} \right)^T \mathbf{W}_I \mathbf{x}_{w_I} \right) \mathrm{exp}( \left( \mathbf{W}_O \mathbf{x}_{w} \right)^T \mathbf{W}_I \mathbf{x}_{w_I})
-} {
-	\sum_{w=1}^V \mathrm{exp}( \left( \mathbf{W}_O \mathbf{x}_{w} \right)^T \mathbf{W}_I \mathbf{x}_{w_I})
-}
-\end{aligned}$}
-\end{equation*}
 
-At this point it becomes necessary to distinguish between the elements in $\mathbf{W}_O$ and $\mathbf{W}_I$.
-
-\begin{equationbox}[H]
-\begin{equation*}
+This loss function is a little difference compared to that in section \ref{sec:theory:ffnn}. However because it maintains a linear relation to the loss function used in section \ref{sec:theory:ffnn}, this dosen't matter.
+\begin{equation}
 \begin{aligned}
-\frac{\partial}{\partial \mathbf{W}_I} \ln( p(w_O | w_I) ) = \mathbf{W}_O \mathbf{x}_{w_O} \mathbf{x}_{w_I}^T - \frac{
-	\sum_{w=1}^V \mathbf{W}_O \mathbf{x}_{w} \mathbf{x}_{w_I}^T \mathrm{exp}( \left( \mathbf{W}_O \mathbf{x}_{w} \right)^T \mathbf{W}_I \mathbf{x}_{w_I})
-} {
-	\sum_{w=1}^V \mathrm{exp}( \left( \mathbf{W}_O \mathbf{x}_{w} \right)^T \mathbf{W}_I \mathbf{x}_{w_I})
-} \\
-\frac{\partial}{\partial \mathbf{W}_O} \ln( p(w_O | w_I) ) = \mathbf{W}_I \mathbf{x}_{w_I} \mathbf{x}_{w_O}^T - \frac{
-	\sum_{w=1}^V \mathbf{W}_I \mathbf{x}_{w_I} \mathbf{x}_{w}^T \mathrm{exp}( \left( \mathbf{W}_O \mathbf{x}_{w} \right)^T \mathbf{W}_I \mathbf{x}_{w_I})
-} {
-	\sum_{w=1}^V \mathrm{exp}( \left( \mathbf{W}_O \mathbf{x}_{w} \right)^T \mathbf{W}_I \mathbf{x}_{w_I})
-}
+\frac{\partial \mathcal{L}}{\partial w_{h_{\ell-1}, h_\ell}} = \sum_{t = 1}^T \sum_{\ell} \frac{\partial}{\partial w_{h_{\ell-1}, h_\ell}} \left(- \sum_{k=1}^V t_k^{t+\ell} \ln(y_k^t)\right), && \forall \ell \in [1, L + 1]
 \end{aligned}
-\end{equation*}
-\caption{Derivatives for the Skip-Gram model}
-\end{equationbox}
-\marginnote{\vspace{-3cm}Remember \cite{matrix-cookbook}:\\  ${\frac{\partial \mathbf{a}^T X \mathbf{b}}{\partial X} = \mathbf{a} \mathbf{b}^T}$, ${\frac{\partial \mathbf{a}^T X^T \mathbf{b}}{\partial X} = \mathbf{b} \mathbf{a}^T}$}
+\end{equation}
 
+Now it is just a matters of using the method covered in section \ref{sec:theory:ffnn}. First the $\delta_{h_\ell}$ values are calculated, to denote the time and lag a superscript is added:
+\begin{equation}
+\begin{aligned}
+\delta_{h_1}^{t, t + \ell} &= \sum_{h_2=1}^{H_2} \delta_{h_2}^{t, t + \ell} w_{h_1, h_2}, && h_1 \in [1, D] \\
+\delta_{h_2}^{t, t + \ell} = \delta_{k}^{t, t + \ell} &= y_k^t - t_k^{t+\ell}, && k \in [1, V]
+\end{aligned}
+\end{equation}
+
+After the $\delta_{h_\ell}^{t, t+\ell}$ values are calculated, the weight derivatives can be calculated:
+\begin{equation}
+\begin{aligned}
+\frac{\partial \mathcal{L}}{\partial w_{h_{0}, h_1}}= \sum_{t = 1}^T \sum_{\ell} \delta_{h_1}^{t, t + \ell} x_{h_0}^t, && \forall h_0 \in [1, V], h_1 \in [1, D] \\
+\frac{\partial \mathcal{L}}{\partial w_{h_{1}, h_2}}= \sum_{t = 1}^T \sum_{\ell} \delta_{h_2}^{t, t + \ell} b_{h_1}^t, && \forall h_1 \in [1, D], h_2 \in [1, V]
+\end{aligned}
+\end{equation}
+
+\subsection{From words to sentenses}
+The Skip-gram model only directly allows to get a vector representation of a single word, not a sentence or more. However to find a vector representation for a news article one must work on a sentence level. A simple approach is to just take the avenge vector sum of all the words in the article title and perhaps subhead.
