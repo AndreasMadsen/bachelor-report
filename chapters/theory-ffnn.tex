@@ -1,6 +1,7 @@
 %!TEX root = ../Thesis.tex
 
 \section{Feedforward Neural Network}
+\label{sec:theory:ffnn}
 
 The models presented in this thesis are all neural networks or can be interpreted as such. To give a short introduction to neural networks i general the feedforward neural network (FFNN) is used. The feedforward neural network is one of the simplest models in the family of neural networks. The other models used in this thesis can be considered as extensions of the FFNN. An exception to this is perhaps the skip-gram model which may be slightly simpler than a FFNN.
 
@@ -83,7 +84,7 @@ P(\mathbf{t} | \mathbf{x}, \mathbf{w}) = \prod_{n=1}^N P(\mathbf{t}_n | \mathbf{
 
 Here $\mathbf{x}_{n}$ is the input vector for observation $n$, with a corresponding label vector $\mathbf{t}_n$. The label vector is an indicator vector, constructed using 1-of-K encoding. For example if there are 5 classes and class 2 is the correct class for observation $n$, then $\mathbf{t}_n = [0, 1, 0, 0, 0]^T$.
 
-The logarithm is then used to create linearity and avoid floating point errors. The sign is also changed such that it becomes a loss function:
+The logarithm is then used to create linearity and avoid numerical floating point issues. The sign is also changed such that it becomes a loss function:
 \begin{equation}
 - \ln\left(P(\mathbf{t} | \mathbf{x}, \mathbf{w})\right) = - \sum_{n=1}^N \sum_{k=1}^K t_{n, k} \ln\left( P(C_{n, k} | \mathbf{x}_n, \mathbf{w})\right)
 \end{equation}
@@ -108,13 +109,13 @@ The neural network from earlier in Figure \ref{fig:theory:ffnn:network} will be 
 \label{eq:theory:ffnn:bprop-problem}
 \end{equation} 
 
-First consider the problem in \eqref{eq:theory:ffnn:bprop-problem} for the layer $\ell = 1$. The loss function will depend on some hidden input in the first hidden layer $a_{h_1}$, thus the chain rule can be used:
+First consider the problem in \eqref{eq:theory:ffnn:bprop-problem} for the layer $\ell = 1$. The loss function will depend on some hidden input from the first hidden layer $a_{h_1}$, thus the chain rule can be used:
 \begin{equation}
 \frac{\partial \mathcal{L}}{\partial w_{h_0, h_1}} = \frac{\partial \mathcal{L}}{\partial a_{h_1}} \frac{\partial a_{h_1}}{\partial w_{h_0, h_1}} =  \frac{\partial \mathcal{L}}{\partial a_{h_1}} x_{h_0}
 \label{eq:theory:ffnn:bprop-firstlayer}
 \end{equation}
 
-It turns out that it is smart to define $\frac{\partial \mathcal{L}}{a_{h_1}}$ in general for all layers, this is just for book keeping there will make it easier to implement.
+It turns out that it is smart to define $\frac{\partial \mathcal{L}}{a_{h_1}}$ in general for all layers, this is just for book keeping, there makes it easier to implement.
 \begin{equation}
 \delta_{h_\ell} \defeq \frac{\partial \mathcal{L}}{\partial a_{h_\ell}}
 \end{equation}
@@ -217,5 +218,3 @@ Given the $\delta_{h_1}$ the weights $w_{h_0, h_1}$ can be calculated using \eqr
 \frac{\partial a_{h_\ell}}{w_{h_{\ell-1}, h_\ell}} = \delta_{h_\ell} b_{h_{\ell-1}}, && \forall \ell \in [1, L+1] \text{ where: } b_{h_0} = x_i
 \end{aligned}
 \end{equation}
-
-\todo[inline]{Consider formalizing a vector notation of the forward and backward pass.}
