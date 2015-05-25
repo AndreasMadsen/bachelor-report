@@ -4,7 +4,7 @@
 
 The Skip-gram model tries to learn the meaning of words by its context. Specifically it tries to predict the surrounding words given a single input word.
 
-The Skip-gram model does this by by encoding the input word using 1-of-V encoding where $V$ is the vocabulary size. This means that each word is represented as an indicator vector, where the indicator represent a single word from a given vocabulary. The vocabulary is typically defined using the $V$ most common word in the text corpus. \marginnote{\vspace{-1.5cm}\textbf{corpus}: \\ collection of documents}
+The Skip-gram model does this by by encoding the input word using 1-of-V encoding where $V$ is the vocabulary size. This means that each word is represented as an indicator vector, where the vector represent a single word from a given vocabulary. The vocabulary is typically defined using the $V$ most common word in the text corpus. \marginnote{\vspace{-1.5cm}\textbf{corpus}: \\ collection of documents}
 \begin{figure}[h]
 \begin{equation*}
 \begin{aligned}
@@ -71,15 +71,15 @@ y_k^t &= \frac{\exp(a_k^t)}{\sum_{k'=1}^V \exp(a_{k'}^t)}, && \forall k \in [1, 
 \label{eq:theory:skipgram:forwardpass}
 \end{equation}
 
-It is possible to reformulate the \eqref{eq:theory:skipgram:forwardpass} equations, such that they appear as in \cite{word2vec-details}. However it is a bit convoluted as it requires using a vector notation and using the fact that $\mathbf{x}_{w_t}$ is an indicator vector. Thus that won't be covered here, see Appendix \ref{sec:appendix:skipgram} for how it can be done.
+It is possible to reformulate the \eqref{eq:theory:skipgram:forwardpass} equations, such that they appear as in \cite{word2vec-details}. However it is a bit convoluted as it requires using vector notation and using the fact that $\mathbf{x}_{w_t}$ is an indicator vector to do subscript selection. Thus that won't be covered here, but see Appendix \ref{sec:appendix:skipgram} for how it can be done.
 
-This calculation is problematic since $y_k$ contains a sum over all words in the vocabulary. In the Skip-gram model the vocabulary can be of size $10^5$ to $10^7$ \cite{word2vec-details}. This is why \cite{word2vec-comparing, word2vec-details, word2vec-explained} uses an approximation in form of either \textit{hierarchical softmax} or \textit{negative-sampling}. These approximations will not be discussed here, but are worth considering as they will reduce the computational complexity from $\mathcal{O}(V)$ to $\mathcal{O}(\ln_2(V))$ \cite{word2vec-comparing}.
+This calculation of $y_k^t$ is problematic since it contains a sum over all words in the vocabulary. In the Skip-gram model the vocabulary can be of size $10^5$ to $10^7$ \cite{word2vec-details}. This is why \cite{word2vec-comparing, word2vec-details, word2vec-explained} uses an approximation in form of either \textit{hierarchical softmax} or \textit{negative-sampling}. These approximations will not be discussed here, but are worth considering as they will reduce the computational complexity from $\mathcal{O}(V)$ to $\mathcal{O}(\ln_2(V))$ \cite{word2vec-comparing}.
 
 \subsection{Backward pass}
 
 Deriving the backward pass have similarly been covered in section \ref{sec:theory:ffnn}. First step is to express $\ln( p(w_{t + \ell} | w_t) )$ using a target vector, this vector will be denoted $t^{t+\ell}$ for the word $w_{t + \ell}$:
 \begin{equation}
-\mathcal{L} =  - \sum_{t = 1}^T \sum_{\ell} \ln( p(w_{t + \ell} | w_t) =  - \sum_{t = 1}^T \sum_{\ell} \sum_{k=1}^V t_k^{t+\ell} \ln(y_k^t)
+\mathcal{L} =  - \sum_{t = 1}^T \sum_{\ell} \ln( p(w_{t + \ell} | w_t)) =  - \sum_{t = 1}^T \sum_{\ell} \sum_{k=1}^V t_k^{t+\ell} \ln(y_k^t)
 \end{equation}
 
 This loss function is a little difference compared to that in section \ref{sec:theory:ffnn}. However because it maintains a linear relation to the loss function used in section \ref{sec:theory:ffnn}, this dosen't matter.
@@ -106,4 +106,4 @@ After the $\delta_{h_\ell}^{t, t+\ell}$ values are calculated, the weight deriva
 \end{equation}
 
 \subsection{From words to sentenses}
-The Skip-gram model only directly allows to get a vector representation of a single word, not a sentence or more. However to find a vector representation for a news article one must work on a sentence level. A simple approach is to just take the avenge vector sum of all the words in the article title and perhaps subhead.
+The Skip-gram model only directly allows to get a vector representation of a single word, not a sentence or more. However to find a vector representation for a news article one must work on a sentence level. A simple approach is to just take the avenge vector sum of all the words in the article title and perhaps the subhead.
