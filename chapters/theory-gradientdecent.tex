@@ -17,7 +17,7 @@ $\eta_n$ is the \textit{stepsize} and should be so small that it doesn't skip ov
 A major problem with the naïve gradient decent algorithm, is that it tends to get stuck in a local minima because $\frac{\partial \mathcal{L}}{\partial w_{i,j}} = 0$ in such minima. To avoid this problem a \textit{momentum} can be added to the gradient decent equation:
 
 \begin{equation}
-\Delta w_{i,j}^n = - m \Delta w_{i,j}^{n-1} - \eta_n \frac{\partial \mathcal{L}}{\partial w_{i,j}}
+\Delta w_{i,j}^n = m \Delta w_{i,j}^{n-1} - \eta_n \frac{\partial \mathcal{L}}{\partial w_{i,j}}
 \end{equation}
 
 Here $m$ is the \textit{momentum} parameter. Alex Graves suggests using $m = 0.9$ \cite{alexgraves}.
@@ -51,7 +51,6 @@ To solve those issues \textit{Mini-batch socastic gradient decent} or \textit{mi
  \DontPrintSemicolon
  \While{stopping criteria not met}{
   Randomise training set order\;
-  Create minibatches of size \textit{mini-batch-size}\;
   \For{each minibatch in the training set}{
    Run forward and backward pass to calculate the gradient\;
    Update weights with gradient descent algorithm\;
@@ -62,7 +61,21 @@ To solve those issues \textit{Mini-batch socastic gradient decent} or \textit{mi
 \end{algorithm}
 
 \subsection{RMSprop}
-\todo[inline]{Introduce RMSprop.}
+
+The gradient decent algorithms presented so far uses a global learning rate for all the weights. This causes some issues for those gradients there are very tiny or huge, because they will either be dominating or be practically neglected. A solution to this is to not use the size of gradient but just the sign and then move a constant amount in that direction, this method is called \textit{rprop} and is useful for \textit{batch-learning}. However for \textit{mini-batch learning} \textit{rprop} doesn't work very well. This is because \textit{mini-batch-size} have some averaging properties, for example if the gradient for a specific weights is $0.1$ for nine mini-batches and $-0.9$ for just one minibatch, this will cause the weight to say roughly where it is. However for \textit{rprop} it will move $9 \times 1$ in one direction and then $1 \times (-1)$ in the other, because a constant movement step is used. The solution is called \textit{RMSprop} and is the equivalent to \textit{rprop} for \textit{mini-batch learning}. It works by performing a moving average on the gradient and then using this average to scale the learning rate, such that it adapts to the scale of the gradient in general. This can be done with and without momentum, for completness with momentum is shown here:
+
+\begin{equationbox}[H]
+\begin{equation*}
+\begin{aligned}
+f_{i,j}^n = \gamma f_{i,j}^{n-1} + (1 - \gamma) \frac{\partial \mathcal{L}}{\partial w_{i,j}} \\
+g_{i,j}^n = \gamma g_{i,j}^{n-1} + (1 - \gamma) \left(\frac{\partial \mathcal{L}}{\partial w_{i,j}}\right)^2 \\
+\Delta w_{i,j}^n = m \Delta w_{i,j}^{n-1} - \frac{\eta}{\sqrt{g_{i,j}^n + \left(f_{i,j}^n\right)^2 + \epsilon}} \frac{\partial \mathcal{L}}{\partial w_{i,j}}
+\end{aligned}
+\end{equation*}
+\caption{RMSprop with momentum, as Alex Graves does it in \cite{graves-generating-sequences}. In that paper $\gamma = 0.95, m = 0.9, \eta = 0.0001, \epsilon = 0.0001$ was used.}
+\end{equationbox}
+
+Notice that $\epsilon$ is necessary because $g_{i,j}^n$ and $f_{i,j}^n$ can be zero or near-zero which would otherwise cause the faction to explode.
 
 \subsection{Early stopping}
 
