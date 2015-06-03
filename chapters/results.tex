@@ -1,0 +1,16 @@
+%!TEX root = ../Thesis.tex
+\chapter{Results}
+
+\section{Software and implementation}
+This section will not discuss the details of the model implementations, but will just citrate the work required for creating the results.
+
+Overall the results was generated with the programing language Python \cite{python}. The skip-gram (word2vec) and paragraph2vec (doc2vec) implementation is from the Python module Gensim \cite{gensim}. The Sutskever model \cite{sutskever} have not been made available as an open source module and nobody else have implemented and open sourced it. It was thus necessary to implement a framework for creating the network. For generating fast code, utilizing the GPU and deriving the backward pass, the Theano framework \cite{theano-a, theano-b} was used. From a more thorough discussion on the this implementation please see \autoref{appendix:implementation}.
+
+As the intellectual properties for news articles are typically not addressed to the public domain, no big free corpus of news articles exists. The news articles was thus collected by crawling RSS feeds and using a previously developed heuristic\footnote{\url{https://github.com/AndreasMadsen/article}} for getting the article text and title from the HTML page.
+
+The code for the Sutskever model implementation and generating the results is available under an MIT open source license at \url{https://github.com/AndreasMadsen/bachelor-code}.
+
+\clearpage
+\input{chapters/results-skipgram}
+\clearpage
+\input{chapters/results-paragraph2vec}
