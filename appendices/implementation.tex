@@ -1,0 +1,87 @@
+%!TEX root = ../Thesis.tex
+\chapter{Implementation details}
+\label{appendix:implementation}
+
+The Sutskever model implementation used in \cite{sutskever} is not open source and there are no libraries for creating such a network. The model is mathematically quite complicated and maybe even more complex from a computational perspective. Thus it is unfeasible to implement it as a simple top-to-bottom script. Having a framework for constructing the LSTM layer, backward pass and etc. is thus a good idea.
+
+There is a fork of the Lasagne\footnote{\url{https://github.com/craffel/nntools}} framework there do provide implementation of the simple RNN and LSTM layers from which one can build a deep network. However Lasagne is build for feedforward forward networks and thus only simplistic RNN networks fits into the framework. The Sutskever model have its output layer connected to input layer of the decoder, which is currently far too complex for Lasagne to handle \cite{lasagne-issue}.
+
+The framework implemented in \url{https://github.com/AndreasMadsen/bachelor-code} uses a different approach for generating the network equations, which allows for complex networks like the Sutskever model. The tradeoff is that the framework is less general and some optimizations like loop-invariant code motion can't be easily be manually implemented.  However as Theano becomes more advanced at automatic optimization, optimizations such as loop-invariant code motion shouldn't be necessary to manually implement.
+
+\section{Framework architecture}
+
+The overall strategy of the framework is to have a consumer class there consumes some generated layers and handles the forward pass, backward pass and optimization. Here is an example of a simple one-to-one RNN classifier. 
+
+\begin{lstlisting}[language=Python]
+lstm = neural.network.Std()
+
+# Setup layers for a recurent classifier model
+lstm.set_input(neural.layer.Input(2))
+lstm.push_layer(neural.layer.LSTM(4))
+lstm.push_layer(neural.layer.Softmax(4))
+
+# Setup loss and optimizer
+lstm.set_loss(neural.loss.NaiveEntropy())
+lstm.set_optimizer(neural.optimizer.Momentum())
+
+# Compile train, test and predict functions
+lstm.compile()
+
+# Train and predict using
+lstm.train(input, target)
+lstm.predict(input)
+\end{lstlisting}
+
+The \texttt{lstm.set\_input} and each \texttt{lstm.push\_layer} appends to a dynamic list which contains all the layers. The integer argument in each layer constructor specifies the amount of nodes in that layer. Too generate the weight matrices between layers each \texttt{lstm.push\_layer} call, also calls a \texttt{layer.setup} method with the size of the previous layer as an argument.
+
+Do note that this is just for a simple sequence to sequence classification system with a one-to-one alignment. For a complex network like the Sutskever model, a similar consumer class exists.
+
+In both cases the consumer class then implements a \texttt{network.forward\_pass} method, which does the scanning over all time steps. For each time step a loop over the list of layers is performed.
+\begin{lstlisting}[language=Python]
+all_outputs = []
+curr = 0
+prev_output = x_t
+
+# Loop though each layer and apply send the previous layers output
+# to the next layer. The layer can have additional paramers, if
+# taps where provided using the `outputs_info` property.
+for layer in self._layers[1:]:
+    taps = layer.infer_taps()
+    layer_outputs = layer.scanner(prev_output, *args[curr:curr + taps])
+
+    curr += taps
+    all_outputs += layer_outputs
+    # the last output is assumed to be the layer output
+    prev_output = layer_outputs[-1]
+
+return all_outputs
+\end{lstlisting}
+
+The \texttt{layer.infer\_taps} and \texttt{all\_outputs} logic exists such that each layer is responsible for its own state, typically the hidden output of the previous time iteration. For transferring the hidden output to the next layer, the rule is that the last output value of \texttt{layer.scanner} is the input in the next layer.
+
+Do also note that the scan over all time steps uses the \texttt{theano.scan} function, which only executes the above code once. This is because theano dynamically generates a computational graph from which it will later compile the C and CUDA code, which is what includes the \texttt{for}-loop over each time step. This also means that the layer loop is by design unrolled as it is not directly implemented in theano.
+
+\section{Memory and computation tricks}
+
+Mathematically each word or letter is encoded as an indicator vector. However from a memory perspective this is extremely inefficient. In the sutskever training 248192 articles was used for training, there are 78 unique letters and the max sequence length is 1000 letters for the input and 197 for the target. The worst case scenario in terms of memory usage is thus:
+\begin{equation}
+248192 \cdot 78 \cdot (1000 + 197) \approx 21.6 \text{ GB}
+\end{equation}
+
+This is quite a lot of memory, the DTU HPC system can easily handle it, but memory transferring onto a GPU is an slow operation and it's also a waste of the CPU cache.
+
+The solution is to not encode each letter as an indicator vector but just as an integer which specifies the index of the 1-element. This of course requires rewriting some of the equations. By doing this the memory usage becomes:
+\begin{equation}
+248192 \cdot (1000 + 197) \approx 0.06 \text{ GB}
+\end{equation}
+
+The input is only multiplied by the weight matrices in the first hidden layer. If one defines $\mathbf{I}(i)$ as an an indicator vector where the 1-element is located at index $i$, one can use that $\mathbf{I}(i) \mathbf{W} = \mathbf{W}_{i}$. In terms of Theano and the entire mini-batch \texttt{T.dot(x, W)} becomes \texttt{W[x, :]}, which as a side effect is also more computational efficient.
+
+The target values is only used in the entropy loss function, which can be expressed as:
+\begin{equation}
+\mathcal{L} = - \sum_{k=1}^K \mathbf{I}(i)_k \ln(y_k) = - \ln(y_i)
+\end{equation}
+
+Again this is also more computational efficient.
+
+Another optimization which don't improve memory utilization, but is a more computationally efficient, is to combine the weight matrices in each LSTM layer. Each LSTM layer have 4 input to hidden matrices and 4 hidden to hidden matrices. Because these are all multiplied by the same values, they can be combined to just one input to hidden matrix and one hidden to hidden matrix. This means that only two BLAS calls are required pr. layer.
