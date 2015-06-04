@@ -104,6 +104,3 @@ After the $\delta_{h_\ell}^{t, t+\ell}$ values are calculated, the weight deriva
 \frac{\partial \mathcal{L}}{\partial w_{h_{1}, h_2}}= \sum_{t = 1}^T \sum_{\ell} \delta_{h_2}^{t, t + \ell} b_{h_1}^t, && \forall h_1 \in [1, D], h_2 \in [1, V]
 \end{aligned}
 \end{equation}
-
-\subsection{From words to sentenses}
-The Skip-gram model only directly allows to get a vector representation of a single word, not a sentence or more. However to find a vector representation for a news article one must work on a sentence level. A simple approach is to just take the avenge vector sum of all the words in the article title and perhaps the subhead.
