@@ -77,16 +77,33 @@ g_{i,j}^n = \gamma g_{i,j}^{n-1} + (1 - \gamma) \left(\frac{\partial \mathcal{L}
 
 Notice that $\epsilon$ is necessary because $g_{i,j}^n$ and $f_{i,j}^n$ can be zero or near-zero which would otherwise cause the faction to explode.
 
+\subsection{Clipping}
+
+Sometimes the $\frac{\partial \mathcal{L}}{\partial w_{i,j}}$ gradients becomes really big because of an unfortunate mini-batch or some numerical instability in the implementation. To avoid this the gradient is often clipped or squeezed to prevent these issues \cite{graves-generating-sequences}. There are 3 common methods, which also uses a \textit{clip} hyperparameter to control how agressiv the clipping should be.
+
+Note that some of these methods consider all gradients for all the weight matrices as one long vector, this vector will be denoted $\nabla \mathcal{L}$.
+\begin{align}
+\text{clipping: } & \frac{\partial \mathcal{L}}{\partial w_{i,j}} = \max\left(\frac{\partial \mathcal{L}}{\partial w_{i,j}}, clip\right) \\
+\text{max squeezeing: } & \frac{\partial \mathcal{L}}{\partial w_{i,j}} = \begin{cases}
+	\frac{\partial \mathcal{L}}{\partial w_{i,j}} & clip < \max(\nabla \mathcal{L}) \\
+	\frac{\partial \mathcal{L}}{\partial w_{i,j}} \frac{clip}{\max(\nabla \mathcal{L})} & otherwise
+\end{cases} \\
+\text{euclidean squeezeing: } & \frac{\partial \mathcal{L}}{\partial w_{i,j}} = \begin{cases}
+	\frac{\partial \mathcal{L}}{\partial w_{i,j}} & clip < ||\nabla \mathcal{L}||_2 \\
+	\frac{\partial \mathcal{L}}{\partial w_{i,j}} \frac{clip}{||\nabla \mathcal{L}||_2} & otherwise
+\end{cases}
+\end{align}
+
 \subsection{Early stopping}
 
-Optimization of the loss function $\mathcal{L}$ using just \textit{gradient decent}, is given to be non-increasing for each iteration \cite{bishop}. For this reason it is quite easy to find a minima for the training data, however this does not directly reflect the performance of the model given new data. In Figure \ref{fig:theory:gradientdecent:overfit} the loss function for the training data (green) is forever decreasing. The loss function for data not used in the training (blue) is only decreasing for the first 15 iterations, after this the performance of the model is getting worse. This is quite common and is called overfitting, an simple way to prevent this is to use \textit{early stopping}.
+Optimization of the loss function $\mathcal{L}$ using just \textit{batch learning} without momentum, is given to be non-increasing for each iteration \cite{bishop}. Thus it is quite easy to find a minima for the training data, however this does not directly reflect the performance of the model given new data. In Figure \ref{fig:theory:gradientdecent:overfit} the loss function for the training data (green) is forever decreasing. The loss function for data not used in the training (blue) is only decreasing for the first 15 iterations, after this the performance of the model is getting worse. This is quite common and is called overfitting, an simple way to prevent this is to use \textit{early stopping}.
 
 \textit{Early stopping} uses a third dataset, this dataset can not be used for calculating the gradients (training data) or for evaluating the model performance (test data). It is used for evaluating the loss function for each iteration and stop the optimization algorithm when the loss function haven't decreased for some iterations. \cite{the-elements-of-statistical-learning, bishop, alexgraves}
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.7]{theory/gradientdecent-overfit}
-	\caption{Loss function for each iteration. The validation dataset indicates when to stop (the best line). However this does not excatly reflect the loss function of test dataset. Data is from \cite{alexgraves}.}
+	\caption{Loss function for each iteration. The validation dataset indicates when to stop (the best line). Data is from \cite{alexgraves}.}
 	\label{fig:theory:gradientdecent:overfit}
 \end{figure}
 
