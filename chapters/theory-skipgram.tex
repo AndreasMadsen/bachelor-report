@@ -29,7 +29,7 @@ The model is trained such that the surrounding words can be predicted from this 
 \end{figure}
 
 \subsection{The likelihood function}
-The Skip-gram model is optimized by maximum-likelihood. Given a corpus with $\mathcal{D}$ documents where each document have $T_d$ words, the likelihood function is calculated using the conditional probability of observing the surrounding words ($w_{d, t + \ell}$) given the input words ($w_{d, t}\. , t \in [1, T_d]$).
+The Skip-gram model is optimized by maximum-likelihood. Given a corpus with $\mathcal{D}$ documents where each document have $T_d$ words, the likelihood function is calculated using the conditional probability of observing the surrounding words ($w_{d, t + \ell}$) given the input words ($w_{d, t}\ , t \in [1, T_d]$).
 \begin{equation}
 \prod_{d = 1}^{\mathcal{D}} \prod_{t = 1}^{T_d} \prod_{\ell} p(w_{d, t + \ell} | w_{d, t})
 \label{eq:theory:skipgram:full-likelihood}
