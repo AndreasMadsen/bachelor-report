@@ -1,0 +1,56 @@
+%!TEX root = ../Thesis.tex
+\section{Naïve clustering}
+
+While clustering isn't the focus of this thesis, it is necessary to use some simple clustering algorithm in order to inspect the effectiveness of the algorithms used for producing the document vectors.
+
+A problem with clustering in this case is that there are really many clusters. The experiments was limited to just 100000 articles, but many more could have been considered. With 100000 articles and assuming that there are 4 articles for each stories, then that is 25000 clusters.
+
+25000 clusters is a lot and even simple algorithms like k-means are NP-hard problems and thus unlikely to be able to handle this many clusters. Furthermore the amount of clusters is actually unknown, while algorithms do exists to estimate the amount, many of those have a hard time with this many clusters.
+
+Because of the difficulties associated with having an unknown but very high amount of clusters, a very simple version of the hierarchical clustering is used.
+
+\subsection{Hierarchical clustering}
+
+Hierarchical clustering is a general algorithm that don't create hard clusters but maps the observations intro a tree. In general there are two types. One can either start by all observations one cluster and then split it up step-by-step, this is the \textit{divisive} type. Alternatively one can consider each observation as a single clusters and then join them step-by-step, this is the \textit{agglomerative} type.
+
+The \textit{divisive} type has the computational complexity of $\mathcal{O}(2^n)$ and is thus completely infeasible. The \textit{agglomerative} is typically $\mathcal{O}(n^3)$ which is still infeasible, but some variations have the computational complexity $\mathcal{O}(n^2)$ which is a bit more manageable \cite{wiki-hcluster}. By using an extra application specific trick (temporal connectivity) the computational complexity can be reduced even more, such that the clustering algorithm feasible for many observations.
+
+There are two chooses to be made for the \textit{agglomerative} strategy.  How distance between observations are measured and how distance between clusters are measured.
+
+Distance between observations is usually either measures using euclidean distance or cosine similarity, though there are other chooses. The chooses influences the output a lot but doesn't change the computational complexity.
+
+Distance between clusters is what controls the computational complexity, in order to keep things simple the single-linage method is used. This method sets the distance between two clusters as the smallest distance between the observations in two clusters.
+\begin{equation}
+d(a, b) = \min_{i \in [1, N_a], j \in [1, N_b]} d(a_i, b_j)
+\end{equation}
+
+As said hierarchical clustering maps observations intro a tree. In order to get hard clusters one can cut the tree or stop the algorithm when the distance exceeds a given threshold ($t$).
+
+The threshold cutting together with single-linage provides a fairly efficient way of producing the clusters. Just calculate the distance matrix $D$ between observations, then turn it intro a simi-connectivity matrix by using the threshold ($D < t)$. This connectivity matrix can then be used to produce the final clusters, by walking the connectivity graph.
+
+\begin{algorithm}[h]
+ \DontPrintSemicolon
+ ungrouped = set(observations)\;
+ \While{ungrouped not empty}{
+  start\_node = pop(ungrouped)\;
+  group = set(start\_node)\;
+  lookup = set(connected\_nodes(start\_node))\;
+  
+  \For{each node in lookup}{
+    group += node\;
+    lookup -= node\;
+    lookup += connected\_nodes(node)\;
+  }
+
+  ungrouped -= group\;
+ }
+ \caption{Simple algorithm for turning a connectivity matrix into clusters.}
+\end{algorithm}
+
+\subsection{Temporal connectivity}
+
+The bottle neck in this special version of hierarchical clustering is calculating the distance matrix. A distance or norm by definition have the property that $d(x,y) = d(y,x)$ and that $d(x,x) = 0$ so some calculations can be skipped, but it is still an $\mathcal{O}(n^2)$ operation.
+
+To reduce the computational complexity one can assume that articles about the same story are published within a short given timespan. Using the timestamp for each article one can calculate a temporal connectivity matrix. This matrix will then indicate which other articles an article can connect to given the date it was published. This way only distances between nodes that can be connected given the temporal connectivity needs to be calculated. Assuming the rate of which articles are published is somewhat constant, this reduced the computational complexity to $\mathcal{O}(n)$.
+
+Note that in an real time context where observations keeps getting added to the dataset, the temporal connectivity matrix can be created efficiently by assuming the timestamps are forever increasing. Thus there will always be a limited number of clusters that a new article can connect to, this enables the clustering algorithm to work in real time.
