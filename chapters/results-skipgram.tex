@@ -81,5 +81,4 @@ id & title \\ \hline
 \caption{A cluster containing articles about the same storry. Produced using euclidian distance on document vectors produced from both title and subhead.}
 \end{table}
  
-Similar results can be found when just looking at the title and using euclidian distance for clustering. However using cosine similarity did not yield any meaningful results, independent of whether or not the subhead was included. This is interesting as the skip-gram papers \cite{word2vec-comparing, word2vec-details} uses the cosine similarity for finding similar words. \todo{why is this, I have no idea}
-
+Similar results can be found when just looking at the title and using euclidian distance for clustering. However using cosine similarity did not yield any meaningful results, independent of whether or not the subhead was included. This is wired as the skip-gram papers \cite{word2vec-comparing, word2vec-details} uses the cosine similarity for finding similar words. It could be because cosine similarity is usually used in a context where the length of the vector isn't important. But in this case having a big length could indicate how extreme the article is in its language, which could be created to the story. 
