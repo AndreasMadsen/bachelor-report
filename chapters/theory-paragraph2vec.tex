@@ -2,7 +2,7 @@
 
 \section{Paragraph2vec}
 
-The Skip-gram model only directly allows to get a vector representation of a single word, not a sentence or more. However to find a vector representation for a news article one must work on a sentence level. A simple approach is to just take the avenge vector sum of all the words in the article title and perhaps the subhead.
+The Skip-gram model only directly allows to get a vector representation of a single word, not a sentence or more. However to find a vector representation for a news article one must work on a sentence level. A simple approach is to just take the avenge vector sum of all the words in the article title and perhaps the article lead.
 
 While this method is perfectly valid it neglects the order of words just like the bag-of-word methods. As a solution to this the paragraph2vec model has been suggested. This is a set of models that looks very similar to the skip-gram model (or word2vec in general), but also learns a document vector which can be learned to capture the content of a document.
 
@@ -29,7 +29,7 @@ b_{h_1}^d &= a_{h_1}^d = \sum_{i=1}^S d_{i,h_1} x_{i}^d && \forall h_1 \in [1, D
 
 Note that the document vector is unique for each document but shared for all word prediction in that document. The word vectors are then shared across all documents, just like in the skip-gram model.
 
-The document and word vectors are then concatenated intro a single vector, which is then multiplied by a weight matrix to generate the softmax input for the word prediction.
+The document and word vectors are then concatenated into a single vector, which is then multiplied by a weight matrix to generate the softmax input for the word prediction.
 \begin{equation}
 \begin{aligned}
 a_{k}^t &= a_{h_2}^t = \sum_{\ell=1}^L \sum_{h_1}^D w_{h_1 + \ell \cdot D, h_2} b_{h_1}^{w_{t - \ell}} + \sum_{h_1}^D w_{h_1, h_2} b_{h_1}^d && \forall k \in [1, V] \\

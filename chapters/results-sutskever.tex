@@ -80,25 +80,25 @@ Also note that while solving this problem validates the implementation, it doesn
 
 \subsection{Using real data}
 
-Now that the implementation is validated, it can be used on the real problem. The goal is to predict the article title given the subhead, the hope is this should be somewhat similar to the translation problem solved in the original paper \cite{sutskever}. Figure \ref{fig:results:sutskever:example} shows the first 3 observations in the dataset. The entire dataset consists of 273813 news articles, all articles are used for training.
+Now that the implementation is validated, it can be used on the real problem. The goal is to predict the article title given the article lead, the hope is this should be somewhat similar to the translation problem solved in the original paper \cite{sutskever}. Figure \ref{fig:results:sutskever:example} shows the first 3 observations in the dataset. The entire dataset consists of 273813 news articles, all articles are used for training.
 
 \begin{figure}[H]
 \centering
 \begin{tabular}{r|p{10cm}}
 	title: & Ukrainian President Yanukovych agrees early election \\
-	subhead: & Ukrainian President Yanukovych calls an early election, as details emerge of a deal to end political crisis. Ukrainian President Viktor Yanukovych has agreed to an early presidential election as part of a deal to end the long-running crisis.
+	lead: & Ukrainian President Yanukovych calls an early election, as details emerge of a deal to end political crisis. Ukrainian President Viktor Yanukovych has agreed to an early presidential election as part of a deal to end the long-running crisis.
 \end{tabular}
 \mbox{}\vspace*{0.5cm}
 \begin{tabular}{r|p{10cm}}
 	title: & UK floods: Damage 'could have been prevented' \\
-	subhead: & Damage during the recent floods could have been prevented if the correct water management techniques had been used, says a group of experts.Some of the damage caused by the recent floods could have been prevented if the correct water management techniques had been used, says a group of leading environmental and planning experts.
+	lead: & Damage during the recent floods could have been prevented if the correct water management techniques had been used, says a group of experts.Some of the damage caused by the recent floods could have been prevented if the correct water management techniques had been used, says a group of leading environmental and planning experts.
 \end{tabular}
 \mbox{}\vspace*{0.5cm}
 \begin{tabular}{r|p{10cm}}
 	title: & Five lose housing benefit cut appeal \\
-	subhead: & Five disabled social housing tenants lose their Court of Appeal bid to have benefit cuts for those with spare bedrooms ruled unlawful. Five disabled social housing tenants have lost their Court of Appeal bid to have benefit cuts for those with spare bedrooms ruled unlawful.
+	lead: & Five disabled social housing tenants lose their Court of Appeal bid to have benefit cuts for those with spare bedrooms ruled unlawful. Five disabled social housing tenants have lost their Court of Appeal bid to have benefit cuts for those with spare bedrooms ruled unlawful.
 \end{tabular}
-\caption{Three examples on title (target) and input (subhead).}
+\caption{Three examples on title (target) and lead (input).}
 \label{fig:results:sutskever:example}
 \end{figure}
 
@@ -192,7 +192,7 @@ However it turns out that the decoder and encoder themselves converges just fine
         \label{fig:results:sutskever:decoder-encoder-01}
 \end{figure}
 
-There is a lot of spikes in the encoder and decoder loss curves (Figure \ref{fig:results:sutskever:decoder-encoder-01}) these could properly have been avoided by choosing a smaller \textit{clip} value. Likewise it is entirely possible that some other hyperparameter choices could have caused the full network to converge properly. To investigate that possibility a grid search over the hyperparameters was performed.
+There is a lot of spikes in the encoder and decoder loss curves (Figure \ref{fig:results:sutskever:decoder-encoder-01}) these could probably have been avoided by choosing a smaller \textit{clip} value. Likewise it is entirely possible that some other hyperparameter choices could have caused the full network to converge properly. To investigate that possibility a grid search over the hyperparameters was performed.
 
 \begin{table}[h]
 \centering

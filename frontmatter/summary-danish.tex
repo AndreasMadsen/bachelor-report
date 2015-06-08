@@ -1,11 +1,11 @@
 %!TEX root = ../Thesis.tex
 \chapter{Summary (Danish)}
 
-Denne afhandling undersøger moderne metoder til at konstruerer latente repræsentationer af dokumenter. To af de tre modeller tager rækkefølgen af ordene med i resultatet. De går dermed udover de kendte bag-of-word metoder som netop ikke fanger den semantiske mening som ligger i ord rækkefølgen. 
+Denne afhandling undersøger moderne metoder til at konstruerer latente repræsentationer af dokumenter. To af de tre modeller tager rækkefølgen af ordene med i beregningen. De går dermed udover de kendte bag-of-word metoder som netop ikke fanger den semantiske mening som ligger i ord rækkefølgen. 
 
 Den tiltænkte applikation er at være i stand til at grupper dokumenter således at hver gruppe indeholder artikler for en enkelt historie. Dette er et meget mere følsomt problem end ``topic modelling'' som er et forholdsvis løst problem. Det er på grund af denne følsomhed at ord rækkefølgen er vigtig.
 
-De første to modeller er konceptuelt meget simple men har vist sig at være meget effektive til at forstå den semantiske betydning af ord \cite{word2vec-details, doc2vec}. Den sidste model er væsentlig mere avanceret og er baseret på en ny videnskabelig artikel som bruger et recurrent neural network til at oversætte fra engelsk til fransk \cite{sutskever}. Denne model er blevet modificeret til at finde latente repræsentationer for nyhedsartikler.
+De første to modeller er konceptuelt meget simple men har vist sig at være meget effektive til at forstå den semantiske betydning af ord \cite{word2vec-details, doc2vec}. Den sidste model er væsentlig mere avanceret og er baseret på en ny videnskabelig artikel, som bruger et recurrent neural network til at oversætte fra engelsk til fransk \cite{sutskever}. I denne afhandling er modellen blevet modificeret til at finde latente repræsentationer for nyhedsartikler.
 
-Disse metoder har brede applikationer. Generelt er det at finde latente repræsentationer af dokumenter et kendt forskningsområde. Metoderne kan for eksempel bruges på andre data kilder, som patient diagnoser eller udkasts til lov ændringer.
+Disse metoder har mange applikationer. Generelt er det at finde latente repræsentationer af dokumenter et kendt forskningsområde. Metoderne kan for eksempel bruges på andre data kilder, som patient diagnoser eller udkasts til lov ændringer.
 Når historierne er blevet grupperet, kan mere detaljeret spørgsmål blive undersøgt. For eksempel om der er lande som viser særlig interesse i en bestemt historie, hvilke slags politiske perspektiver som findes og hvordan opmærksomheden ændre sig over tid.

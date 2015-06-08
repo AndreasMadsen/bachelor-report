@@ -11,7 +11,7 @@ Because of the difficulties associated with having an unknown but very high amou
 
 \subsection{Hierarchical clustering}
 
-Hierarchical clustering is a general algorithm that don't create hard clusters but maps the observations intro a tree. In general there are two types. One can either start by all observations one cluster and then split it up step-by-step, this is the \textit{divisive} type. Alternatively one can consider each observation as a single clusters and then join them step-by-step, this is the \textit{agglomerative} type.
+Hierarchical clustering is a general algorithm that don't create hard clusters but maps the observations into a tree. In general there are two types. One can either start by all observations one cluster and then split it up step-by-step, this is the \textit{divisive} type. Alternatively one can consider each observation as a single clusters and then join them step-by-step, this is the \textit{agglomerative} type.
 
 The \textit{divisive} type has the computational complexity of $\mathcal{O}(2^n)$ and is thus completely infeasible. The \textit{agglomerative} is typically $\mathcal{O}(n^3)$ which is still infeasible, but some variations have the computational complexity $\mathcal{O}(n^2)$ which is a bit more manageable \cite{wiki-hcluster}. By using an extra application specific trick (temporal connectivity) the computational complexity can be reduced even more, such that the clustering algorithm feasible for many observations.
 
@@ -24,9 +24,9 @@ Distance between clusters is what controls the computational complexity, in orde
 d(a, b) = \min_{i \in [1, N_a], j \in [1, N_b]} d(a_i, b_j)
 \end{equation}
 
-As said hierarchical clustering maps observations intro a tree. In order to get hard clusters one can cut the tree or stop the algorithm when the distance exceeds a given threshold ($t$).
+As said hierarchical clustering maps observations into a tree. In order to get hard clusters one can cut the tree or stop the algorithm when the distance exceeds a given threshold ($t$).
 
-The threshold cutting together with single-linage provides a fairly efficient way of producing the clusters. Just calculate the distance matrix $D$ between observations, then turn it intro a semi-connectivity matrix by using the threshold ($D < t)$. This connectivity matrix can then be used to produce the final clusters, by walking the connectivity graph.
+The threshold cutting together with single-linage provides a fairly efficient way of producing the clusters. Just calculate the distance matrix $D$ between observations, then turn it into a semi-connectivity matrix by using the threshold ($D < t)$. This connectivity matrix can then be used to produce the final clusters, by walking the connectivity graph.
 
 \begin{algorithm}[h]
  \DontPrintSemicolon

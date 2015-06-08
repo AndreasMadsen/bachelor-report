@@ -3,11 +3,11 @@
 \section{Feed forward Neural Network}
 \label{sec:theory:ffnn}
 
-The models presented in this thesis are all neural networks or can be interpreted as such. To give a short introduction to neural networks i general the feed forward neural network (FFNN) is used. The feed forward neural network is one of the simplest models in the family of neural networks. The other models used in this thesis can be considered as extensions of the FFNN. An exception to this is perhaps the skip-gram model which may be slightly simpler than a FFNN.
+The models presented in this thesis are all neural networks or can be interpreted as such. To give a short introduction to neural networks in general the feed forward neural network (FFNN) is used. The feed forward neural network is one of the simplest models in the family of neural networks. The other models used in this thesis can be considered as extensions of the FFNN. An exception to this is perhaps the skip-gram model which is a simplified version of FFNN.
 
 \subsection{The neuron}
 
-The neuron is the main construct in any neural network. Mathematically it is just a function which takes a vector and returns a scalar. It does this by a weighed sum of the inputs $\{ x_i \}_{i=1}^I$:
+The neuron is the main construct in any neural network. Mathematically it is just a function which takes a vector and returns a scalar. It does this by a weighted sum of the inputs $\{ x_i \}_{i=1}^I$:
 \begin{equation}
 a = \sum_{i=1}^I w_{i} x_i
 \end{equation}
@@ -17,12 +17,12 @@ This sum is then typically transformed using a non-linear function $\theta$:
 b = \theta(a)
 \end{equation}
 
-The value $b$ is the output of the neuron and is called the \textit{activation}. Typically the sigmoid function $\sigma(\cdot)$ or hyperbolic tangent $\tanh(\cdot)$ function is used as non-linear function $\theta$ \cite{bishop}. If no non-linear function is applied then the identity function is used $\theta(a) = a$.
+The value $b$ is the output of the neuron and is called the \textit{activation}. Typically the sigmoid function $\sigma(\cdot)$ or hyperbolic tangent $\tanh(\cdot)$ function is used as non-linear function $\theta$ \cite{bishop}. If no non-linear function is applied then the identity function is used, $\theta(a) = a$.
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.7]{theory/ffnn-neuron}
-	\caption{Visual representation of a single neuron. The left arrows represents the input elements $\{ x_i \}_{i=1}^I$. The circle represent the function there returns the scalar $b$ (right arrow).}
+	\caption{Visual representation of a single neuron. The left arrows represents the input elements $\{ x_i \}_{i=1}^I$. The circle represent the function that returns the scalar $b$ (right arrow).}
 \end{figure}
 
 \subsection{The network}
@@ -66,8 +66,8 @@ a_{h_\ell} &= \sum_{h_{\ell-1} = 1}^{H_{\ell-1}} w_{h_{\ell-1}, h_{\ell}} b_{h_{
 \end{aligned}
 \end{equation}
 
-Note that the last layer $\ell = L + 1$ does not use a the non-linear $\theta$ function. 
-At last the network output $y_k$ can be calculated using the softmax function on the $a_{L+1}$ values:
+Note that the last layer $\ell = L + 1$ does not use the non-linear $\theta$ function. 
+At last the network output $y_k$ can be calculated using the softmax function on the $a_k = a_{L+1}$ values:
 \begin{equation}
 \begin{aligned}
 y_k = \frac{\exp(a_k)}{\sum_{k'=1}^K \exp(a_{k'})}, && \forall k \in [1, K] \text{ where: } a_k=a_{h_{L+1}}, K = H_{L + 1}
@@ -97,7 +97,7 @@ Because all future uses of the loss function isn't influenced by the sum over $n
 
 \subsection{Backward pass}
 
-For the neural network there is no closed form solution to optimizing the loss function. Instead an iterative algorithm called \textit{gradient decent} is used. Gradient decent uses the derivatives of the loss function with respect to the parameters to iteratively optimize the parameters. This approach will be discussed in details later, for now the important part is to find a method of calculating the derivatives.
+For the neural network there is no closed form solution to optimizing the loss function. Instead an iterative algorithm called \textit{gradient descent} is used. Gradient decent uses the derivatives of the loss function with respect to the parameters to iteratively optimize the parameters. This approach will be discussed in details later, for now the important part is to find a method of calculating the derivatives.
 
 For calculating the derivatives the \textit{error backpropagation} algorithm is used. The name varies a bit depending on the neural network architecture, thus the term \textit{backward pass} will be used as the umbrella term.
 
@@ -198,7 +198,7 @@ The derivative in the second term is $\exp(a_k)$, because $\frac{\partial}{\part
 \label{eq:theory:ffnn:bprop-yda}
 \end{equation}
 
-The result from \eqref{eq:theory:ffnn:bprop-Ldy} and \eqref{eq:theory:ffnn:bprop-yda} is then combined intro \eqref{eq:theory:ffnn:bprop-deltaK}:
+The result from \eqref{eq:theory:ffnn:bprop-Ldy} and \eqref{eq:theory:ffnn:bprop-yda} is then combined into \eqref{eq:theory:ffnn:bprop-deltaK}:
 \begin{equation}
 \begin{aligned}
 \delta_{h_{L + 1}} = \delta_k &= \sum_{k'=1}^K -\frac{t_{k'}}{y_{k'}} \left( \delta_{k, k'} y_k - y_{k'} y_k \right) = \sum_{k'=1}^K -\frac{t_{k'}}{y_{k'}} \delta_{k, k'} y_k + \sum_{k'=1}^K \frac{t_{k'}}{y_{k'}} y_{k'} y_k \\

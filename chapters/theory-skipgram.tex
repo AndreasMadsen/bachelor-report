@@ -17,7 +17,7 @@ The Skip-gram model does this by by encoding the input word using 1-of-V encodin
 \caption{Example of 1-of-V encoding on the sentence ``twinkle twinkle little star''}
 \end{figure}
 
-Each of these word representations are then transformed intro a lower dimensional space (latent representation). In this space words with same meaning should be close to each other. The position of each word should also contain a higher semantic meaning, such that for example $f(King) - f(Man) + f(Female) \approx f(Queen)$ \cite{word2vec-comparing}. Here $f$ is the transformation function from the input space to the latent representation.
+Each of these word representations are then transformed into a lower dimensional space (latent representation). In this space words with same meaning should be close to each other. The position of each word should also contain a higher semantic meaning, such that for example $f(King) - f(Man) + f(Female) \approx f(Queen)$ \cite{word2vec-comparing}. Here $f$ is the transformation function from the input space to the latent representation.
 
 The model is trained such that the surrounding words can be predicted from this latent representation. See Figure \ref{fig:theory:skip-gram:graph} for a graphical overview. An important detail about this model, is that the order of the words within the considered text window have no effect on the training. Thus all surrounding are assumed to having approximately the same meaning.
 

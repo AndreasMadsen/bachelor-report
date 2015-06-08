@@ -5,7 +5,7 @@ The skip-gram model doesn't need to be trained as there exists a pre trained ver
 
 The document vectors are then constructed by taking the average sum over all the word vectors. Using the full text of each article is unlikely to provide any good results, as there would be a lot of irrelevant words which would create a lot of noise. 
 
-Instead just the title of the article is used and as an experiment the title and the subhead is also considered.
+Instead just the title of the article is used and as an experiment the title and the lead is also considered.
 
 \paragraph{Document vectors} Using principal component analysis the vector representations of all the documents can be visualized in both cases.
 \begin{figure}[H]
@@ -17,7 +17,7 @@ Instead just the title of the article is used and as an experiment the title and
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.9\textwidth]{results/word2vec-both-pca}
-	\caption{Document vectors calculated from both title and subhead. Explained variance on the first 4 principal components is 24.6\%.}
+	\caption{Document vectors calculated from both title and lead. Explained variance on the first 4 principal components is 24.6\%.}
 \end{figure}
 
 Without any labeling of the documents the scatter plots are not very informative. The explained variance score is not very high compared to what one usually observes on raw data. This indicated the skip-gram model is somewhat effective in generating descriptive document vectors there aren't too correlated.
@@ -50,7 +50,7 @@ The density estimation required for showing the histogram, also serves the purpo
                 \includegraphics[width=\textwidth]{results/word2vec-both-cos-histogram}
                 \caption{Cosine similarity ($t \approx 0.092$)}
         \end{subfigure}
-        \caption{Histograms of the distance values using both title and subhead for generating document vectors.}
+        \caption{Histograms of the distance values using both title and lead for generating document vectors.}
 \end{figure}
 
 The histograms shows the distances are approximately normally distributed. This is not very surprising as the both the euclidean distance and cosine similarly involves a large sum and thus have relations to the central limit theorem.
@@ -63,7 +63,7 @@ The histograms shows the distances are approximately normally distributed. This 
 size & 1 & 2 & 81 & 318 & 715 & 17023 \\ \hline
 amount & 81857 & 3 & 1 & 1 & 1 & 1
 \end{tabular}
-\caption{Example of the cluster size distribution. In this case both title and subhead was used for generating document vectors and cosine similarity was used for clustering. Note that using euclidean distance yields way more reasonably sized clusters.}
+\caption{Example of the cluster size distribution. In this case both article title and article lead was used for generating document vectors and cosine similarity was used for clustering. Note that using euclidean distance yields way more reasonably sized clusters.}
 \end{table}
 
 It should be noted that some clusters do provide good results:
@@ -78,7 +78,7 @@ id & title \\ \hline
  26276 & How teenage boy stowed away on plane wheel well \\
  25567 & Teenage stowaway survives five-hour flight in jet's wheel
 \end{tabular}
-\caption{A cluster containing articles about the same story. Produced using euclidean distance on document vectors produced from both title and subhead.}
+\caption{A cluster containing articles about the same story. Produced using euclidean distance on document vectors produced from both title and lead.}
 \end{table}
  
-Similar results can be found when just looking at the title and using euclidean distance for clustering. However using cosine similarity did not yield any meaningful results, independent of whether or not the subhead was included. This is wired as the skip-gram papers \cite{word2vec-comparing, word2vec-details} uses the cosine similarity for finding similar words. It could be because cosine similarity is usually used in a context where the length of the vector isn't important. But in this case having a big length could indicate how extreme the article is in its language, which could be created to the story. 
+Similar results can be found when just looking at the title and using euclidean distance for clustering. However using cosine similarity did not yield any meaningful results, independent of whether or not the article lead was included. This is wired as the skip-gram papers \cite{word2vec-comparing, word2vec-details} uses the cosine similarity for finding similar words. It could be because cosine similarity is usually used in a context where the length of the vector isn't important. But in this case having a big length could indicate how extreme the article is in its language, which could be created to the story. 

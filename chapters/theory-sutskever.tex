@@ -4,7 +4,7 @@
 
 The model in \autoref{sec:Long-Short-Term-Memory} - \nameref{sec:Long-Short-Term-Memory} provides an elegant way to classify each word in a sequence of text, this can be useful to classifying the mood of a word (positive, negative or neural) or similar cases where there is a one to one alignment between a word and a output class. This kind of problem is called ￼￼￼sequence classification \cite[p.~10]{alexgraves}. However for finding a good latent representation for a document there doesn't exists such an alignment, thus sequence classification is not very useful.
 
-The Sutskever model provides a method for finding a latent representation given some input document. Unfortunately this is a supervised model, as it also requires an output sequence. In the original paper \cite{sutskever} the model is used to translate English text to french text.
+The Sutskever model provides a method for finding a latent representation given some input document. Unfortunately this is a supervised model, as it also requires an output sequence. In the original paper \cite{sutskever} the model is used to translate English text to French text.
 
 The overall idea is to have two neural networks, an encoder which takes an input document and outputs a vector, and a decoder which takes the same vector and outputs a document. The vector will then be a latent representation of the input document and hopefully this will contain enough information such that the document can be reconstructed in another language.
 
