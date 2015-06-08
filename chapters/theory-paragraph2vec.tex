@@ -39,4 +39,4 @@ y_{k}^t &= \frac{\exp(a_k^t)}{\sum_{k'=1}^V \exp(a_{k'}^t)} && \forall k \in [1,
 
 The softmax used to calculate $y_{k}^t$ performs a very large sum. This sum is impractical to calculate, for this reason the paper \cite{doc2vec} suggest using an approximation called hierarchical softmax.
 
-The model is trained just like the skip-gram model, that is using stochastic gradient decent. This optimizes the document and word vectors jointly. It is possible to later fix the word vectors and only train the document vector, but that wasn't done in this case.
+The model is trained just like the skip-gram model, that is using stochastic gradient descent. This optimizes the document and word vectors jointly. It is possible to later fix the word vectors and only train the document vector, but that wasn't done in this case.

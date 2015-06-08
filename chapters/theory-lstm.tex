@@ -6,7 +6,7 @@ In the Recurrent Neural Network the internal state $b_h^t$ must be updated in ea
 
 A computer memory cell can either be written to, read from or reset. On the most basic level memory cell are binary, not just in terms of what can be stored by also in terms of the 3 operations. Either the memory cell is completely reset or not reset, either completely read from or not read from and similarly for writing.
 
-From a mathematical perspective all these operations becomes threshold functions, which are not continuous and therefore not differentiable. This makes them impractical to use in a neural network setting, as neural networks are optimized using gradient decent. The solution is not to use threshold function but a combination of differentiable non-linear activation functions, such as the sigmoid or hyperbolic tangent function.
+From a mathematical perspective all these operations becomes threshold functions, which are not continuous and therefore not differentiable. This makes them impractical to use in a neural network setting, as neural networks are optimized using gradient descent. The solution is not to use threshold function but a combination of differentiable non-linear activation functions, such as the sigmoid or hyperbolic tangent function.
 
 \subsection{The transistor}
 
