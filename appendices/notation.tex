@@ -1,0 +1,40 @@
+%!TEX root = ../Thesis.tex
+\chapter{Notation}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{r p{10cm}}
+	symbol & meaning \\ \hline
+	$a$ & The activation input, calculated as a weighted sum over the input. \\
+	$b$ & The activation output, $b = \theta(a)$. \\
+	$H$ & The amount of units in the layer.\\
+	$h$ & The index of a units in the layer. \\
+	$K$ & The amount of classes calculated in the softmax, $K = H_{L+1}$. \\ 
+	$k$ & The class index used in the softmax, $k = h_{L + 1}$.  \\
+	$\mathcal{L}$ & The loss function, should always be minimized. \\
+	$L$ & the amount of hidden layers. Thus including the softmax output layer there are $L+1$ layers. \\
+	$\ell$ & The layer index. \\
+	$m$ & The hyperparameter momentum used in gradient decent. \\
+	$s$ & The cell state used in a LSTM unit. \\
+	$t$ & A target value. \\
+	$w$ & A weight used in a neural neural network. \\
+	$x$ & The input to the neural network, $x = b_{h_0}$. \\
+	$y$ & The softmax output. \\
+	$\gamma$ & Decay rate used in RMSprop gradient decent. \\
+	$\delta$ & Bookkeeping value used in backward propagation. \\
+	$\eta$ & learningrate used in gradient decent. \\
+	$\rho$ & Indicates the input gate in a LSTM unit. \\ 
+	$\phi$ & Indicates the forget gate in a LSTM unit. \\ 
+	$\omega$ & Indicates the output gate in a LSTM unit. \\ 
+	$\theta$ & The non-linear activation function.
+\end{tabular}
+\caption*{\textbf{Table C:} Meaning of commonly used symbols.}
+\end{table}
+
+\vspace{-0.1cm}
+Note that subscript and superscript may be added to indicate the layer and timestep.
+\begin{figure}[H]
+	\vspace{-0.2cm}
+	\centering
+	\includegraphics[scale=0.7]{appendices/notation}
+\end{figure}
