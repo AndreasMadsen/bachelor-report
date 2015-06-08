@@ -4,9 +4,9 @@
 
 The Sutskever model implementation used in \cite{sutskever} is not open source and there are no libraries for creating such a network. The model is mathematically quite complicated and maybe even more complex from a computational perspective. Thus it is unfeasible to implement it as a simple top-to-bottom script. Having a framework for constructing the LSTM layer, backward pass and etc. is thus a good idea.
 
-There is a fork of the Lasagne\footnote{\url{https://github.com/craffel/nntools}} framework there do provide implementation of the simple RNN and LSTM layers from which one can build a deep network. However Lasagne is build for feedforward forward networks and thus only simplistic RNN networks fits into the framework. The Sutskever model have its output layer connected to input layer of the decoder, which is currently far too complex for Lasagne to handle \cite{lasagne-issue}.
+There is a fork of the Lasagne\footnote{\url{https://github.com/craffel/nntools}} framework there do provide implementation of the simple RNN and LSTM layers from which one can build a deep network. However Lasagne is build for feed forward networks and thus only simplistic RNN networks fits into the framework. The Sutskever model have its output layer connected to input layer of the decoder, which is currently far too complex for Lasagne to handle \cite{lasagne-issue}.
 
-The framework implemented in \url{https://github.com/AndreasMadsen/bachelor-code} uses a different approach for generating the network equations, which allows for complex networks like the Sutskever model. The tradeoff is that the framework is less general and some optimizations like loop-invariant code motion can't be easily be manually implemented.  However as Theano becomes more advanced at automatic optimization, optimizations such as loop-invariant code motion shouldn't be necessary to manually implement.
+The framework implemented in \url{https://github.com/AndreasMadsen/bachelor-code} uses a different approach for generating the network equations, which allows for complex networks like the Sutskever model. The trade off is that the framework is less general and some optimizations like loop-invariant code motion can't be easily be manually implemented.  However as Theano becomes more advanced at automatic optimization, optimizations such as loop-invariant code motion shouldn't be necessary to manually implement.
 
 \section{Framework architecture}
 
@@ -15,7 +15,7 @@ The overall strategy of the framework is to have a consumer class there consumes
 \begin{lstlisting}[language=Python]
 lstm = neural.network.Std()
 
-# Setup layers for a recurent classifier model
+# Setup layers for a recurrent classifier model
 lstm.set_input(neural.layer.Input(2))
 lstm.push_layer(neural.layer.LSTM(4))
 lstm.push_layer(neural.layer.Softmax(4))
@@ -43,7 +43,7 @@ curr = 0
 prev_output = x_t
 
 # Loop though each layer and apply send the previous layers output
-# to the next layer. The layer can have additional paramers, if
+# to the next layer. The layer can have additional parameters, if
 # taps where provided using the `outputs_info` property.
 for layer in self._layers[1:]:
     taps = layer.infer_taps()
@@ -63,7 +63,7 @@ Do also note that the scan over all time steps uses the \texttt{theano.scan} fun
 
 \section{Memory and computation tricks}
 
-Mathematically each word or letter is encoded as an indicator vector. However from a memory perspective this is extremely inefficient. In the sutskever training 248192 articles was used for training, there are 78 unique letters and the max sequence length is 1000 letters for the input and 197 for the target. The worst case scenario in terms of memory usage is thus:
+Mathematically each word or letter is encoded as an indicator vector. However from a memory perspective this is extremely inefficient. In the Sutskever training 248192 articles was used for training, there are 78 unique letters and the max sequence length is 1000 letters for the input and 197 for the target. The worst case scenario in terms of memory usage is thus:
 \begin{equation}
 248192 \cdot 78 \cdot (1000 + 197) \approx 21.6 \text{ GB}
 \end{equation}

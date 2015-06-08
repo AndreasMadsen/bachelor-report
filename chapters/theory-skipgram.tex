@@ -14,7 +14,7 @@ The Skip-gram model does this by by encoding the input word using 1-of-V encodin
 \text{star}: \left[0, 0, 1, 0, \cdots \right]
 \end{aligned}
 \end{equation*}
-\caption{Example of 1-of-V encoding on the sentense ``twinkle twinkle little star''}
+\caption{Example of 1-of-V encoding on the sentence ``twinkle twinkle little star''}
 \end{figure}
 
 Each of these word representations are then transformed intro a lower dimensional space (latent representation). In this space words with same meaning should be close to each other. The position of each word should also contain a higher semantic meaning, such that for example $f(King) - f(Man) + f(Female) \approx f(Queen)$ \cite{word2vec-comparing}. Here $f$ is the transformation function from the input space to the latent representation.
@@ -82,7 +82,7 @@ Deriving the backward pass have similarly been covered in section \ref{sec:theor
 \mathcal{L} =  - \sum_{t = 1}^T \sum_{\ell} \ln( p(w_{t + \ell} | w_t)) =  - \sum_{t = 1}^T \sum_{\ell} \sum_{k=1}^V t_k^{t+\ell} \ln(y_k^t)
 \end{equation}
 
-This loss function is a little difference compared to that in section \ref{sec:theory:ffnn}. However because it maintains a linear relation to the loss function used in section \ref{sec:theory:ffnn}, this dosen't matter.
+This loss function is a little difference compared to that in section \ref{sec:theory:ffnn}. However because it maintains a linear relation to the loss function used in section \ref{sec:theory:ffnn}, this doesn't matter.
 \begin{equation}
 \begin{aligned}
 \frac{\partial \mathcal{L}}{\partial w_{h_{\ell-1}, h_\ell}} = \sum_{t = 1}^T \sum_{\ell} \frac{\partial}{\partial w_{h_{\ell-1}, h_\ell}} \left(- \sum_{k=1}^V t_k^{t+\ell} \ln(y_k^t)\right), && \forall \ell \in [1, L + 1]

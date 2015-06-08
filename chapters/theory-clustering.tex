@@ -26,7 +26,7 @@ d(a, b) = \min_{i \in [1, N_a], j \in [1, N_b]} d(a_i, b_j)
 
 As said hierarchical clustering maps observations intro a tree. In order to get hard clusters one can cut the tree or stop the algorithm when the distance exceeds a given threshold ($t$).
 
-The threshold cutting together with single-linage provides a fairly efficient way of producing the clusters. Just calculate the distance matrix $D$ between observations, then turn it intro a simi-connectivity matrix by using the threshold ($D < t)$. This connectivity matrix can then be used to produce the final clusters, by walking the connectivity graph.
+The threshold cutting together with single-linage provides a fairly efficient way of producing the clusters. Just calculate the distance matrix $D$ between observations, then turn it intro a semi-connectivity matrix by using the threshold ($D < t)$. This connectivity matrix can then be used to produce the final clusters, by walking the connectivity graph.
 
 \begin{algorithm}[h]
  \DontPrintSemicolon

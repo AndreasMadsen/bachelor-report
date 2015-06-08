@@ -12,18 +12,18 @@ Note that gensim doesn't provide any way of inspecting the loss function directl
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.9\textwidth]{results/doc2vec-pca}
-	\caption{Document vectors calculated from just the title. Explaned variance on the first 4 principal components is 41.4\%.}
+	\caption{Document vectors calculated from just the title. Explained variance on the first 4 principal components is 41.4\%.}
 \end{figure}
 
 Its quite interesting that 41.4\% of the variance is explained by the first 4 principal components. This might be because word2vec is quite good at guessing a missing word given just a short context. The big context which is what the document vector provides may very important and only inform about the general rhetorical pattern. This could be (formal versus  informal) or (angry versus happy). There thus exists a lower dimensional space there contains almost the same information as the 500 dimensional space.
 
-\paragraph{Distance histogram} Again becase the distance is used for clustering, the distance histogram is inspected. Furthermore the $0.1\%$ percentile is used for calculating the threshold $t$.
+\paragraph{Distance histogram} Again because the distance is used for clustering, the distance histogram is inspected. Furthermore the $0.1\%$ percentile is used for calculating the threshold $t$.
 
 \begin{figure}[H]
         \centering
         \begin{subfigure}[b]{0.49\textwidth}
                 \includegraphics[width=\textwidth]{results/doc2vec-l2-histogram}
-                \caption{Euclidian distance ($t \approx 1.35$)}
+                \caption{Euclidean distance ($t \approx 1.35$)}
         \end{subfigure}
         \begin{subfigure}[b]{0.49\textwidth}
                 \includegraphics[width=\textwidth]{results/doc2vec-cos-histogram}
@@ -32,13 +32,13 @@ Its quite interesting that 41.4\% of the variance is explained by the first 4 pr
         \caption{Histograms of the distance, generating document vectors.}
 \end{figure}
 
-The distance histograms are distribution wise a bit cleaner than in the skip-gram case. This is likely because the distribution of the document is more multinormal, at least when inspecting the PCA plots. This will of cause result a cleaner distribution in the distance as well.
+The distance histograms are distribution wise a bit cleaner than in the skip-gram case. This is likely because the distribution of the document is more multivariate normal, at least when inspecting the PCA plots. This will of cause result a cleaner distribution in the distance as well.
 
-The euclidian distance distribution looks like a gamma distribution or similar. This is likely because of the squaring in the distance calculation, which prevents the distance from becoming negative. In the skip-gram case this was less of an issue because the mean (relative to the standard deviance) was larger.
+The euclidean distance distribution looks like a gamma distribution or similar. This is likely because of the squaring in the distance calculation, which prevents the distance from becoming negative. In the skip-gram case this was less of an issue because the mean (relative to the standard deviance) was larger.
 
 \paragraph{Inspecting clusters} From inspecting the clusters the result seams to be worse when comparing to the skip-gram case.
 
-When inspecting the cluster distribution it turns out that with paragraph2vec, clustering with cosine similarity actually yields more reasonably sized clusters, compared to when the euclidian distance is used for clustering. This may be because of the gamma like distribution of the euclidian distances, which makes it more difficult to separate articles about the same story from those about diffrent storries. It's possible that a more fine-tuned threshold could yield better results, but in any case there still exits too small and way too big clusters.
+When inspecting the cluster distribution it turns out that with paragraph2vec, clustering with cosine similarity actually yields more reasonably sized clusters, compared to when the euclidean distance is used for clustering. This may be because of the gamma like distribution of the euclidean distances, which makes it more difficult to separate articles about the same story from those about different stories. It's possible that a more fine-tuned threshold could yield better results, but in any case there still exits too small and way too big clusters.
 
 \begin{table}[H]
 \centering
@@ -46,7 +46,7 @@ When inspecting the cluster distribution it turns out that with paragraph2vec, c
 size & 1 & 2 & 3 & 421 & 711 & 1855 & 3326 \\ \hline
 amount & 93665 & 8 & 2 & 1 & 1 & 1 & 1
 \end{tabular}
-\caption{The cluster distribution using an euclidan distance shows ureasonably large and small clusters and no reasonably or few reasonably sized clusters.}
+\caption{The cluster distribution using an euclidean distance shows unreasonably large and small clusters and no reasonably or few reasonably sized clusters.}
 \end{table}
 
 Unfortunately the actual clusters that the clustering algorithm produces when using cosine similarity don't appear to capture any specific story. This is possibly because the document vectors only captures the overall mood of the article. For example the cluster in Table \ref{table:paragraph2vec:example} shows articles about some bad event.

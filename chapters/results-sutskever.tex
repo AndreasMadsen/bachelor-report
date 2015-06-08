@@ -1,7 +1,7 @@
 %!TEX root = ../Thesis.tex
 \section{Sutskever}
 
-As no neural network framework exists for creating networks like the sutskever model, such a framework was written as a part of this thesis. This is a big task where a lot can go wrong, so the first part of this section will attempt to validate the model by having it solve some simple problems.
+As no neural network framework exists for creating networks like the Sutskever model, such a framework was written as a part of this thesis. This is a big task where a lot can go wrong, so the first part of this section will attempt to validate the model by having it solve some simple problems.
 
 \subsection{Constructed problems}
 
@@ -27,9 +27,9 @@ Now consider the following three variations of the same problem. Note that that 
 
 \paragraph{Decoder} Finally one can consider a decoder version of the \textit{copy} problem. Here the input should be between $0$ and $1$, as this will be used to initial the hidden output $b_{h_1}^{0_d}$ and the cell state $s_{h_1}^{0_d}$. The cell in partially is almost always in the $[0, 1]$ interval. The input and output is the same as in the encoder case, just swapped. Example: $[\sfrac{3}{9}, \sfrac{4}{9}, \sfrac{8}{9}, \sfrac{5}{9}, \sfrac{9}{9}, \sfrac{9}{9}, \sfrac{4}{9}, \sfrac{4}{9}] \rightarrow [\mathbf{3}, \mathbf{4}, \mathbf{8}, \mathbf{5}, \mathbf{9}, \mathbf{9}, \mathbf{4}, \mathbf{4}, \mathbf{0}]$
 
-\subsection{Validateing implementation}
+\subsection{Validating implementation}
 
-To validate the sutskever model the \textit{full network} version of the \textit{copy} problem was used. The model was configured as:
+To validate the Sutskever model the \textit{full network} version of the \textit{copy} problem was used. The model was configured as:
 
 \begin{table}[H]
 \centering
@@ -39,7 +39,7 @@ To validate the sutskever model the \textit{full network} version of the \textit
 	momentum ($m$) & 0.9 \\
 	decay ($\gamma$) & 0.95 \\
 	weight initialization & $\mathcal{N}(0, 0.5^2)$ \\
-	clipping stratagy & Euclidian \\
+	clipping strategy & Euclidean \\
 	clipping value & 10
 \end{tabular}
 \caption{Initialization parameters.}
@@ -48,19 +48,19 @@ To validate the sutskever model the \textit{full network} version of the \textit
 \begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.7]{results/sutskever-validate}
-	\caption{The arcitecture of the network.}
+	\caption{The architecture of the network.}
 \end{figure}
 
 The loss curve in Figure \ref{fig:results:sutskever:network-05} shows that the implementation in capable of solving the copy problem and actually converges fairly nicely with a very minimal overfitting.
 
-Whether or not the model solves it such that the encoder solves the \textit{encoder copy} problem and the decoder solves the \textit{decoder copy} is unknown. This is also irrelevant for validating the implementation. However the loss curves are for those two problems are stil shown here in Figure \ref{fig:results:sutskever:decoder-encoder-05} as they will later prove valuable as a reference.
+Whether or not the model solves it such that the encoder solves the \textit{encoder copy} problem and the decoder solves the \textit{decoder copy} is unknown. This is also irrelevant for validating the implementation. However the loss curves are for those two problems are still shown here in Figure \ref{fig:results:sutskever:decoder-encoder-05} as they will later prove valuable as a reference.
 
 Also note that while solving this problem validates the implementation, it doesn't guarantee an correct implementation, it just makes it very likely that the implementation is correct.
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.60]{results/sutskever-network-normal-05-rmsgraves}
-	\caption{Loss and missclassification rate as a function of the number of epochs on the full sutskever network.}
+	\caption{Loss and misclassification rate as a function of the number of epochs on the full Sutskever network.}
 	\label{fig:results:sutskever:network-05}
 \end{figure}
 \begin{figure}[H]
@@ -74,7 +74,7 @@ Also note that while solving this problem validates the implementation, it doesn
                 \includegraphics[scale=0.60]{results/sutskever-decoder-normal-05-rmsgraves}
                 \caption{Decoder}
         \end{subfigure}
-        \caption{Loss and missclassification rate as a function of the number of epochs.}
+        \caption{Loss and misclassification rate as a function of the number of epochs.}
         \label{fig:results:sutskever:decoder-encoder-05}
 \end{figure}
 
@@ -102,7 +102,7 @@ Now that the implementation is validated, it can be used on the real problem. Th
 \label{fig:results:sutskever:example}
 \end{figure}
 
-It turns out that using $\mathcal{N}(0, 0.5^2)$ to initialize the weights has such a high variance that the gradients become not-a-number (nan). To solve this $\mathcal{N}(0, 0.1^2)$ is used to initialize the weights, this is also what Alex Graves uses in his book \cite{alexgraves}.
+It turns out that using $\mathcal{N}(0, 0.5^2)$ to initialize the weights has such a high variance that the gradients become not-a-number (NaN). To solve this $\mathcal{N}(0, 0.1^2)$ is used to initialize the weights, this is also what Alex Graves uses in his book \cite{alexgraves}.
 
 This allows the training to continue for some iterations, to have it to continue for a longer duration with out getting not-a-number gradients the momentum and learning rate is also decreased. The final configuration is shown in Table \ref{fig:results:sutskever:article-parameters} and Figure \ref{fig:results:sutskever:article-artitecture}.
 \begin{table}[h]
@@ -113,7 +113,7 @@ This allows the training to continue for some iterations, to have it to continue
 	momentum ($m$) & 0.2 \\
 	decay ($\gamma$) & 0.95 \\
 	weight initialization & $\mathcal{N}(0, 0.1^2)$ \\
-	clipping stratagy & Euclidian \\
+	clipping strategy & Euclidean \\
 	clipping value & 10
 \end{tabular}
 \caption{Initialization parameters.}
@@ -123,14 +123,14 @@ This allows the training to continue for some iterations, to have it to continue
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.7]{results/sutskever-article}
-	\caption{The arcitecture of the network.}
+	\caption{The architecture of the network.}
 	\label{fig:results:sutskever:article-artitecture}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.60]{results/sutskever-article-normal-01-rmsgraves-m02.pdf}
-	\caption{Loss and missclassification rate as a function of the number of epochs on the full sutskever network.}
+	\caption{Loss and misclassification rate as a function of the number of epochs on the full Sutskever network.}
 	\label{fig:results:sutskever:article-learning}
 \end{figure}
 
@@ -155,7 +155,7 @@ Each epoch contains 2140 mini-batches and takes about 3 hours to run. The 4 epoc
 
 It is possible that the model is just sucked in a local minima. However it turns that decreasing the standard deviance for the weight initialization in the \textit{copy} problem causes similar issues (see Table \ref{fig:results:sutskever:copy-parameters} for the full configuration). In this problem the sequences are all equally long before padding, so just predicting \texttt{<EOS>} isn't a naturally good choice. However the model predictions are still independent of the input and somewhat constant just like in the real data case. For example $[1, 1,1,1, 7, 7, 7, 7, 0]$ is always the prediction given a seed of $42$.
 
-However it turns out that the decoder and encoder themself converges just fine, though it is not as smooth as when $\mathcal{N}(0, 0.5^2)$ is used for weight initialization.
+However it turns out that the decoder and encoder themselves converges just fine, though it is not as smooth as when $\mathcal{N}(0, 0.5^2)$ is used for weight initialization.
 \begin{table}[h]
 \centering
 \begin{tabular}{r|c}
@@ -164,7 +164,7 @@ However it turns out that the decoder and encoder themself converges just fine, 
 	momentum ($m$) & 0.9 \\
 	decay ($\gamma$) & 0.95 \\
 	weight initialization & $\mathcal{N}(0, 0.1^2)$ \\
-	clipping stratagy & Euclidian \\
+	clipping strategy & Euclidean \\
 	clipping value & 10
 \end{tabular}
 \caption{Initialization parameters for the copy problem with $\sigma = 0.1$.}
@@ -174,7 +174,7 @@ However it turns out that the decoder and encoder themself converges just fine, 
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.60]{results/sutskever-network-normal-01-rmsgraves}
-	\caption{Loss and missclassification rate as a function of the number of epochs on the full sutskever network.}
+	\caption{Loss and misclassification rate as a function of the number of epochs on the full Sutskever network.}
 	\label{fig:results:sutskever:network-01}
 \end{figure}
 \begin{figure}[H]
@@ -188,7 +188,7 @@ However it turns out that the decoder and encoder themself converges just fine, 
                 \includegraphics[scale=0.60]{results/sutskever-decoder-normal-01-rmsgraves}
                 \caption{Decoder}
         \end{subfigure}
-        \caption{Loss and missclassification rate as a function of the number of epochs.}
+        \caption{Loss and misclassification rate as a function of the number of epochs.}
         \label{fig:results:sutskever:decoder-encoder-01}
 \end{figure}
 
@@ -202,7 +202,7 @@ There is a lot of spikes in the encoder and decoder loss curves (Figure \ref{fig
 	momentum ($m$) & [0, 0.2, 0.9] \\
 	decay ($\gamma$) & [0.9, 0.95] \\
 	weight initialization & $\mathcal{N}(0, 0.1^2)$ \\
-	clipping stratagy & Euclidian \\
+	clipping strategy & Euclidean \\
 	clipping value & [1, 5, 10, 50]
 \end{tabular}
 \caption{Tried parameter combinations for solving the \textit{full network copy} problem.}
@@ -217,29 +217,29 @@ There is a lot of spikes in the encoder and decoder loss curves (Figure \ref{fig
 	momentum ($m$) & 0.9 & 0 \\
 	decay ($\gamma$) & 0.9 & 0.9 \\
 	weight initialization & $\mathcal{N}(0, 0.1^2)$ & $\mathcal{N}(0, 0.1^2)$ \\
-	clipping stratagy & Euclidian & Euclidian \\
+	clipping strategy & Euclidean & Euclidean \\
 	clipping value & 5 & 10
 \end{tabular}
-\caption{Best and worst choose for hyperparameters, given the gridsearch in Table \ref{table:resutls:sutskever:gridsearch-range}.}
+\caption{Best and worst choose for hyperparameters, given the grid search in Table \ref{table:resutls:sutskever:gridsearch-range}.}
 \end{table}
 
 While there are good and bad choices none of them makes the full network converge, as seen in Figure \ref{fig:results:sutskever:gridsearch-clip} and \ref{fig:results:sutskever:gridsearch-momentum}.
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.60]{results/sutskever-gridsearch-clip}
-	\caption{Gridsearch on learning rate and clip, other parameter variations are meaned out.}
+	\caption{Grid search on learning rate and clip, other parameter variations are meaned out.}
 	\label{fig:results:sutskever:gridsearch-clip}
 \end{figure}
 \begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.60]{results/sutskever-gridsearch-momentum}
-	\caption{Gridsearch on learning rate and momentum, other parameters variations are meaned out.}
+	\caption{Grid search on learning rate and momentum, other parameters variations are meaned out.}
 	\label{fig:results:sutskever:gridsearch-momentum}
 \end{figure}
 
-The encoder and decoder themself can converge and hyperparameter optimization of the full network doesn't work. All this suggests that it is the combination of the many layers and the smaller standard deviance that causes the problem.
+The encoder and decoder themselves can converge and hyperparameter optimization of the full network doesn't work. All this suggests that it is the combination of the many layers and the smaller standard deviance that causes the problem.
 
-\subsection{Vanshing gradient}
+\subsection{Vanishing gradient}
 It is not unusual that deep networks and small initial weights causes problems. This is because of the vanishing gradient problem. This is particular a problem in recurrent neural networks, because the iteration over the sequence actually causes the network to be much deeper than it appears to be. Using LSTM units solves this to some extent, however having many layers is still an issue. This is best seen by just considering a simple feed forward neural network with many layers and following the $\delta$ calculations.
 
 Because the last layer is a softmax and one can expect and uniform distribution as the initial distribution and the target is often zero, $\delta_{L+1}$ can be approximated as $\frac{1}{10}$ (there are 10 classes). The remaining $\delta$ values are then calculated as:

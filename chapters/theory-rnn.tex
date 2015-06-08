@@ -1,8 +1,8 @@
 %!TEX root = ../Thesis.tex
 
-\section{Recurent Neural Network}
+\section{Recurrent Neural Network}
 
-The Skip-gram model can be interpreted as a Feedforward Neural Network (FFNN). This class of neural networks have the shortcoming that the require a fixed input size, thus they can only look a fixed amount of steps back and forward in history. This can be a problem when analyzing sentences, because the amount of words in a sentence isn't fixed and there isn't a well defined window size for the surrounding words.
+The Skip-gram model can be interpreted as a Feed forward Neural Network (FFNN). This class of neural networks have the shortcoming that the require a fixed input size, thus they can only look a fixed amount of steps back and forward in history. This can be a problem when analyzing sentences, because the amount of words in a sentence isn't fixed and there isn't a well defined window size for the surrounding words.
 
 The Recurrent Neural Networks (RNN) overcome this shortcoming by having an internal state. In principal this allows the network to take a sequence of vectors and consider the entire history. The sequence can be of any size, but each vector must be of the same size. In the case of sentences a fixed vector size is not an issue when considering a fixed vocabulary.
 
@@ -13,11 +13,11 @@ In practice it turns out that the RNN forgets the past and only have a short mem
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.7]{theory/rnn-network}
-	\caption{Visualization of a single iteration in a Recurent Neural Network.}
+	\caption{Visualization of a single iteration in a Recurrent Neural Network.}
 	\label{fig:theory:rnn:rnn-network}
 \end{figure}
 
-Consider Figure \ref{fig:theory:rnn:rnn-network} but without the extra internal connections, such that it is just a feedforward neural network. The elements in the input vector is then denoted $x_{i}, i \in [1, I]$, the corresponding input for the hidden layer is $a_{h_\ell}, h_\ell \in [1, H_\ell]$ with an activation $b_{h_\ell}, _\ell \in [1, H_\ell]$. Finally there is the network output $a_{k}, k \in [1, K]$. This is just like the notation used for the FFNN.
+Consider Figure \ref{fig:theory:rnn:rnn-network} but without the extra internal connections, such that it is just a Feed forward neural network. The elements in the input vector is then denoted $x_{i}, i \in [1, I]$, the corresponding input for the hidden layer is $a_{h_\ell}, h_\ell \in [1, H_\ell]$ with an activation $b_{h_\ell}, _\ell \in [1, H_\ell]$. Finally there is the network output $a_{k}, k \in [1, K]$. This is just like the notation used for the FFNN.
 
 However since a sequence of $\mathbf{x}$ vectors will be used later, a $t \in [1, T]$ is added to the notation. Note that just because a $t$ symbol is used, the RNN model generalizes to non-time dependent datasets as well. In the case of semantic text analysis the sequence $\{\mathbf{x}^t\}_{t=1}^T$ will refer to a sequence of words represented using 1-of-V encoding. The total sequence then contains a complete sentences or paragraph. 
 
@@ -40,7 +40,7 @@ In order to fully calculate the forward pass, $b_{h'_\ell}^0$ needs to be initia
 
 \subsection{Backward pass}
 
-Just like \textit{error backpropagation} is used to calculate the loss function derivatives with respect to the weights in a FFNN, similar method exists for the RNN. The method is called \textit{backpropagation through time} (BPTT). Is almost identical to backpropagation in the feedforward network, except that it doesn't just go backward though the layers but also goes backward though time ($t$), or in this case the sequence of words. \cite{alexgraves}
+Just like \textit{error backpropagation} is used to calculate the loss function derivatives with respect to the weights in a FFNN, similar method exists for the RNN. The method is called \textit{backpropagation through time} (BPTT). Is almost identical to backpropagation in the feed forward network, except that it doesn't just go backward though the layers but also goes backward though time ($t$), or in this case the sequence of words. \cite{alexgraves}
 
 Consider again the log-likelihood function for a multiclass problem, where the probabilities $y_k^t$ are calculated using a softmax. However this time the probability must be considered for all time steps.
 \begin{align}

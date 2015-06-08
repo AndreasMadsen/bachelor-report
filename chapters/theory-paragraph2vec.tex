@@ -4,7 +4,7 @@
 
 The Skip-gram model only directly allows to get a vector representation of a single word, not a sentence or more. However to find a vector representation for a news article one must work on a sentence level. A simple approach is to just take the avenge vector sum of all the words in the article title and perhaps the subhead.
 
-While this method is perfectly valid it neglects the order of words just like the bag-of-word methods. As a solution to this the paragraph2vec model has been sugested. This is a set of models that looks very similar to the skip-gram model (or word2vec in general), but also learns a document vector which can be learned to capture the content of a document.
+While this method is perfectly valid it neglects the order of words just like the bag-of-word methods. As a solution to this the paragraph2vec model has been suggested. This is a set of models that looks very similar to the skip-gram model (or word2vec in general), but also learns a document vector which can be learned to capture the content of a document.
 
 The model shown here is the Distributed Memory Model of Paragraph Vectors (short PV-DM), as it has been shown to provide the best results \cite{doc2vec}. 
 

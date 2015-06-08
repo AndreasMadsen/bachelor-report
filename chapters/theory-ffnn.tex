@@ -1,9 +1,9 @@
 %!TEX root = ../Thesis.tex
 
-\section{Feedforward Neural Network}
+\section{Feed forward Neural Network}
 \label{sec:theory:ffnn}
 
-The models presented in this thesis are all neural networks or can be interpreted as such. To give a short introduction to neural networks i general the feedforward neural network (FFNN) is used. The feedforward neural network is one of the simplest models in the family of neural networks. The other models used in this thesis can be considered as extensions of the FFNN. An exception to this is perhaps the skip-gram model which may be slightly simpler than a FFNN.
+The models presented in this thesis are all neural networks or can be interpreted as such. To give a short introduction to neural networks i general the feed forward neural network (FFNN) is used. The feed forward neural network is one of the simplest models in the family of neural networks. The other models used in this thesis can be considered as extensions of the FFNN. An exception to this is perhaps the skip-gram model which may be slightly simpler than a FFNN.
 
 \subsection{The neuron}
 
@@ -32,11 +32,11 @@ A neural network is a multivariate non-linear regression model constructed by co
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.7]{theory/ffnn-network.pdf}
-	\caption{Visual representation of a neural network with two hidden layers. Some lines are less visibel, this is just a visual aid because the many lines can be difficult to look at.}
+	\caption{Visual representation of a neural network with two hidden layers. Some lines are less visible, this is just a visual aid because the many lines can be difficult to look at.}
 	\label{fig:theory:ffnn:network}
 \end{figure}
 
-The neural network in Figure \ref{fig:theory:ffnn:network}, have one input layer $x_i, i \in [1, I]$ and one output layer $y_k, k \in [1, K]$. This is the same for any neural network, what varies is the type of network (here a feedforward neural network) and the amount of hidden layers (here two). The hidden layers are those layers there can contain non-linear functions. If there are no hidden layers, the neural network i just a multivariate linear regressor or a multiclass logistic regressor if the softmax is applied \cite{bishop}.
+The neural network in Figure \ref{fig:theory:ffnn:network}, have one input layer $x_i, i \in [1, I]$ and one output layer $y_k, k \in [1, K]$. This is the same for any neural network, what varies is the type of network (here a feed forward neural network) and the amount of hidden layers (here two). The hidden layers are those layers there can contain non-linear functions. If there are no hidden layers, the neural network i just a multivariate linear regressor or a multiclass logistic regressor if the softmax is applied \cite{bishop}.
 
 Because there are more than one neuron in each layer and many layers, the neuron index and layer index is denoted by the subscript. For example a neuron output is denoted by $b_{h_{\ell}}$ for $h_{\ell} \in [1, H_{\ell}]$, where $h_{\ell}$ is the neuron index and $H_\ell$ is the amount of neurons in layer $\ell$.
 
@@ -99,7 +99,7 @@ Because all future uses of the loss function isn't influenced by the sum over $n
 
 For the neural network there is no closed form solution to optimizing the loss function. Instead an iterative algorithm called \textit{gradient decent} is used. Gradient decent uses the derivatives of the loss function with respect to the parameters to iteratively optimize the parameters. This approach will be discussed in details later, for now the important part is to find a method of calculating the derivatives.
 
-For calculating the derivatives the \textit{error backprobagation} algorithm is used. The name varies a bit depending on the neural network architecture, thus the term \textit{backward pass} will be used as the umbrella term.
+For calculating the derivatives the \textit{error backpropagation} algorithm is used. The name varies a bit depending on the neural network architecture, thus the term \textit{backward pass} will be used as the umbrella term.
 
 The neural network from earlier in Figure \ref{fig:theory:ffnn:network} will be used to inspire the general algorithm. The overall goal is to calculate:
 \begin{equation}
@@ -209,7 +209,7 @@ The result from \eqref{eq:theory:ffnn:bprop-Ldy} and \eqref{eq:theory:ffnn:bprop
 
 In the last step it was used that $\{ t_{k'} \}_{k'=1}^K$ is constructed using 1-of-K encoding, thus only one element is 1 and the remaining is 0, the sum must therefore give 1.
 
-Using \eqref{eq:theory:ffnn:bprop-deltaKfinal} and \eqref{eq:theory:ffnn:bprop-genalized} all $\delta_{h_\ell}$ for $\ell \in [1, L+1]$ can be calculated for a feedforward neural network with $L$ layers. Note how \eqref{eq:theory:ffnn:bprop-deltaKfinal} is an error and this error is propagated back though the network by the $\delta_{h_\ell}$ equations in \eqref{eq:theory:ffnn:bprop-genalized}. This is why the method is called \textit{error backpropagation}.
+Using \eqref{eq:theory:ffnn:bprop-deltaKfinal} and \eqref{eq:theory:ffnn:bprop-genalized} all $\delta_{h_\ell}$ for $\ell \in [1, L+1]$ can be calculated for a feed forward neural network with $L$ layers. Note how \eqref{eq:theory:ffnn:bprop-deltaKfinal} is an error and this error is propagated back though the network by the $\delta_{h_\ell}$ equations in \eqref{eq:theory:ffnn:bprop-genalized}. This is why the method is called \textit{error backpropagation}.
 
 Given the $\delta_{h_1}$ the weights $w_{h_0, h_1}$ can be calculated using \eqref{eq:theory:ffnn:bprop-w01}. However the weights $w_{h_0, h_1}$ are not the only parameters. Luckily the equations for the other weights $w_{h_{\ell-1}, h_\ell}$ are not much different.
 \begin{equation}

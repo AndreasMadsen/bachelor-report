@@ -10,7 +10,7 @@ w_{i,j}^n = w_{i,j}^{n-1} + \Delta w_{i,j}^n, && \Delta w_{i,j}^n = - \eta_n \fr
 \end{aligned}
 \end{equation}
 
-$\eta_n$ is the \textit{stepsize} and should be so small that it doesn't skip over the wanted minima, but also not so small that weights doesn't converge within reasonable time. Typically the initial weights $w^0_{i,j}$ is given by a random distribution. The choice of stepsize and initialization are not obvious as it typically depends on the specific architecture of the network and the dataset. Furthermore different sources uses very different approaches and variations of gradient decent. For example Alex Graves \cite{alexgraves} suggests using a uniform distribution in the range $[-0.1, 0.1]$ or a normal distribution with $\sigma = 0.1$ and a constant stepsize $\eta_n = 10^{-5}$.
+$\eta_n$ is the \textit{step size} and should be so small that it doesn't skip over the wanted minima, but also not so small that weights doesn't converge within reasonable time. Typically the initial weights $w^0_{i,j}$ is given by a random distribution. The choice of step size and initialization are not obvious as it typically depends on the specific architecture of the network and the dataset. Furthermore different sources uses very different approaches and variations of gradient decent. For example Alex Graves \cite{alexgraves} suggests using a uniform distribution in the range $[-0.1, 0.1]$ or a normal distribution with $\sigma = 0.1$ and a constant step size $\eta_n = 10^{-5}$.
 
 \subsection{Momentum}
 
@@ -22,36 +22,36 @@ A major problem with the naïve gradient decent algorithm, is that it tends to g
 
 Here $m$ is the \textit{momentum} parameter. Alex Graves suggests using $m = 0.9$ \cite{alexgraves}.
 
-\subsection{Socastic gradient decent}
+\subsection{Stochastic gradient decent}
 
-For calculating the gradient some dataset is used, the naïve approach is to use the entire dataset at once. However it turns out that a better approach is to calculating the gradient using a single datapoint, then updating the parameters and repeating for all datapoints (see Algorithm \ref{algorithm:gradientdecent:SGD}). This method is called \textit{stocastic gradient decent} (SGD) or \textit{online learning}, where the naïve approach is called \textit{batch learning}.
+For calculating the gradient some dataset is used, the naïve approach is to use the entire dataset at once. However it turns out that a better approach is to calculating the gradient using a single data point, then updating the parameters and repeating for all datapoints (see Algorithm \ref{algorithm:gradientdecent:SGD}). This method is called \textit{stochastic gradient decent} (SGD) or \textit{online learning}, where the naïve approach is called \textit{batch learning}.
 
 \begin{algorithm}[h]
  \DontPrintSemicolon
  \While{stopping criteria not met}{
-  Randomise training set order\;
+  Randomize training set order\;
   \For{each observation in the training set}{
    Run forward and backward pass to calculate the gradient\;
    Update weights with gradient descent algorithm\;
   }
  }
- \caption{Stocastic graident decent \cite{alexgraves}.}
+ \caption{Stochastic gradient decent \cite{alexgraves}.}
  \label{algorithm:gradientdecent:SGD}
 \end{algorithm}
 
-One reason for \textit{stocastic gradient decent} being better is that it handels redundancies\todo{Why was this} in the data better. It also helps in not getting stuck in a local minima, because it is unlikely that what is a local minima for one datapoint is also a local minima for another datapoint \cite{bishop}.
+One reason for \textit{stochastic gradient decent} being better is that it handles redundancies\todo{Why was this} in the data better. It also helps in not getting stuck in a local minima, because it is unlikely that what is a local minima for one data point is also a local minima for another data point \cite{bishop}.
 
-\subsection{Mini-batch socastic gradient decent}
+\subsection{Mini-batch stochastic gradient decent}
 
-While \textit{stocastic gradient decent} is way better than \textit{batch learning} it doesn't handle outliers very well, because the gradient will be big for such observation. It also isn't very computational efficient because the vectorization libraries can't take full advantage of the CPU cache and etc..
+While \textit{stochastic gradient decent} is way better than \textit{batch learning} it doesn't handle outliers very well, because the gradient will be big for such observation. It also isn't very computational efficient because the vectorization libraries can't take full advantage of the CPU cache and etc..
 
-To solve those issues \textit{Mini-batch socastic gradient decent} or \textit{mini-batch learning} is used. This is a compromise between \textit{batch learning} and \textit{online learning}, where small random batches of observations are created and the weights are then optimized like in Algorithm \ref{algorithm:gradientdecent:SGD}. This introduces a third parameter called the \textit{mini-batch-size}, which as the same suggests controls the size of the mini-batches. This also generalizes \textit{online learning} and \textit{batch learning}, because if \textit{mini-batch-size = 1} then it is \textit{online learning} and if \textit{mini-batch-size = training-size} then it is \textit{batch learning}. Generally the \textit{mini-batch-size} is just chosen by benchmarking, calculating or guessing what is the most computational efficient choose.
+To solve those issues \textit{Mini-batch stochastic gradient decent} or \textit{mini-batch learning} is used. This is a compromise between \textit{batch learning} and \textit{online learning}, where small random batches of observations are created and the weights are then optimized like in Algorithm \ref{algorithm:gradientdecent:SGD}. This introduces a third parameter called the \textit{mini-batch-size}, which as the same suggests controls the size of the mini-batches. This also generalizes \textit{online learning} and \textit{batch learning}, because if \textit{mini-batch-size = 1} then it is \textit{online learning} and if \textit{mini-batch-size = training-size} then it is \textit{batch learning}. Generally the \textit{mini-batch-size} is just chosen by benchmarking, calculating or guessing what is the most computational efficient choose.
 
 \begin{algorithm}[h]
  \DontPrintSemicolon
  \While{stopping criteria not met}{
-  Randomise training set order\;
-  \For{each minibatch in the training set}{
+  Randomize training set order\;
+  \For{each mini-batch in the training set}{
    Run forward and backward pass to calculate the gradient\;
    Update weights with gradient descent algorithm\;
   }
@@ -62,7 +62,7 @@ To solve those issues \textit{Mini-batch socastic gradient decent} or \textit{mi
 
 \subsection{RMSprop}
 
-The gradient decent algorithms presented so far uses a global learning rate for all the weights. This causes some issues for those gradients there are very tiny or huge, because they will either be dominating or be practically neglected. A solution to this is to not use the size of gradient but just the sign and then move a constant amount in that direction, this method is called \textit{rprop} and is useful for \textit{batch-learning}. However for \textit{mini-batch learning} \textit{rprop} doesn't work very well. This is because \textit{mini-batch-size} have some averaging properties, for example if the gradient for a specific weights is $0.1$ for nine mini-batches and $-0.9$ for just one minibatch, this will cause the weight to say roughly where it is. However for \textit{rprop} it will move $9 \times 1$ in one direction and then $1 \times (-1)$ in the other, because a constant movement step is used. The solution is called \textit{RMSprop} and is the equivalent to \textit{rprop} for \textit{mini-batch learning}. It works by performing a moving average on the gradient and then using this average to scale the learning rate, such that it adapts to the scale of the gradient in general. This can be done with and without momentum, for completness with momentum is shown here:
+The gradient decent algorithms presented so far uses a global learning rate for all the weights. This causes some issues for those gradients there are very tiny or huge, because they will either be dominating or be practically neglected. A solution to this is to not use the size of gradient but just the sign and then move a constant amount in that direction, this method is called \textit{rprop} and is useful for \textit{batch-learning}. However for \textit{mini-batch learning} \textit{rprop} doesn't work very well. This is because \textit{mini-batch-size} have some averaging properties, for example if the gradient for a specific weights is $0.1$ for nine mini-batches and $-0.9$ for just one mini-batch, this will cause the weight to say roughly where it is. However for \textit{rprop} it will move $9 \times 1$ in one direction and then $1 \times (-1)$ in the other, because a constant movement step is used. The solution is called \textit{RMSprop} and is the equivalent to \textit{rprop} for \textit{mini-batch learning}. It works by performing a moving average on the gradient and then using this average to scale the learning rate, such that it adapts to the scale of the gradient in general. This can be done with and without momentum, for completeness with momentum is shown here:
 
 \begin{equationbox}[H]
 \begin{equation*}
@@ -79,16 +79,16 @@ Notice that $\epsilon$ is necessary because $g_{i,j}^n$ and $f_{i,j}^n$ can be z
 
 \subsection{Clipping}
 
-Sometimes the $\frac{\partial \mathcal{L}}{\partial w_{i,j}}$ gradients becomes really big because of an unfortunate mini-batch or some numerical instability in the implementation. To avoid this the gradient is often clipped or squeezed to prevent these issues \cite{graves-generating-sequences}. There are 3 common methods, which also uses a \textit{clip} hyperparameter to control how agressiv the clipping should be.
+Sometimes the $\frac{\partial \mathcal{L}}{\partial w_{i,j}}$ gradients becomes really big because of an unfortunate mini-batch or some numerical instability in the implementation. To avoid this the gradient is often clipped or squeezed to prevent these issues \cite{graves-generating-sequences}. There are 3 common methods, which also uses a \textit{clip} hyperparameter to control how aggressive the clipping should be.
 
 Note that some of these methods consider all gradients for all the weight matrices as one long vector, this vector will be denoted $\nabla \mathcal{L}$.
 \begin{align}
 \text{clipping: } & \frac{\partial \mathcal{L}}{\partial w_{i,j}} = \max\left(\frac{\partial \mathcal{L}}{\partial w_{i,j}}, clip\right) \\
-\text{max squeezeing: } & \frac{\partial \mathcal{L}}{\partial w_{i,j}} = \begin{cases}
+\text{max squeezing: } & \frac{\partial \mathcal{L}}{\partial w_{i,j}} = \begin{cases}
 	\frac{\partial \mathcal{L}}{\partial w_{i,j}} & clip < \max(\nabla \mathcal{L}) \\
 	\frac{\partial \mathcal{L}}{\partial w_{i,j}} \frac{clip}{\max(\nabla \mathcal{L})} & otherwise
 \end{cases} \\
-\text{euclidean squeezeing: } & \frac{\partial \mathcal{L}}{\partial w_{i,j}} = \begin{cases}
+\text{euclidean squeezing: } & \frac{\partial \mathcal{L}}{\partial w_{i,j}} = \begin{cases}
 	\frac{\partial \mathcal{L}}{\partial w_{i,j}} & clip < ||\nabla \mathcal{L}||_2 \\
 	\frac{\partial \mathcal{L}}{\partial w_{i,j}} \frac{clip}{||\nabla \mathcal{L}||_2} & otherwise
 \end{cases}
