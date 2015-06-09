@@ -5,7 +5,7 @@ As no neural network framework exists for creating networks like the Sutskever m
 
 \subsection{Constructed problems}
 
-Inspired from the learning to execute paper \cite{learning-to-execute} a copy problem is used to validate the model. The idea is simple generate a sequence of random integers between 1 and 9 of length 8 and append an \texttt{<EOS>} element (encoded 0) to that sequence. 
+Inspired from the learning to execute paper \cite{learning-to-execute} a copy problem is used to validate the model. The idea is simple, generate a sequence of random integers between 1 and 9 of length 8 and append an \texttt{<EOS>} element (encoded 0) to that sequence. 
 \begin{figure}[H]
 \begin{equation*}
 \begin{aligned}
@@ -25,7 +25,7 @@ Now consider the following three variations of the same problem. Note that that 
 
 \paragraph{Encoder} The encoder problem is a regression problem where the output is the integer sequence expressed as an vector. Note that the \texttt{<EOS>} isn't included and the vector is divided by 9 to fit between $0$ and $1$. It isn't strictly necessary for the output to be within $[0, 1]$, but it makes it easier to compare to the decoder version of this problem. Example: $[\mathbf{3}, \mathbf{4}, \mathbf{8}, \mathbf{5}, \mathbf{9}, \mathbf{9}, \mathbf{4}, \mathbf{4}, \mathbf{0}] \rightarrow [\sfrac{3}{9}, \sfrac{4}{9}, \sfrac{8}{9}, \sfrac{5}{9}, \sfrac{9}{9}, \sfrac{9}{9}, \sfrac{4}{9}, \sfrac{4}{9}]$.
 
-\paragraph{Decoder} Finally one can consider a decoder version of the \textit{copy} problem. Here the input should be between $0$ and $1$, as this will be used to initial the hidden output $b_{h_1}^{0_d}$ and the cell state $s_{h_1}^{0_d}$. The cell in partially is almost always in the $[0, 1]$ interval. The input and output is the same as in the encoder case, just swapped. Example: $[\sfrac{3}{9}, \sfrac{4}{9}, \sfrac{8}{9}, \sfrac{5}{9}, \sfrac{9}{9}, \sfrac{9}{9}, \sfrac{4}{9}, \sfrac{4}{9}] \rightarrow [\mathbf{3}, \mathbf{4}, \mathbf{8}, \mathbf{5}, \mathbf{9}, \mathbf{9}, \mathbf{4}, \mathbf{4}, \mathbf{0}]$
+\paragraph{Decoder} Finally one can consider a decoder version of the \textit{copy} problem. Here the input should be between $0$ and $1$, as this will be used to initialize the hidden output $b_{h_1}^{0_d}$ and the cell state $s_{h_1}^{0_d}$. The cell in partially is almost always in the $[0, 1]$ interval. The input and output is the same as in the encoder case, just swapped. Example: $[\sfrac{3}{9}, \sfrac{4}{9}, \sfrac{8}{9}, \sfrac{5}{9}, \sfrac{9}{9}, \sfrac{9}{9}, \sfrac{4}{9}, \sfrac{4}{9}] \rightarrow [\mathbf{3}, \mathbf{4}, \mathbf{8}, \mathbf{5}, \mathbf{9}, \mathbf{9}, \mathbf{4}, \mathbf{4}, \mathbf{0}]$
 
 \subsection{Validating implementation}
 
@@ -45,17 +45,19 @@ To validate the Sutskever model the \textit{full network} version of the \textit
 \caption{Initialization parameters.}
 \end{table}
 
+In all cases the sigmoid function was used in the gate (f) non-linear function and the input non-linear function (g). The output activation function (h) was set to the identity function. Such that the LSTM unit can generalize to the simple RNN unit.
+
 \begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.7]{results/sutskever-validate}
 	\caption{The architecture of the network.}
 \end{figure}
 
-The loss curve in Figure \ref{fig:results:sutskever:network-05} shows that the implementation in capable of solving the copy problem and actually converges fairly nicely with a very minimal overfitting.
+The loss curve in Figure \ref{fig:results:sutskever:network-05} shows that the implementation is capable of solving the copy problem and actually converges fairly nicely with a very minimal overfitting.
 
-Whether or not the model solves it such that the encoder solves the \textit{encoder copy} problem and the decoder solves the \textit{decoder copy} is unknown. This is also irrelevant for validating the implementation. However the loss curves are for those two problems are still shown here in Figure \ref{fig:results:sutskever:decoder-encoder-05} as they will later prove valuable as a reference.
+Whether or not the model solves it such that the encoder solves the \textit{encoder copy} problem and the decoder solves the \textit{decoder copy} is unknown. This is also irrelevant for validating the implementation. However the loss curves are for those two problems are still shown here in Figure \ref{fig:results:sutskever:decoder-encoder-05}, as they will later prove valuable as a reference.
 
-Also note that while solving this problem validates the implementation, it doesn't guarantee an correct implementation, it just makes it very likely that the implementation is correct.
+Also note that while solving this problem validates the implementation, it doesn't guarantee an correct implementation, it just makes it likely that the implementation is correct.
 
 \begin{figure}[h]
 	\centering
@@ -80,7 +82,7 @@ Also note that while solving this problem validates the implementation, it doesn
 
 \subsection{Using real data}
 
-Now that the implementation is validated, it can be used on the real problem. The goal is to predict the article title given the article lead, the hope is this should be somewhat similar to the translation problem solved in the original paper \cite{sutskever}. Figure \ref{fig:results:sutskever:example} shows the first 3 observations in the dataset. The entire dataset consists of 273813 news articles, all articles are used for training.
+Now that the implementation is validated, it can be used on the real problem. The goal is to predict the article title given the article lead. The hope is this should be somewhat similar to the translation problem solved in the original paper \cite{sutskever}. Figure \ref{fig:results:sutskever:example} shows the first 3 observations in the dataset. The entire dataset consists of 273813 news articles, all articles are used for training.
 
 \begin{figure}[H]
 \centering
@@ -147,13 +149,13 @@ Figure \ref{fig:results:sutskever:article-learning} shows that the model didn't 
 \label{fig:results:sutskever:predictions}
 \end{table}
 
-The model just predicts a long sequence of \texttt{<EOS>} which will match a fairly big part of the target, because it padded with \texttt{<EOS>} to fit the longest sequence in that mini-batch.
+The model just predicts a long sequence of \texttt{<EOS>} which will match a fairly big part of the target, because the target is padded with \texttt{<EOS>} to fit the longest sequence in that mini-batch.
 
 Each epoch contains 2140 mini-batches and takes about 3 hours to run. The 4 epochs that ran before the gradients became not-a-number thus took 12 hours. This should be enough time to find a better solution than just predicting \texttt{<EOS>}.
 
 \subsection{Diagnosing the problem}
 
-It is possible that the model is just sucked in a local minima. However it turns that decreasing the standard deviance for the weight initialization in the \textit{copy} problem causes similar issues (see Table \ref{fig:results:sutskever:copy-parameters} for the full configuration). In this problem the sequences are all equally long before padding, so just predicting \texttt{<EOS>} isn't a naturally good choice. However the model predictions are still independent of the input and somewhat constant just like in the real data case. For example $[1, 1,1,1, 7, 7, 7, 7, 0]$ is always the prediction given a seed of $42$.
+It is possible that the model is just stuck in a local minima. However it turns out that decreasing the standard deviance for the weight initialization in the \textit{copy} problem causes similar issues (see Table \ref{fig:results:sutskever:copy-parameters} for the full configuration). In this problem the sequences are all equally long before padding, so just predicting \texttt{<EOS>} isn't a naturally good choice. However the model predictions are still independent of the input and somewhat constant just like in the real data case. For example $[1, 1,1,1, 7, 7, 7, 7, 0]$ is always the prediction given a seed of $42$.
 
 However it turns out that the decoder and encoder themselves converges just fine, though it is not as smooth as when $\mathcal{N}(0, 0.5^2)$ is used for weight initialization.
 \begin{table}[h]
@@ -192,7 +194,7 @@ However it turns out that the decoder and encoder themselves converges just fine
         \label{fig:results:sutskever:decoder-encoder-01}
 \end{figure}
 
-There is a lot of spikes in the encoder and decoder loss curves (Figure \ref{fig:results:sutskever:decoder-encoder-01}) these could probably have been avoided by choosing a smaller \textit{clip} value. Likewise it is entirely possible that some other hyperparameter choices could have caused the full network to converge properly. To investigate that possibility a grid search over the hyperparameters was performed.
+There is a lot of spikes in the encoder and decoder loss curves (Figure \ref{fig:results:sutskever:decoder-encoder-01}) these could probably have been avoided by choosing a smaller \textit{clip} value. Likewise it is entirely possible that some other hyperparameter choices could have caused the full network to converge probably. To investigate that possibility a grid search over the hyperparameters was performed.
 
 \begin{table}[h]
 \centering
@@ -205,7 +207,7 @@ There is a lot of spikes in the encoder and decoder loss curves (Figure \ref{fig
 	clipping strategy & Euclidean \\
 	clipping value & [1, 5, 10, 50]
 \end{tabular}
-\caption{Tried parameter combinations for solving the \textit{full network copy} problem.}
+\caption{Tried parameter values for solving the \textit{full network copy} problem.}
 \label{table:resutls:sutskever:gridsearch-range}
 \end{table}
 \begin{table}[h]
@@ -247,12 +249,12 @@ Because the last layer is a softmax and one can expect and uniform distribution 
 \delta_{h_\ell} = \theta'(a_{h_\ell}) \sum_{h_{\ell+1} = 1}^{H_{\ell+1}} \delta_{h_{\ell+1}} w_{h_\ell, h_{\ell+1}}
 \end{equation}
 
-The maximum value of $\theta'(\cdot)$ when $\theta$ is the sigmoid function is approximately $0.23$, and shouldn't expect more than $0.1$ from the weights. One then gets:
+The maximum value of $\theta'(\cdot)$ when $\theta$ is the sigmoid function is approximately $0.23$, and one shouldn't expect more than $0.1$ from the weights given the initialization. One then gets:
 \begin{equation}
 \delta_{h_L} \approx 0.23 \sum_{h_{\ell+1} = 1}^{H_{\ell+1}} \frac{1}{10} \cdot 0.1 \lesssim \delta_{h_{L+1}} \approx \frac{1}{10}
 \end{equation}
 
 The $\delta_{h_\ell}$ will thus decrease for each layer causing the gradients for the bottom layers to be near zero.
 
-Note that because the size of $\delta_{h_\ell}$ depends on $H_{\ell+1}$, one could use different standard deviance values depending on the $H_{\ell+1}$ value for each layer. This was attempted and didn't work, though more experiments could have been done. Another solution is to use rectified linear unit (ReLU) as the activation function which as been shown not to suffer from the vanishing gradient problem, due to the lack of time this was not attempted.
+Note that because the size of $\delta_{h_\ell}$ depends on $H_{\ell+1}$, one could use different standard deviance values depending on the $H_{\ell+1}$ value for each layer, such that the $\delta_{h_\ell}$ value is in a reasonable range. This was attempted and didn't work, though more experiments could have been done. Another solution is to use rectified linear unit (ReLU) as the activation function, which as been shown not to suffer from the vanishing gradient problem. Due to the lack of time this was not attempted.
 
