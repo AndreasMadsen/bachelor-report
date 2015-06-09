@@ -2,15 +2,15 @@
 
 \section{Paragraph2vec}
 
-The Skip-gram model only directly allows to get a vector representation of a single word, not a sentence or more. However to find a vector representation for a news article one must work on a sentence level. A simple approach is to just take the avenge vector sum of all the words in the article title and perhaps the article lead.
+The Skip-gram model only directly allows to get a vector representation of a single word, not a sentence or more. However to find a vector representation for a news article one must work on a sentence level. A simple approach is to just take the average vector sum of all the words in the article title and perhaps the article lead.
 
-While this method is perfectly valid it neglects the order of words just like the bag-of-word methods. As a solution to this the paragraph2vec model has been suggested. This is a set of models that looks very similar to the skip-gram model (or word2vec in general), but also learns a document vector which can be learned to capture the content of a document.
+While this method is perfectly valid it neglects the order of words just like the bag-of-word methods. As a solution to this the paragraph2vec model has been suggested. This is a set of models that looks very similar to the skip-gram model (or word2vec in general), but also learns a document vector which should capture the content of a document.
 
 The model shown here is the Distributed Memory Model of Paragraph Vectors (short PV-DM), as it has been shown to provide the best results \cite{doc2vec}. 
 
 \subsection{Forward-pass}
 
-The idea behind the PV-DM model is a bit different from the skip-gram model. Instead of using one word to predict multiply surrounding words, it uses a window of previous words to predict just a single word. In addition to this, the model uses a unique document vector for each document to adjust the word probabilities.
+The idea behind the PV-DM model is a bit different from the skip-gram model. Instead of using one word to predict multiply surrounding words, it uses a window of previous words to predict just a single word. In addition to this, the model uses a unique document vector for each document to adjust the word prediction probabilities.
 
 \begin{figure}[H]
 	\centering
@@ -27,7 +27,7 @@ b_{h_1}^d &= a_{h_1}^d = \sum_{i=1}^S d_{i,h_1} x_{i}^d && \forall h_1 \in [1, D
 \end{aligned}
 \end{equation}
 
-Note that the document vector is unique for each document but shared for all word prediction in that document. The word vectors are then shared across all documents, just like in the skip-gram model.
+Note that the document vector is unique for each document but shared for all word predictions in that document. The word vectors are then shared across all documents, just like in the skip-gram model.
 
 The document and word vectors are then concatenated into a single vector, which is then multiplied by a weight matrix to generate the softmax input for the word prediction.
 \begin{equation}

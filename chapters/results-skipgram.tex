@@ -1,7 +1,7 @@
 %!TEX root = ../Thesis.tex
 \section{Skip-gram}
 
-The skip-gram model doesn't need to be trained as there exists a pre trained version at \url{https://code.google.com/p/word2vec/}. This pre trained version has a latent size of 300 dimensions. The weights are trained using the Google News dataset, which is about 100 billion words and unfortunately not publicly available.
+The skip-gram mtodel doesn't need to be trained as there exists a pre trained version at \url{https://code.google.com/p/word2vec/}. This pre trained version has a latent size of 300 dimensions. The weights are trained using the Google News dataset, which is about 100 billion words and unfortunately not publicly available.
 
 The document vectors are then constructed by taking the average sum over all the word vectors. Using the full text of each article is unlikely to provide any good results, as there would be a lot of irrelevant words which would create a lot of noise. 
 
