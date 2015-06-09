@@ -26,7 +26,7 @@ The Sutskever paper \cite{sutskever} do indicates that the model may not work fo
 
 The input and output sequence are both encoded using 1-of-V encoding, where V is the amount of unique letters. In order to indicate to the network when an input or output sequence is ended, an end-of-sequence ``letter'' is added to the vocabulary. This special letter will be denoted \texttt{<EOS>}.
 
-At last the paper also reverses the order of the output sequence, but this doesn't change the model as it is just a preprocessing.
+At last the paper also reverses the order of the output sequence, but this doesn't change the model as it is just a pre processing of the target value.
 
 \subsection{Forward pass}
 

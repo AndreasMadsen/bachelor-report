@@ -209,7 +209,7 @@ The result from \eqref{eq:theory:ffnn:bprop-Ldy} and \eqref{eq:theory:ffnn:bprop
 
 To get $\sum_{k'=1}^K t_{k'}$ is is used that $\{ t_{k'} \}_{k'=1}^K$ is constructed using 1-of-K encoding, thus only one element is 1 and the remaining is 0, the sum must therefore give 1.
 
-Using \eqref{eq:theory:ffnn:bprop-deltaKfinal} and \eqref{eq:theory:ffnn:bprop-genalized} all $\delta_{h_\ell}$ for $\ell \in [1, L+1]$ can be calculated for a feed forward neural network with $L$ layers. Note how \eqref{eq:theory:ffnn:bprop-deltaKfinal} is an error messure and this value is propagated back through the network by the $\delta_{h_\ell}$ equations in \eqref{eq:theory:ffnn:bprop-genalized}. This is why the method is called \textit{error backpropagation}.
+Using \eqref{eq:theory:ffnn:bprop-deltaKfinal} and \eqref{eq:theory:ffnn:bprop-genalized} all $\delta_{h_\ell}$ for $\ell \in [1, L+1]$ can be calculated for a feed forward neural network with $L$ layers. Note how \eqref{eq:theory:ffnn:bprop-deltaKfinal} is an error measure and this value is propagated back through the network by the $\delta_{h_\ell}$ equations in \eqref{eq:theory:ffnn:bprop-genalized}. This is why the method is called \textit{error backpropagation}.
 
 Given $\delta_{h_1}$ the weight derivative $w_{h_0, h_1}$ can be calculated using \eqref{eq:theory:ffnn:bprop-w01}. However the weights $w_{h_0, h_1}$ are not the only parameters. Luckily the equations for the other weights $w_{h_{\ell-1}, h_\ell}$ are not much different.
 \begin{equation}
