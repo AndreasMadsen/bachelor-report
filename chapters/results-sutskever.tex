@@ -47,6 +47,8 @@ To validate the Sutskever model the \textit{full network} version of the \textit
 
 In all cases the sigmoid function was used in the gate (f) non-linear function and the input non-linear function (g). The output activation function (h) was set to the identity function. Such that the LSTM unit can generalize to the simple RNN unit.
 
+Note also that the target value wasn't reversed, this is to make the model easier to reason about. The original paper \cite{sutskever} also indicates that the model does work without reversing the target value, it just improves the performance.
+
 \begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.7]{results/sutskever-validate}
