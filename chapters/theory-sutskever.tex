@@ -22,7 +22,7 @@ The Sutskever paper \cite{sutskever} used a lot of computational resources (8 GP
 
 Using letters instead of words means that the sequences gets longer. The average word length in English text is 5.1 character, including the space separator one should expect 6.1 longer sequences. However by using letters the softmax size is decreased from 80000 words to just 78 letters. It should be noted that Unicode NFKD normalization \cite{unicode-normalization} was used to remove accents and ligature, rarely used letters was also removed to reduce the softmax size to 78 letters.
 
-The Sutskever paper \cite{sutskever} do indicates that the model may not work for long sequences, which could be a problem when using letters instead of words. However given the limited resources this still seams like a good solution.
+The Sutskever paper \cite{sutskever} do indicates that the model may not work for long sequences, which could be a problem when using letters instead of words. However given the limited resources this still seem like a good solution.
 
 The input and output sequence are both encoded using 1-of-V encoding, where V is the amount of unique letters. In order to indicate to the network when an input or output sequence is ended, an end-of-sequence ``letter'' is added to the vocabulary. This special letter will be denoted \texttt{<EOS>}.
 

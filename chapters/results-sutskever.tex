@@ -57,28 +57,30 @@ Note also that the target value wasn't reversed, this is to make the model easie
 
 The loss curve in Figure \ref{fig:results:sutskever:network-05} shows that the implementation is capable of solving the copy problem and actually converges fairly nicely with a very minimal overfitting.
 
-Whether or not the model solves it such that the encoder solves the \textit{encoder copy} problem and the decoder solves the \textit{decoder copy} is unknown. This is also irrelevant for validating the implementation. However the loss curves are for those two problems are still shown here in Figure \ref{fig:results:sutskever:decoder-encoder-05}, as they will later prove valuable as a reference.
+Whether or not the model solves it such that the encoder solves the \textit{encoder copy} problem and the decoder solves the \textit{decoder copy} is unknown. This is also irrelevant for validating the implementation. However the loss curves for the \textit{decoder} and \textit{encoder} problems are still shown in Figure \ref{fig:results:sutskever:decoder-encoder-05}, as they will later prove valuable as a reference.
 
 Also note that while solving this problem validates the implementation, it doesn't guarantee an correct implementation, it just makes it likely that the implementation is correct.
 
 \begin{figure}[h]
+         \vspace*{-0.5cm}
 	\centering
 	\includegraphics[scale=0.60]{results/sutskever-network-normal-05-rmsgraves}
-	\caption{Loss and misclassification rate as a function of the number of epochs on the full Sutskever network.}
+	\caption{Loss and misclassification rate as a function of the number of epochs, from the full Sutskever network solving the ``full network'' copy problem.}
 	\label{fig:results:sutskever:network-05}
 \end{figure}
 \begin{figure}[H]
         \vspace{-0.5cm}
         \centering
-        \begin{subfigure}[b]{0.49\textwidth}
+        \begin{subfigure}[b]{0.40\textwidth}
                 \includegraphics[scale=0.60]{results/sutskever-encoder-normal-05-rmsgraves}
-                \caption{Encoder}
+                \caption{Encoder, solving the ``encoder'' copy problem.}
         \end{subfigure}
-        \begin{subfigure}[b]{0.49\textwidth}
+        \hspace{0.10\textwidth}
+        \begin{subfigure}[b]{0.40\textwidth}
                 \includegraphics[scale=0.60]{results/sutskever-decoder-normal-05-rmsgraves}
-                \caption{Decoder}
+                \caption{Decoder, solving the ``decoder'' copy problem.}
         \end{subfigure}
-        \caption{Loss and misclassification rate as a function of the number of epochs.}
+        \caption{Loss and misclassification rate as a function of the number of epochs, from the encoder and decoder as two independent neural networks.}
         \label{fig:results:sutskever:decoder-encoder-05}
 \end{figure}
 

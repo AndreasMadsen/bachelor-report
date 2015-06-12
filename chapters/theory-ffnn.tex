@@ -82,14 +82,15 @@ Optimization of the parameters $w_{i,j}$ requires definition of a loss function.
 P(\mathbf{t} | \mathbf{x}, \mathbf{w}) = \prod_{n=1}^N P(\mathbf{t}_n | \mathbf{x}_n, \mathbf{w})  = \prod_{n=1}^N \prod_{k=1}^K P(C_{n, k} | \mathbf{x}_n, \mathbf{w})^{t_{n, k}}
 \end{equation}
 
-Here $\mathbf{x}_{n}$ is the input vector for observation $n$, with a corresponding label vector $\mathbf{t}_n$. The label vector is an indicator vector, constructed using 1-of-K encoding. For example if there are 5 classes and class 2 is the correct class for observation $n$, then $\mathbf{t}_n = [0, 1, 0, 0, 0]^T$.
+Here $\mathbf{x}_{n}$ is the input vector for observation $n$, with a corresponding label vector $\mathbf{t}_n$. The label vector is an indicator vector, constructed using 1-of-K encoding. For example if there are 5 classes and class 2 is the correct class for observation $n$, then $\mathbf{t}_n = [0, 1, 0, 0, 0]^T$. The class probability $P(C_{n, k} | \mathbf{x}_n, \mathbf{w})$ is in terms of the forward pass equations the $y_k$ value for observation $n$.
 
 The logarithm is then used to create linearity and avoid numerical floating point issues. The sign is also changed such that it becomes a loss function:
 \begin{equation}
 - \ln\left(P(\mathbf{t} | \mathbf{x}, \mathbf{w})\right) = - \sum_{n=1}^N \sum_{k=1}^K t_{n, k} \ln\left( P(C_{n, k} | \mathbf{x}_n, \mathbf{w})\right)
+\label{eq:theory:ffnn:long-loss}
 \end{equation}
 
-Because all future uses of the loss function isn't influenced by the sum over $n$, the $n$ index is typically omitted. Finally the loss function will also be denoted by $\mathcal{L}$:
+Because of the linearity in \eqref{eq:theory:ffnn:long-loss} it makes sense to just consider the loss function for one datapoint. This way the $n$ index can be omitted from the equations and the sum over $n$ can always be reintroduced in the end. By doing this one gets the final loss function there will be denoted by $\mathcal{L}$:
 \begin{equation}
 \mathcal{L} = - \sum_{k=1}^K t_{k} \ln\left( P(C_{k} | \mathbf{x}, \mathbf{w})\right) =  - \sum_{k=1}^K t_k \ln(y_k)
 \label{eq:theory:ffnn:loss}

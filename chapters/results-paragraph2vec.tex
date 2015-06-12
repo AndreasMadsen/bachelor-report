@@ -34,11 +34,11 @@ The explained variance is 41.4\% for the first 4 principal components, which may
 
 The distance histograms are distribution wise a bit cleaner than in the skip-gram case. This is likely because the distribution of the document is more multivariate normal, at least when inspecting the PCA plots. This will of cause result a cleaner distribution in the distance as well.
 
-The euclidean distance distribution looks like a gamma distribution or similar. This is likely because of the squaring in the distance calculation, which prevents the distance from becoming negative. In the skip-gram case this was less of an issue because the mean (relative to the standard deviance) was larger.
+The euclidean distance distribution looks like a gamma or $\chi^2$ distribution. This is likely because of the squaring in the distance calculation, which prevents the distance from becoming negative. In the skip-gram case this was less of an issue because the mean (relative to the standard deviance) was larger.
 
-\paragraph{Inspecting clusters} From inspecting the clusters the result seams to be worse when comparing to the skip-gram case.
+\paragraph{Inspecting clusters} From inspecting the clusters the result seem to be worse when comparing to the skip-gram case.
 
-When inspecting the cluster distribution it turns out that with paragraph2vec, clustering with cosine similarity actually yields more reasonably sized clusters, compared to when the euclidean distance is used for clustering. This may be because of the gamma like distribution of the euclidean distances, which makes it more difficult to separate articles about the same story from those about different stories. It's possible that a more fine-tuned threshold could yield better results, but in any case there still exists too small and way too big clusters.
+When inspecting the cluster distribution it turns out that with paragraph2vec, clustering with cosine similarity actually yields more reasonably sized clusters, compared to when the euclidean distance is used for clustering. This may be because of the $\chi^2$ like distribution of the euclidean distances, which makes it more difficult to separate articles about the same story from those about different stories. It's possible that a more fine-tuned threshold could yield better results, but in any case there still exists too small and way too big clusters.
 
 \begin{table}[H]
 \centering

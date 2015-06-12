@@ -3,7 +3,7 @@
 
 While clustering isn't the focus of this thesis, it is necessary to use some simple clustering algorithm in order to inspect the effectiveness of the algorithms used for producing the document vectors.
 
-A problem with clustering in this case is that there are really many clusters. The experiments was limited to just 100000 articles, but many more could have been considered. With 100000 articles and assuming that there are 4 articles for each stories, then one should expect 25000 clusters.
+A problem with clustering in this case is that there are really many clusters. The experiments was limited to just 100000 articles, but many more could have been considered. With 100000 articles and assuming that there are 4 articles for each story, then one should expect 25000 clusters.
 
 25000 clusters is a lot, and even simple algorithms like k-means are NP-hard problems and thus unlikely to be able to handle this many clusters. Furthermore the amount of clusters is actually unknown, while algorithms do exists to estimate the amount, many of those also have a hard time with this many clusters.
 

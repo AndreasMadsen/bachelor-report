@@ -43,7 +43,7 @@ One reason for \textit{stochastic gradient descent} being better is that it hand
 
 \subsection{Mini-batch stochastic gradient descent}
 
-While \textit{stochastic gradient descent} is way better than \textit{batch learning} it doesn't handle outliers very well, because the gradient will be big for such observation. It also isn't very computational efficient because the vectorization libraries can't take full advantage of the CPU cache and etc..
+While \textit{online learning} is way better than \textit{batch learning} it doesn't handle outliers very well, because the gradient will be big for such observation. It also isn't very computational efficient because the vectorization libraries can't take full advantage of the CPU cache and etc..
 
 To solve those issues \textit{mini-batch stochastic gradient descent} also called \textit{mini-batch learning} is used. This is a compromise between \textit{batch learning} and \textit{online learning}, where small random batches of observations are created and the weights are then optimized like in Algorithm \ref{algorithm:gradientdescent:SGD}. This introduces a third parameter called the \textit{mini-batch-size}, which as the same suggests controls the size of the mini-batches. This also generalizes \textit{online learning} and \textit{batch learning}, because if \textit{mini-batch-size = 1} then it is \textit{online learning} and if \textit{mini-batch-size = training-size} then it is \textit{batch learning}. Generally the \textit{mini-batch-size} is just chosen by benchmarking, calculating or guessing what is the most computational efficient choice.
 
