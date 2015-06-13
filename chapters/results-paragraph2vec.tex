@@ -32,9 +32,9 @@ The explained variance is 41.4\% for the first 4 principal components, which may
         \caption{Histograms of the distance between the document vectors.}
 \end{figure}
 
-The distance histograms are distribution wise a bit cleaner than in the skip-gram case. This is likely because the distribution of the document is more multivariate normal, at least when inspecting the PCA plots. This will of cause result a cleaner distribution in the distance as well.
+The distance histograms are distribution wise a bit cleaner than in the skip-gram case. This is likely because the distribution of the document vectors is more multivariate normal, at least when inspecting the PCA plots. This will of cause result a cleaner distribution in the distance as well.
 
-The euclidean distance distribution looks like a gamma or $\chi^2$ distribution. This is likely because of the squaring in the distance calculation, which prevents the distance from becoming negative. In the skip-gram case this was less of an issue because the mean (relative to the standard deviance) was larger.
+The euclidean distance distribution looks like a gamma or $\chi^2$ distribution. This is likely because of the squaring in the distance calculation, which prevents the distance from becoming negative. In the skip-gram case this was less apparent because the mean (relative to the standard deviance) was larger.
 
 \paragraph{Inspecting clusters} From inspecting the clusters the result seem to be worse when comparing to the skip-gram case.
 
@@ -51,7 +51,7 @@ amount & 93665 & 8 & 2 & 1 & 1 & 1 & 1
 
 Unfortunately the actual clusters that the clustering algorithm produces when using cosine similarity don't appear to capture any specific story. This is possibly because the document vectors only captures the overall mood of the article. For example the cluster in Table \ref{table:paragraph2vec:example} shows articles related to different bad events.
 
-At last it was checked if the ``teenage stowaway'' cluster existed in this case. This should be a fairly easy set of article to cluster as it contains very specific word combinations. Unfortunately it didn't exists as a single cluster, which again indicates the document vectors only tells about the overall mood of the document, as a way of adjusting the word probabilities.
+At last it was checked if the ``teenage stowaway'' cluster existed in this case. This should be a fairly easy set of article to cluster, as it contains very specific word combinations. Unfortunately it didn't exists as a single cluster, which again indicates the document vectors only tells about the overall mood of the document, as a way of adjusting the word probabilities.
 
 \begin{table}[H]
 \centering

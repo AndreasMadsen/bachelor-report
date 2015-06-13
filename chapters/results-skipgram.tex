@@ -3,9 +3,9 @@
 
 The skip-gram model doesn't need to be trained as there exists a pre trained version at \url{https://code.google.com/p/word2vec/}. This pre trained version has a latent size of 300 dimensions. The weights are trained using the Google News dataset, which is about 100 billion words and unfortunately not publicly available.
 
-The document vectors are then constructed by taking the average sum over all the word vectors. Using the full text of each article is unlikely to provide any good results, as there would be a lot of irrelevant words which would create a lot of noise. Instead just the title of the article is used and as an experiment the title and the lead is also considered.
+The document vectors are constructed by taking the average sum over all the word vectors. Using the full text of each article is unlikely to provide any good results, as there would be a lot of irrelevant words which would create a lot of noise. Instead just the title of the article is used and as an experiment the title and the lead is also considered.
 
-\paragraph{Document vectors} Using principal component analysis the vector representations of all the documents can be visualized in both cases.
+\paragraph{Document vectors} Using principal component analysis the vector representations of all the documents can be visualized in both experiments.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.9\textwidth]{results/word2vec-title-pca}
@@ -24,7 +24,7 @@ An interesting result is that the first principal component seem to contain two 
 
 \paragraph{Distance histogram} Since a distance measure will be used to perform the clustering, it makes sense to inspect the histogram of the distance measures. Note that only distances between nodes there are connected by the temporal connectivity matrix is included in the histogram.
 
-The density estimation required for showing the histogram, also serves the purpose of providing the basis for calculating a somewhat consistent threshold across the different experiments. The threshold $t$ is chosen a the $0.1 \%$ percentile, that is $P(distance < t) = 0.001$. This percentile was chosen qualitatively by running a few experiments, but it turns out it doesn't matter much, as the threshold is not the bottleneck of the performance.
+The density estimation required for showing the histogram, also serves the purpose of providing the basis for calculating a somewhat consistent threshold across the different experiments. The threshold $t$ is chosen as the $0.1 \%$ percentile, that is $P(distance < t) = 0.001$. This percentile was chosen qualitatively by running a few experiments, but it turns out it doesn't matter much, as the threshold is not the bottleneck of the performance.
 
 \begin{figure}[H]
         \centering
@@ -53,7 +53,7 @@ The density estimation required for showing the histogram, also serves the purpo
 
 The histograms shows the distances are approximately normally distributed. This is not very surprising, as the both the euclidean distance and cosine similarly involves a large sum and thus have relations to the central limit theorem.
 
-\paragraph{Inspecting clusters}  None of the 4 variations gives particularly good results. They all cluster the documents such that there is a ridiculously huge amount of unique articles. This alone could indicate the threshold is too small. However simultaneously they all have really big clusters, with up to $31478$ documents in one case. Because there exists clusters that either way to big or way to small, the threshold is not the problem. It is the skip-gram model or perhaps the clustering method there causes the bad results.
+\paragraph{Inspecting clusters}  None of the 4 variations gives particularly good results. They all cluster the documents such that there is a ridiculously huge amount of unique articles. This alone could indicate the threshold is too small. However simultaneously they all have really big clusters, with up to $31478$ documents in one case. Because there exists clusters that is either way too big or way too small, the threshold is not the problem. It is the skip-gram model or perhaps the clustering method there causes the bad results.
 
 \begin{table}[H]
 \centering

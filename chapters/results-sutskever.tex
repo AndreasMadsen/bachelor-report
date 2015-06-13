@@ -19,13 +19,13 @@ Inspired from the learning to execute paper \cite{learning-to-execute} a copy pr
 
 Each element of value $i$ is then transformed into an indicator vector, such that the 1-element is at position $i$. The indicator vector will be denoted by a bold font.
 
-Now consider the following three variations of the same problem. Note that that only the \textit{full network} model is required and used for the immediate validation. But the \textit{encoder} and \textit{decoder} problems becomes useful in a detailed analysis.
+Now consider the following three variations of the same problem. Note that that only the \textit{full network} model is required and used for the immediate validation. But the \textit{encoder} and \textit{decoder} problems becomes useful in the detailed analysis.
 
 \paragraph{Full network} To validate the full network the sequence of indicator vectors is used both as input and output. Example: $[\mathbf{3}, \mathbf{4}, \mathbf{8}, \mathbf{5}, \mathbf{9}, \mathbf{9}, \mathbf{4}, \mathbf{4}, \mathbf{0}] \rightarrow [\mathbf{3}, \mathbf{4}, \mathbf{8}, \mathbf{5}, \mathbf{9}, \mathbf{9}, \mathbf{4}, \mathbf{4}, \mathbf{0}]$.
 
 \paragraph{Encoder} The encoder problem is a regression problem where the output is the integer sequence expressed as an vector. Note that the \texttt{<EOS>} isn't included and the vector is divided by 9 to fit between $0$ and $1$. It isn't strictly necessary for the output to be within $[0, 1]$, but it makes it easier to compare to the decoder version of this problem. Example: $[\mathbf{3}, \mathbf{4}, \mathbf{8}, \mathbf{5}, \mathbf{9}, \mathbf{9}, \mathbf{4}, \mathbf{4}, \mathbf{0}] \rightarrow [\sfrac{3}{9}, \sfrac{4}{9}, \sfrac{8}{9}, \sfrac{5}{9}, \sfrac{9}{9}, \sfrac{9}{9}, \sfrac{4}{9}, \sfrac{4}{9}]$.
 
-\paragraph{Decoder} Finally one can consider a decoder version of the \textit{copy} problem. Here the input should be between $0$ and $1$, as this will be used to initialize the hidden output $b_{h_1}^{0_d}$ and the cell state $s_{h_1}^{0_d}$. The cell in partially is almost always in the $[0, 1]$ interval. The input and output is the same as in the encoder case, just swapped. Example: $[\sfrac{3}{9}, \sfrac{4}{9}, \sfrac{8}{9}, \sfrac{5}{9}, \sfrac{9}{9}, \sfrac{9}{9}, \sfrac{4}{9}, \sfrac{4}{9}] \rightarrow [\mathbf{3}, \mathbf{4}, \mathbf{8}, \mathbf{5}, \mathbf{9}, \mathbf{9}, \mathbf{4}, \mathbf{4}, \mathbf{0}]$
+\paragraph{Decoder} Finally one can consider a decoder version of the \textit{copy} problem. Here the input should be between $0$ and $1$, as this will be used to initialize the hidden output $b_{h_1}^{0_d}$ and the cell state $s_{h_1}^{0_d}$. The cell in particular is almost always in the $[0, 1]$ interval. The input and output is the same as in the encoder case, just swapped. Example: $[\sfrac{3}{9}, \sfrac{4}{9}, \sfrac{8}{9}, \sfrac{5}{9}, \sfrac{9}{9}, \sfrac{9}{9}, \sfrac{4}{9}, \sfrac{4}{9}] \rightarrow [\mathbf{3}, \mathbf{4}, \mathbf{8}, \mathbf{5}, \mathbf{9}, \mathbf{9}, \mathbf{4}, \mathbf{4}, \mathbf{0}]$
 
 \subsection{Validating implementation}
 
@@ -45,7 +45,7 @@ To validate the Sutskever model the \textit{full network} version of the \textit
 \caption{Initialization parameters.}
 \end{table}
 
-In all cases the sigmoid function was used in the gate (f) non-linear function and the input non-linear function (g). The output activation function (h) was set to the identity function. Such that the LSTM unit can generalize to the simple RNN unit.
+In all cases the sigmoid function was used as the non-linear gate function (f) and the non-linear input function (g). The output activation function (h) was set to the identity function. Such that the LSTM unit can generalize to the simple RNN unit.
 
 Note also that the target value wasn't reversed, this is to make the model easier to reason about. The original paper \cite{sutskever} also indicates that the model does work without reversing the target value, it just improves the performance.
 
@@ -65,7 +65,7 @@ Also note that while solving this problem validates the implementation, it doesn
          \vspace*{-0.5cm}
 	\centering
 	\includegraphics[scale=0.60]{results/sutskever-network-normal-05-rmsgraves}
-	\caption{Loss and misclassification rate as a function of the number of epochs, from the full Sutskever network solving the ``full network'' copy problem.}
+	\caption{Loss and misclassification rate as a function of the number of epochs, for the full Sutskever network solving the ``full network'' copy problem.}
 	\label{fig:results:sutskever:network-05}
 \end{figure}
 \begin{figure}[H]
@@ -80,7 +80,7 @@ Also note that while solving this problem validates the implementation, it doesn
                 \includegraphics[scale=0.60]{results/sutskever-decoder-normal-05-rmsgraves}
                 \caption{Decoder, solving the ``decoder'' copy problem.}
         \end{subfigure}
-        \caption{Loss and misclassification rate as a function of the number of epochs, from the encoder and decoder as two independent neural networks.}
+        \caption{Loss and misclassification rate as a function of the number of epochs, for the encoder and decoder as two independent neural networks.}
         \label{fig:results:sutskever:decoder-encoder-05}
 \end{figure}
 
@@ -108,7 +108,7 @@ Now that the implementation is validated, it can be used on the real problem. Th
 \label{fig:results:sutskever:example}
 \end{figure}
 
-It turns out that using $\mathcal{N}(0, 0.5^2)$ to initialize the weights has such a high variance that the gradients become not-a-number (NaN). To solve this $\mathcal{N}(0, 0.1^2)$ is used to initialize the weights, this is also what Alex Graves uses in his book \cite{alexgraves}.
+It turns out that $\mathcal{N}(0, 0.5^2)$ has too high a variance for initializing the weights causing the gradients become not-a-number (NaN). To solve this $\mathcal{N}(0, 0.1^2)$ is used to initialize the weights, this is also what Alex Graves uses in his book \cite{alexgraves}.
 
 This allows the training to continue for some iterations, to have it to continue for a longer duration with out getting not-a-number gradients the momentum and learning rate is also decreased. The final configuration is shown in Table \ref{fig:results:sutskever:article-parameters} and Figure \ref{fig:results:sutskever:article-artitecture}.
 \begin{table}[h]
@@ -246,7 +246,7 @@ While there are good and bad choices none of them makes the full network converg
 The encoder and decoder themselves can converge and hyperparameter optimization of the full network doesn't work. All this suggests that it is the combination of the many layers and the smaller standard deviance that causes the problem.
 
 \subsection{Vanishing gradient}
-It is not unusual that deep networks and small initial weights causes problems. This is because of the vanishing gradient problem. This is particular a problem in recurrent neural networks, because the iteration over the sequence actually causes the network to be much deeper than it appears to be. Using LSTM units solves this to some extent, however having many layers is still an issue. This is best seen by just considering a simple feed forward neural network with many layers and following the $\delta$ calculations.
+It is not unusual that the combination of deep networks and small initial weights causes problems. This is because of the vanishing gradient problem. This is particular a problem in recurrent neural networks, because the iteration over the sequence actually causes the network to be much deeper than it appears to be. Using LSTM units solves this to some extent, however having many layers is still an issue. This is best seen by just considering a simple feed forward neural network with many layers and following the $\delta$ calculations.
 
 Because the last layer is a softmax and one can expect and uniform distribution as the initial distribution and the target is often zero, $\delta_{L+1}$ can be approximated as $\frac{1}{10}$ (there are 10 classes). The remaining $\delta$ values are then calculated as:
 \begin{equation}
