@@ -2,7 +2,7 @@
 \chapter{Vector notation of Skip-Gram}
 \label{appendix:skipgram}
 
-To get an idea about how a neural network representation relates to the equations in \cite{word2vec-details}, the scalar notation from the introduction to Neural Network section, is replaced with a similar vector notation.
+To get an idea about how a neural network representation relates to the equations in \cite{word2vec-details}, the scalar notation from the \nameref{sec:theory:ffnn} section, is replaced with a similar vector notation.
 
 As previously discussed the input and output words are represented using 1-of-V encoding, this vector will be denoted as $\mathbf{x}_w$ for both the input and output words $w$. Note that because words are used as input, there is a finite amount of possible inputs. The activation is thus not denoted by the input index $n$ but rather the input value $w$. For referring to the word at position $t$ in the corpus $w_t$ is used.
 
@@ -18,7 +18,7 @@ Here the subscript $1$ denotes that this is for the layer 1 (the input is layer 
 
 Here $\mathbf{W}_1$ is the matrix containing the weights on the left side of the log-linear network, thus it has a size of $D \times V$. $\mathbf{W}_2$ is the matrix containing the weights on the right side and have also size $D \times V$.
 
-$\mathbf{a}_{2,w_t}$ is a vector containing information about all possible surrounding words, but since this used in a softmax and likelihood setting, only the value associated with the output word $w_{t + \ell}$ is of interest. To get this specific value the encoding vector $\mathbf{x}_{t + \ell}$ can be used. In general the value associated with the word $w$ can be obtained using:
+$\mathbf{a}_{2,w_t}$ is a vector containing information about all possible surrounding words, but since this is used in a softmax and likelihood setting, only the value associated with the output word $w_{t + \ell}$ is of interest. To get this specific value the encoding vector $\mathbf{x}_{t + \ell}$ can be used. In general the value associated with the word $w$ can be obtained using:
 \begin{equation}
 a_{w_t,w} = \left(\mathbf{a}_{2,w_t}\right)_w = \mathbf{x}_{w}^T \mathbf{a}_{2,w_t}
 \end{equation}
@@ -51,7 +51,7 @@ p(w_{t + \ell} | w_t)
 \end{aligned}
 \end{equation}
 
-From the above expression it's seen that $a_{w_t, w_{t + \ell}}$ is really an inner product between two linear vector transformations. This is similar to how \cite{word2vec-details} represents the model. Specifically it one sets: $w_O = w_{t + \ell}$, $w_I = w_t$, $\mathbf{v}_{w_O} = \mathbf{W}_2 \mathbf{x}_{w_{t+\ell}}$, $\mathbf{v}_{w} = \mathbf{W}_2 \mathbf{x}_{w}$ and $\mathbf{v}_{w_I} = \mathbf{W}_1 \mathbf{x}_{w_{t + \ell}}$, then \cite[eq. 2]{word2vec-details} is obtained:
+From the above expression it's seen that $a_{w_t, w_{t + \ell}}$ is really an inner product between two linear vector transformations. This is similar to how \cite{word2vec-details} represents the model. Specifically if one sets: $w_O = w_{t + \ell}$, $w_I = w_t$, $\mathbf{v}_{w_O} = \mathbf{W}_2 \mathbf{x}_{w_{t+\ell}}$, $\mathbf{v}_{w} = \mathbf{W}_2 \mathbf{x}_{w}$ and $\mathbf{v}_{w_I} = \mathbf{W}_1 \mathbf{x}_{w_{t + \ell}}$, then \cite[eq. 2]{word2vec-details} is obtained:
 \begin{equation}
 p(w_O | w_I) = \frac{
 	\mathrm{exp}( \mathbf{v}_{w_O}^T \mathbf{v}_{w_I} )

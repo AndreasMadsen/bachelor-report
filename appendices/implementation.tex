@@ -84,4 +84,4 @@ The target values is only used in the entropy loss function, which can be expres
 
 Again this is also more computational efficient.
 
-Another optimization which don't improve memory utilization, but is ªmore computationally efficient, is to combine the weight matrices in each LSTM layer. Each LSTM layer have 4 input to hidden matrices and 4 hidden to hidden matrices. Because these are all multiplied by the same values, they can be combined to just one input to hidden matrix and one hidden to hidden matrix. This means that only two BLAS calls are required pr. layer.
+Another optimization which don't improve memory utilization, but is more computationally efficient, is to combine the weight matrices in each LSTM layer. Each LSTM layer have 4 input to hidden matrices and 4 hidden to hidden matrices. Because these are all multiplied by the same values, they can be combined to just one input to hidden matrix and one hidden to hidden matrix. This means that only two BLAS calls are required pr. layer.
