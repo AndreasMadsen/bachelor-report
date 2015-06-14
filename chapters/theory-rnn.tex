@@ -2,7 +2,7 @@
 
 \section{Recurrent Neural Network}
 
-The Skip-gram model and the paragraph2vec model can be interpreted as a feed forward neural network (FFNN). This class of neural networks have the shortcoming that the require a fixed input size, thus they can only look a fixed amount of steps back and forward in history. This can be a problem when analyzing sentences, because the amount of words in a sentence isn't fixed and there isn't a well defined window size for the surrounding words.
+The Skip-gram model and the paragraph2vec model can be interpreted as a feed forward neural network (FFNN). This class of neural networks have the shortcoming that the require a fixed input size, thus they can only look a fixed amount of steps backwards and forwards in history. This can be a problem when analyzing sentences, because the amount of words in a sentence isn't fixed and there isn't a well defined window size for the surrounding words.
 
 The Recurrent Neural Networks (RNN) overcome this shortcoming by having an internal state. In principal this allows the network to take a sequence of vectors and consider the entire history. The sequence can be of any size, but each vector must be of the same size. In the case of sentences a fixed vector size is not an issue when considering a fixed vocabulary.
 

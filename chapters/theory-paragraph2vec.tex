@@ -2,9 +2,9 @@
 
 \section{Paragraph2vec}
 
-The Skip-gram model only directly allows to get a vector representation of a single word, not a sentence or more. However to find a vector representation for a news article one must work on a sentence level. A simple approach is to just take the average vector sum of all the words in the article title and perhaps the article lead.
+The Skip-gram model only directly allows to get a vector representation of a single word, not a sentence or more. But to find a vector representation for a news article one must work on a sentence level. A simple approach is to just take the average vector sum of all the words in the article title and perhaps the article lead.
 
-While this method is perfectly valid it neglects the order of words just like the bag-of-word methods. As a solution to this the paragraph2vec model has been suggested. This is a set of models that looks very similar to the skip-gram model (or word2vec in general), but also learns a document vector which should capture the content of a document.
+While this method is perfectly valid, it neglects the order of words just like the bag-of-word methods. The paragraph2vec model has been suggested as a solution to this problem. This is a set of models that looks very similar to the skip-gram model (or word2vec in general), but also learns a document vector which should capture the content of a document.
 
 The model shown here is the Distributed Memory Model of Paragraph Vectors (short PV-DM), as it has been shown to provide the best results \cite{doc2vec}.
 
@@ -37,6 +37,6 @@ y_{k}^t &= \frac{\exp(a_k^t)}{\sum_{k'=1}^V \exp(a_{k'}^t)} && \forall k \in [1,
 \end{aligned}
 \end{equation}
 
-The softmax used to calculate $y_{k}^t$ performs a very large sum. This sum is impractical to calculate, for this reason the paper \cite{doc2vec} suggest using an approximation called hierarchical softmax.
+The softmax used for calculating $y_{k}^t$ performs a very large sum. This sum is impractical to calculate, for this reason the paper \cite{doc2vec} suggest using an approximation called hierarchical softmax.
 
 The model is trained just like the skip-gram model, that is using stochastic gradient descent. This optimizes the document and word vectors jointly. It is possible to later fix the word vectors and only train the document vector, but that wasn't done in this case.

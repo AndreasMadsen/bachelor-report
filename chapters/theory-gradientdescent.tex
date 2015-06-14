@@ -10,11 +10,11 @@ w_{i,j}^n = w_{i,j}^{n-1} + \Delta w_{i,j}^n, && \Delta w_{i,j}^n = - \eta_n \fr
 \end{aligned}
 \end{equation}
 
-$\eta_n$ is the \textit{learning rate} or \textit{step size} and should be so small that it doesn't skip over the wanted minima, but also not so small that weights doesn't converge within reasonable time. Typically the initial weights $w^0_{i,j}$ is given by a random distribution. The choice of the learning rate and initialization are not obvious, as it typically depends on the specific architecture of the network and the dataset. For example Alex Graves \cite{alexgraves} suggests using a uniform distribution in the range $[-0.1, 0.1]$ or a normal distribution with $\sigma = 0.1$ and a constant step size $\eta_n = 10^{-5}$.
+$\eta_n$ is the \textit{learning rate} or \textit{step size} and should be so small that it doesn't skip over the wanted minima, but also not so small that the weights doesn't converge within reasonable time. Typically the initial weights $w^0_{i,j}$ is given by a random distribution. The choice of the learning rate and initialization are not obvious, as it typically depends on the specific architecture of the network and the dataset. For example Alex Graves \cite{alexgraves} suggests using a uniform distribution in the range $[-0.1, 0.1]$ or a normal distribution with $\sigma = 0.1$ and a constant step size $\eta_n = 10^{-5}$.
 
 \subsection{Momentum}
 
-A major problem with the naïve gradient descent algorithm, is that it tends to get stuck in a local minima because $\frac{\partial \mathcal{L}}{\partial w_{i,j}} = 0$ in such minima. To avoid this problem a \textit{momentum} can be added to the gradient descent equation:
+A major problem with the naïve gradient descent algorithm, is that it tends to get stuck in a local minima because $\frac{\partial \mathcal{L}}{\partial w_{i,j}}$ is $0$ in such minima. To avoid this problem a \textit{momentum} can be added to the gradient descent equation:
 
 \begin{equation}
 \Delta w_{i,j}^n = m \Delta w_{i,j}^{n-1} - \eta_n \frac{\partial \mathcal{L}}{\partial w_{i,j}}
@@ -39,7 +39,7 @@ For calculating the gradient some dataset is used, the naïve approach is to use
  \label{algorithm:gradientdescent:SGD}
 \end{algorithm}
 
-One reason for \textit{stochastic gradient descent} being better is that it handles redundancies in the data better. It also helps in not getting stuck in a local minima, because it is unlikely that what is a local minima for one data point is also a local minima for another data point \cite{bishop}.
+One reason for \textit{stochastic gradient descent} being better,   is that it handles redundancies in the data better. It also helps in not getting stuck in a local minima, because it is unlikely that what is a local minima for one data point is also a local minima for another data point \cite{bishop}.
 
 \subsection{Mini-batch stochastic gradient descent}
 
@@ -62,7 +62,7 @@ To solve those issues \textit{mini-batch stochastic gradient descent} also calle
 
 \subsection{RMSprop}
 
-The gradient descent algorithms presented so far uses a global learning rate for all the weights. This causes some issues for those gradients there are very tiny or huge, because they will either be dominating or be practically neglected. A solution to this is to not use the size of the gradient, but just the sign and then move a constant amount in that direction, this method is called \textit{rprop} and is useful for \textit{batch-learning}. However for \textit{mini-batch learning} \textit{rprop} doesn't work very well. This is because \textit{mini-batch-size} have some averaging properties, for example if the gradient for a specific weights is $0.1$ for nine mini-batches and $-0.9$ for just one mini-batch, this will cause the weight to stay roughly where it is. However \textit{rprop} will move $9 \times 1$ in one direction and then $1 \times (-1)$ in the other, because a constant movement step is used. The solution is called \textit{RMSprop} and is the equivalent to \textit{rprop} for \textit{mini-batch learning}. It works by performing a moving average on the gradient and then using this average to scale the learning rate, such that it adapts to the scale of the individual gradient in general. This can be done with and without momentum, for completeness with momentum is shown here:
+The gradient descent algorithms presented so far uses a global learning rate for all the weights. This causes some issues for those gradients there are very tiny or huge, because they will either be dominating or be practically neglected. A solution to this is to not use the size of the gradient, but just the sign and then move a constant amount in that direction, this method is called \textit{rprop} and is useful for \textit{batch-learning}. However for \textit{mini-batch learning} \textit{rprop} doesn't work very well. This is because \textit{mini-batch-size} have some averaging properties. For example if the gradient for a specific weight is $0.1$ for nine mini-batches and $-0.9$ for just one mini-batch, this will cause the weight to stay roughly where it is. However \textit{rprop} will move $9 \times 1$ in one direction and then $1 \times (-1)$ in the other, because a constant step size is used. The solution is called \textit{RMSprop} and is the equivalent to \textit{rprop} for \textit{mini-batch learning}. It works by performing a moving average on the gradient and then using this average to scale the learning rate, such that it adapts to the scale of the individual gradient in general. This can be done with and without momentum, for completeness with momentum is shown here:
 
 \begin{equationbox}[H]
 \begin{equation*}
@@ -79,11 +79,11 @@ Notice that $\epsilon$ is necessary because $g_{i,j}^n$ and $f_{i,j}^n$ can be z
 
 \subsection{Clipping}
 
-Sometimes the $\frac{\partial \mathcal{L}}{\partial w_{i,j}}$ gradients becomes really big because of an unfortunate mini-batch or some numerical instability in the implementation. To avoid this the gradient is often clipped or squeezed to prevent these issues \cite{graves-generating-sequences}. There are 3 common methods, they use a \textit{clip} hyperparameter to control how aggressive the clipping should be.
+Sometimes the $\frac{\partial \mathcal{L}}{\partial w_{i,j}}$ gradients becomes really big because of an unfortunate mini-batch or some numerical instability in the implementation. To avoid this the gradient is often clipped or squeezed to prevent issues \cite{graves-generating-sequences}. There are 3 common methods, they use a \textit{clip} hyperparameter to control how aggressive the clipping should be.
 
 Note that some of these methods consider all gradients for all the weight matrices as one long vector, this vector will be denoted $\nabla \mathcal{L}$.
 \begin{align}
-\text{clipping: } & \frac{\partial \mathcal{L}}{\partial w_{i,j}} = \max\left(\frac{\partial \mathcal{L}}{\partial w_{i,j}}, clip\right) \\
+\text{clipping: } & \frac{\partial \mathcal{L}}{\partial w_{i,j}} = \max\left(\min\left(\frac{\partial \mathcal{L}}{\partial w_{i,j}}, clip\right), - clip \right) \\
 \text{max squeezing: } & \frac{\partial \mathcal{L}}{\partial w_{i,j}} = \begin{cases}
 	\frac{\partial \mathcal{L}}{\partial w_{i,j}} & clip < ||\nabla \mathcal{L}||_{\infty} \\
 	\frac{\partial \mathcal{L}}{\partial w_{i,j}} \frac{clip}{||\nabla \mathcal{L}||_{\infty}} & otherwise

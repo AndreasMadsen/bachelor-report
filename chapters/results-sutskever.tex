@@ -84,6 +84,8 @@ Also note that while solving this problem validates the implementation, it doesn
         \label{fig:results:sutskever:decoder-encoder-05}
 \end{figure}
 
+The loss in Figure \ref{fig:results:sutskever:network-05} and \ref{fig:results:sutskever:decoder-encoder-05}, is calculated as the mean over all observations and timesteps (words). The scale of the loss function is thus independent of the amount of observations and the sequence length.
+
 \subsection{Using real data}
 
 Now that the implementation is validated, it can be used on the real problem. The goal is to predict the article title given the article lead. The hope is this should be somewhat similar to the translation problem solved in the original paper \cite{sutskever}. Figure \ref{fig:results:sutskever:example} shows the first 3 observations in the dataset. The entire dataset consists of 273813 news articles, all articles are used for training.

@@ -3,7 +3,7 @@
 \section{Feed forward Neural Network}
 \label{sec:theory:ffnn}
 
-The models presented in this thesis are all neural networks or can be interpreted as such. To give a short introduction to neural networks in general the feed forward neural network (FFNN) is used. The feed forward neural network is one of the simplest models in the family of neural networks. The other models used in this thesis can be considered as extensions of the FFNN. An exception to this is perhaps the skip-gram model which is a simplified version of FFNN.
+The models presented in this thesis are all neural networks or can be interpreted as such. To give a short introduction to neural networks in general, the feed forward neural network (FFNN) is used. The feed forward neural network is one of the simplest models in the family of neural networks. The other models used in this thesis can be considered as extensions of the FFNN. Exceptions to this is perhaps the skip-gram and paragraph2vec models which are simplified versions of FFNN.
 
 \subsection{The neuron}
 
@@ -208,7 +208,7 @@ The result from \eqref{eq:theory:ffnn:bprop-Ldy} and \eqref{eq:theory:ffnn:bprop
 \label{eq:theory:ffnn:bprop-deltaKfinal}
 \end{equation}
 
-To get $\sum_{k'=1}^K t_{k'}$ is is used that $\{ t_{k'} \}_{k'=1}^K$ is constructed using 1-of-K encoding, thus only one element is 1 and the remaining is 0, the sum must therefore give 1.
+To get $\sum_{k'=1}^K t_{k'}$ it's used that $\{ t_{k'} \}_{k'=1}^K$ is constructed using 1-of-K encoding, thus only one element is 1 and the remaining is 0, the sum must therefore give 1.
 
 Using \eqref{eq:theory:ffnn:bprop-deltaKfinal} and \eqref{eq:theory:ffnn:bprop-genalized} all $\delta_{h_\ell}$ for $\ell \in [1, L+1]$ can be calculated for a feed forward neural network with $L$ layers. Note how \eqref{eq:theory:ffnn:bprop-deltaKfinal} is an error measure and this value is propagated back through the network by the $\delta_{h_\ell}$ equations in \eqref{eq:theory:ffnn:bprop-genalized}. This is why the method is called \textit{error backpropagation}.
 

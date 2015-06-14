@@ -4,7 +4,7 @@
 \label{sec:Long-Short-Term-Memory}
 In the Recurrent Neural Network the internal state $b_h^t$ must be updated in each iteration. This means the effect of some input $x_i^{t_0}$ on $b_h^{t}$, will decay as $t \gg t_0$. This issue is addressed in the Long-Short Term Memory Model (LSTM) by taking inspiration from a computer memory cell.
 
-A computer memory cell can either be written to, read from or reset. On the most basic level memory cell are binary, not just in terms of what can be stored by also in terms of the 3 operations. Either the memory cell is completely reset or not reset, either completely read from or not read from and similarly for writing.
+A computer memory cell can either be written to, read from or reset. On the most basic level memory cell are binary, not just in terms of what can be stored but also in terms of the 3 operations. Either the memory cell is completely reset or not reset, either completely read from or not read from and similarly for writing.
 
 From a mathematical perspective all these operations becomes threshold functions, which are not continuous and therefore not differentiable. This makes them impractical to use in a neural network setting, as neural networks are optimized using gradient descent. The solution is not to use threshold function but a combination of differentiable non-linear activation functions, such as the sigmoid or hyperbolic tangent function.
 
@@ -31,7 +31,7 @@ b_{gate} = f(a_{gate}), \quad a_{gate} = \sum_{i=1}^I w_i x_i
 
 \subsection{The memory block}
 
-The LSTM model is the same as the RNN model except that all non-linear units are replaced by a differentiable memory block. The differentiable memory block have an \textit{input} corresponding to $a_{h_\ell}^t$ and an \textit{output} corresponding to $b_{h_\ell}^t$ in the RNN model. To control the three memory operations in the memory block, there are three gates. The \textit{Input Gate} ($b_{\rho_\ell}^t$), \textit{Forget Gate} ($b_{\phi_\ell}$) and \textit{Output Gate} ($b_{\omega_\ell}^t$).
+The LSTM model is the same as the RNN model, except that all non-linear units are replaced by a differentiable memory block. The differentiable memory block have an \textit{input} corresponding to $a_{h_\ell}^t$ and an \textit{output} corresponding to $b_{h_\ell}^t$ in the RNN model. To control the three memory operations in the memory block, there are three gates. The \textit{Input Gate} ($b_{\rho_\ell}^t$), \textit{Forget Gate} ($b_{\phi_\ell}$) and \textit{Output Gate} ($b_{\omega_\ell}^t$).
 
 \begin{figure}[h]
 	\centering
@@ -75,7 +75,7 @@ $h$ is yet another non-linear function, typically the sigmoid $\sigma(\cdot)$ or
 	\label{fig:theory:lstm:lstm-network}
 \end{figure}
 
-Figure \ref{fig:theory:lstm:lstm-network} shows a very simple LSTM network. It have the recurrent property from the RNN in that the output from the memory blocks are used as input in the next iteration. Figure \ref{fig:theory:lstm:lstm-network} only shows two inputs, but in general there are no restrictions. For simplicity only a single layer is shown, however a multilayer LSTM network can easily be constructed, in the same way a multilayer RNN is constructed. That is by making the output of the memory blocks in the current hidden layer go into the next hidden layer. 
+Figure \ref{fig:theory:lstm:lstm-network} shows a very simple LSTM network. It have the recurrent property from the RNN, that is the output from the memory blocks are used as input in the next iteration. Figure \ref{fig:theory:lstm:lstm-network} only shows two inputs, but in general there are no restrictions. For simplicity only a single layer is shown, however a multilayer LSTM network can easily be constructed, in the same way a multilayer RNN is constructed. That is by making the output of the memory blocks in the current hidden layer go into the next hidden layer. 
 
 By using the memory block equations and generalizing to $L$ hidden layers, the full set of equations becomes:
 

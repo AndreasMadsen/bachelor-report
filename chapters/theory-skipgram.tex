@@ -73,7 +73,7 @@ y_k^t &= \frac{\exp(a_k^t)}{\sum_{k'=1}^V \exp(a_{k'}^t)}, && \forall k \in [1, 
 
 It is possible to reformulate the \eqref{eq:theory:skipgram:forwardpass} equations, such that they appear as in \cite{word2vec-details}. However it is a bit convoluted as it requires using vector notation and using a trick where subscript selection is done by knowing that $x^t$ is an indicator vector. Thus that won't be covered here, but see Appendix \ref{appendix:skipgram} for how it can be done.
 
-This calculation of $y_k^t$ is problematic since it contains a sum over all words in the vocabulary. In the Skip-gram model the vocabulary can be of size $10^5$ to $10^7$ \cite{word2vec-details}. This is why \cite{word2vec-comparing, word2vec-details, word2vec-explained} uses an approximation in form of either \textit{hierarchical softmax} or \textit{negative-sampling}. These approximations will not be discussed here, but are worth considering as they will reduce the computational complexity from $\mathcal{O}(V)$ to $\mathcal{O}(\ln_2(V))$ \cite{word2vec-comparing}.
+Calculating $y_k^t$ is problematic since it contains a sum over all words in the vocabulary. In the Skip-gram model the vocabulary can be of size $10^5$ to $10^7$ \cite{word2vec-details}. This is why \cite{word2vec-comparing, word2vec-details, word2vec-explained} uses an approximation in form of either \textit{hierarchical softmax} or \textit{negative-sampling}. These approximations will not be discussed here, but are worth considering as they will reduce the computational complexity from $\mathcal{O}(V)$ to $\mathcal{O}(\ln_2(V))$ \cite{word2vec-comparing}.
 
 \subsection{Backward pass}
 
