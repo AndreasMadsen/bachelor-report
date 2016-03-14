@@ -11,6 +11,11 @@ make
 open Thesis.pdf
 ```
 
+## Code
+
+The code uses to generate the results is available here:
+https://github.com/AndreasMadsen/bachelor-code
+
 ## License
 
 While the LaTeX code is available it is not open source. That means you are not
